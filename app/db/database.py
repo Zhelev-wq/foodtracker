@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, MetaData, Table, Column
-from sqlalchemy import text
+from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import dotenv_values
 
 config = dotenv_values(".env")
@@ -13,6 +13,6 @@ port = config.get("PORT")
 engine = create_engine(
     f"{db}://{username}:{password}@{host_address}:{port}/food", echo=True
 )
-with engine.connect() as conn:
-    result = conn.execute(text("select 'hello world'"))
-    print(result.all())
+
+Session = sessionmaker(bind=engine)
+Base = declarative_base()

@@ -1,7 +1,6 @@
 from sqlalchemy import UUID, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
-
-Base = declarative_base()
+from app.db.database import Base
 
 
 class Food(Base):

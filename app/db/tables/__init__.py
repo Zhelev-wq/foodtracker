@@ -1,0 +1,1 @@
+from app.db.tables.food import Food, Minerals, Vitamins
