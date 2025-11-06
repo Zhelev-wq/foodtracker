@@ -1,5 +1,5 @@
-from sqlalchemy import UUID, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import UUID, Column, Float, ForeignKey, String
+from sqlalchemy.orm import relationship
 from app.db.database import Base
 
 
@@ -22,6 +22,7 @@ class Vitamins(Base):
     __tablename__ = "vitamins"
     id = Column(UUID, ForeignKey("food.id"), primary_key=True)
 
+    # all values based on 100g of food
     vit_a = Column(Float, nullable=True)
     vit_b1 = Column(Float, nullable=True)
     vit_b2 = Column(Float, nullable=True)
@@ -41,6 +42,7 @@ class Minerals(Base):
     __tablename__ = "minerals"
     id = Column(UUID, ForeignKey("food.id"), primary_key=True)
 
+    # all values based on 100g of food
     calcium = Column(Float, nullable=True)
     magnesium = Column(Float, nullable=True)
     phosphorus = Column(Float, nullable=True)
