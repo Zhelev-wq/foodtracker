@@ -17,6 +17,7 @@ class FoodEntry(Base):
 class FoodEntryItem(Base):
     __tablename__ = "food_entry_item"
 
+    id = Column(UUID, nullable=False, primary_key=True)
     food = relationship("Food")
     food_id = Column(UUID, ForeignKey("food.id"))
     food_grams = Column(Integer, nullable=False)
