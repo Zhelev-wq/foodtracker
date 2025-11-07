@@ -11,10 +11,10 @@ class Food(Base):
     protein = Column(Float)
     fat = Column(Float)
     vitamins = relationship(
-        "Vitamins", back_populates="food", cascade="all, delete-oprhan"
+        "Vitamins", back_populates="food", cascade="all, delete-orphan"
     )
     minerals = relationship(
-        "Minerals", back_populates="food", cascade="all, delete-oprhan"
+        "Minerals", back_populates="food", cascade="all, delete-orphan"
     )
 
 
