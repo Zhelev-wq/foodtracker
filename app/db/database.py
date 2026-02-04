@@ -1,6 +1,6 @@
-from sqlalchemy import create_engine, MetaData, Table, Column
-from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import dotenv_values
+from sqlalchemy import Column, MetaData, Table, create_engine
+from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 config = dotenv_values(".env")
 db = config.get("DB")
@@ -14,5 +14,13 @@ engine = create_engine(
     f"{db}://{username}:{password}@{host_address}:{port}/food", echo=True
 )
 
-Session = sessionmaker(bind=engine)
-Base = declarative_base()
+SessionLocal = sessionmaker(bind=engine)
+
+
+class Base(DeclarativeBase):
+    pass
+
+
+def get_db():
+    with SessionLocal as db:
+        yield db
