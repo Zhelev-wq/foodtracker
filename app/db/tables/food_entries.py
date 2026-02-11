@@ -10,13 +10,18 @@ from app.db.database import Base
 class FoodEntry(Base):
     __tablename__ = "food_entry"
 
-    time: Mapped[datetime.datetime] = mapped_column(DateTime)
+    time: Mapped[datetime.datetime] = mapped_column(
+        DateTime, default=datetime.datetime.now()
+    )
     id: Mapped[uuid.UUID] = mapped_column(
         UUID, primary_key=True, as_uuid=True, default=uuid.uuid4
     )
 
-    food_items = relationship(
-        "FoodEntryItem", back_populates="food_entry", cascade="all, delete-orphan"
+    food_items: Mapped[list[FoodEntryItem]] = relationship(
+        "FoodEntryItem",
+        back_populates="food_entry",
+        cascade="all, delete-orphan",
+        lazy="selectin",
     )  # this will pull all FoodEntryItems where FoodEntryItem.food_id == FoodEntry.id
 
 
@@ -26,7 +31,7 @@ class FoodEntryItem(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID, primary_key=True, as_uuid=True, default=uuid.uuid4
     )
-    food = relationship("Food")
+    food = relationship("Food", lazy="selectin")
     food_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("food.id"), as_uuid=True
     )

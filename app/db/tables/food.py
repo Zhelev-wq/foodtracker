@@ -20,13 +20,25 @@ class Food(Base):
     caffeine: Mapped[int | None] = mapped_column(Integer)
     barcode: Mapped[str | None] = mapped_column(String)
     vitamins = relationship(
-        "Vitamins", back_populates="food", cascade="all, delete-orphan", uselist=False
+        "Vitamins",
+        back_populates="food",
+        cascade="all, delete-orphan",
+        uselist=False,
+        lazy="selectin",
     )
     minerals = relationship(
-        "Minerals", back_populates="food", cascade="all, delete-orphan", uselist=False
+        "Minerals",
+        back_populates="food",
+        cascade="all, delete-orphan",
+        uselist=False,
+        lazy="selectin",
     )
     fats = relationship(
-        "Fats", back_populates="food", cascade="all, delete-orphan", uselist=False
+        "Fats",
+        back_populates="food",
+        cascade="all, delete-orphan",
+        uselist=False,
+        lazy="selectin",
     )
 
 
@@ -88,7 +100,9 @@ class Fats(Base):
     food = relationship("Food", back_populates="fats")
 
     saturated_fat: Mapped[float | None] = mapped_column(Float)
-    monounsaturated_fat: Mapped[float | None] = mapped_column(Float)
+    monounsaturated_fat: Mapped[float | None] = mapped_column(
+        Float, name="monounstaurated_fat"
+    )
     polyunsaturated_fat: Mapped[float | None] = mapped_column(Float)
     omega_3_fat: Mapped[float | None] = mapped_column(Float)
     omega_6_fat: Mapped[float | None] = mapped_column(Float)
