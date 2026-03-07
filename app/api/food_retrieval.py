@@ -6,34 +6,38 @@ from fastapi.encoders import jsonable_encoder
 from app.db.database import get_db
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
+from app.db.operative_methods import food_entries_by_date
 from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry
 import datetime
 import uuid
 
 
+
 @router.get("/search/name/{food_name}")
 def search_food_by_name(
-    request: Request,
     food_name: str,
     iteration: int = 1,
     page_size: int = 20,
     db: Session = Depends(get_db),
 ):  # fuzzy search, will return 20 results of things with similarity to food_name
+    start = datetime.datetime.now()
     food_query = (
-        select(Food)
+        select(Food.id, Food.name, Food.kcal)
         .where(func.similarity(Food.name, food_name) > 0.3)
         .order_by(func.similarity(Food.name, food_name).desc())
         .offset((iteration - 1) * page_size)
         .limit(page_size)
     )
-    food_results = db.scalars(food_query).all()
-    return JSONResponse(content=jsonable_encoder(food_results))
+    food_results = db.execute(food_query).all()
+    end = datetime.datetime.now() - start
+    return JSONResponse(content=jsonable_encoder(
+            [{"id": str(result.id), "name": result.name, "kcal": result.kcal} for result in food_results]
+            ))
 
 
 @router.get("/search/specific/")
 def search_food_by_uuid(
-    request: Request,
     food_uuid: uuid.UUID | None = None,
     barcode: str | None = None,
     db: Session = Depends(get_db),
@@ -57,16 +61,15 @@ def search_food_by_uuid(
 
 @router.get("/search/date/{date}")
 def search_food_entries_by_date(
-    request: Request, date: datetime.datetime, db: Session = Depends(get_db)
+    date: datetime.datetime, 
+    db: Session = Depends(get_db)
 ):
 
-    db_query = select(FoodEntry).where(func.date(FoodEntry.time) == date.date())
-    food_entries = db.scalars(db_query).all()
-
+    food_entries = food_entries_by_date(db, date)
     if food_entries:
         return JSONResponse(content=jsonable_encoder(food_entries))
     else:
-        return JSONResponse(content={"entries": "None"})
+        return JSONResponse(content={"entries": None})
 
 
 @router.get("/search/food_entries/all")

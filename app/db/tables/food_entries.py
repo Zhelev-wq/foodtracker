@@ -35,7 +35,7 @@ class FoodEntryItem(Base):
     food_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("food.id"), as_uuid=True
     )
-    food_grams: Mapped[int] = mapped_column(Integer)
+    food_grams: Mapped[float] = mapped_column(Integer)
 
     food_entry_id: Mapped[uuid.UUID] = mapped_column(
         UUID, ForeignKey("food_entry.id"), as_uuid=True

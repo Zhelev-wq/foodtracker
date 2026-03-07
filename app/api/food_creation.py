@@ -10,18 +10,24 @@ from app.db.tables.food_entries import FoodEntry, FoodEntryItem
 from app.db.tables.food import Food
 import uuid
 
+from pydantic import BaseModel
+
+class CreateFoodEntryBody(BaseModel):
+    #TODO: temporary store, move later
+    food_uuid: uuid.UUID
+    grams: float
 
 @router.post("/create_food_entry")
 def create_food_entry(
-    request: Request, food_uuid: uuid.UUID, grams: int, db: Session = Depends(get_db)
+    body: CreateFoodEntryBody, db: Session = Depends(get_db)
 ):
-    food_item = db.execute(select(Food).where(Food.id == food_uuid)).scalars().first()
+    food_item = db.execute(select(Food).where(Food.id == body.food_uuid)).scalars().first()
 
     if not food_item:
         return JSONResponse(content={"error": "Food doesn't exist"})
 
     food_entry = FoodEntry(
-        food_items=[FoodEntryItem(food_id=food_uuid, food_grams=grams)]
+        food_items=[FoodEntryItem(food_id=body.food_uuid, food_grams=body.grams)]
     )
     db.add(food_entry)
     db.commit()

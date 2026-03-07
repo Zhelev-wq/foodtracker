@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="date-selector" x-data="{ 
+    selectedDate: new Date(new URLSearchParams(window.location.search).get('date') || Date.now()),
+    baseUrl: '/',
+    formattedDate(increment) {
+        let d = new Date(this.selectedDate);
+        d.setDate(d.getDate() + increment);
+        return d.toISOString().split('T')[0]
+    }, 
+ }">
+    <button id="prev-day">
+        <a :href="baseUrl + '?date=' + formattedDate(-1)">Previous Day</a>
+    </button>
+    <span id="selected-date" x-text="formattedDate(0)">Current Day</span>
+    <button id="next-day">
+        <a :href="baseUrl + '?date=' + formattedDate(1)">Next Day</a>
+    </button>
+</div>
+
+<div class="food-entry-container">
+    {% if food_entries %}
+        <ul class="food-entry-list">
+        {% for entry in food_entries %}
+            {% if entry.food_items|length < 2 %}
+
+            <li class="food-entry">
+                <h3>{{ entry.food_items[0].food.name }}</h3>
+                <p>Calories: {{ entry.food_items[0].food.kcal * (entry.food_items[0].food_grams / 100) }}</p>
+                <p>Carbs: {{ entry.food_items[0].food.carbs * (entry.food_items[0].food_grams / 100) }}</p>
+                <p>Proteins: {{ entry.food_items[0].food.protein * (entry.food_items[0].food_grams / 100) }}</p>
+                <p>Fats: {{ entry.food_items[0].food.fat * (entry.food_items[0].food_grams / 100) }}</p>
+            </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% else %}
+    <p>No food entries available.</p>
+    {% endif %}
+</div>
+
+<div x-data="{ 
+    addFoodContainerShow: false,
+    addFoodMenuShow: false,
+    foodData: {},
+    async getFoodData(uuid) { 
+        const res = await fetch('api/search/specific/?food_uuid=' + uuid);
+        return res.json();
+    },
+    async addFoodMenuMethod(uuid) {
+        this.addFoodMenuShow = true;
+        this.foodData = await this.getFoodData(uuid);
+    },
+    async createFoodEntry(uuid, grams) {
+        fetch('api/create_food_entry', {
+            method: 'POST',
+            body: JSON.stringify({
+                food_uuid: uuid,
+                grams: grams
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        });
+        location.reload();
+    }
+            }">
+
+    <button @click="addFoodContainerShow = !addFoodContainerShow">Add Food Entry</button>
+
+    <div x-show="addFoodContainerShow" x-cloak id="add-food-container" class="add-food-container" x-data="{
+            query:'',
+            results:[],
+            timeout:null,
+            search() {
+                clearTimeout(this.timeout);
+                if (this.query.length < 2) {
+                    this.result = []; return;
+                }
+                this.timeout = setTimeout(async () => {
+                    const res = await fetch('api/search/name/' + this.query);
+                    this.results = await res.json();
+                }, 300);
+            },
+        }">
+        <input type="text" x-model="query" @input="search()">
+        
+        <ul x-show="results.length > 0">
+            <template x-for="item in results">
+                
+                <li>
+                    <span x-text="item.name"></span> - <span x-text="item.kcal + 'kcal'"> kcal</span>
+                    <i class="fa-regular fa-square-caret-right" @click="addFoodMenuMethod(item.id)"></i>       
+                </li>
+            </template>
+        </ul>
+        
+
+    </div>
+
+    <div x-show="addFoodMenuShow" x-cloak id="add-food-menu" class="add-food-menu">
+        <template x-if="foodData">
+            <form x-data="{grams: 100}">
+                <label for="gramsInput">Grams:</label>
+                <input type="number" id="gramsInput" name="gramsInput" x-model.number="grams">
+
+                <table>
+                    <tr>
+                        <th>Thing</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td x-text="foodData?.name"></td>
+                    </tr>
+                    <tr>
+                        <td>kcal</td>
+                        <td x-text="foodData.kcal * grams / 100"></td>
+                    </tr>
+                    <tr>
+                        <td>Protein</td>
+                        <td x-text="foodData.protein * grams / 100"></td>
+                    </tr>
+                    <tr>
+                        <td>Carbs</td>
+                        <td x-text="foodData.carbs * grams / 100"></td>
+                    </tr>
+                    <tr>
+                        <td>Fat</td>
+                        <td x-text="foodData.fat * grams / 100"></td>
+                    </tr>
+                    <tr>
+                        <td>Caffeine</td>
+                        <td x-text="foodData.caffeine * grams / 100"></td>
+                    </tr>
+                </table>
+                <input type="button" value="Add Food" @click="createFoodEntry(foodData.id, grams)">
+            </form>
+        </template>
+        
+    </div>
+</div>
+{% endblock %}
