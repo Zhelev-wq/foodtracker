@@ -10,11 +10,11 @@ from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry
 import datetime
 import uuid
+from app.validators.food import FoodEntryOut
 
 
 @router.get("/search/name/{food_name}")
 def search_food_by_name(
-    request: Request,
     food_name: str,
     iteration: int = 1,
     page_size: int = 20,
@@ -33,7 +33,6 @@ def search_food_by_name(
 
 @router.get("/search/specific/")
 def search_food_by_uuid(
-    request: Request,
     food_uuid: uuid.UUID | None = None,
     barcode: str | None = None,
     db: Session = Depends(get_db),
@@ -57,19 +56,16 @@ def search_food_by_uuid(
 
 @router.get("/search/date/{date}")
 def search_food_entries_by_date(
-    request: Request, date: datetime.datetime, db: Session = Depends(get_db)
-):
+    date: datetime.datetime, db: Session = Depends(get_db)
+) -> list[FoodEntryOut]:
 
     db_query = select(FoodEntry).where(func.date(FoodEntry.time) == date.date())
     food_entries = db.scalars(db_query).all()
+    return food_entries
 
-    if food_entries:
-        return JSONResponse(content=jsonable_encoder(food_entries))
-    else:
-        return JSONResponse(content={"entries": "None"})
 
 
 @router.get("/search/food_entries/all")
-def all_food_entries(request: Request, db: Session = Depends(get_db)):
+def all_food_entries(db: Session = Depends(get_db)) -> list[FoodEntryOut]:
     entries = db.scalars(select(FoodEntry)).all()
-    return JSONResponse(content=jsonable_encoder(entries))
+    return entries
