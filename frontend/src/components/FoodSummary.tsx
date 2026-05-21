@@ -1,4 +1,10 @@
-export default function FoodSummary({foodData}) {
+import type { components } from '../types/api';
+
+type FoodListItemProps = {
+    foodData: components['schemas']['FoodEntryOut-Output'][]
+}
+
+export default function FoodSummary({foodData}: FoodListItemProps) {
     
     const foodMacros = {
         kcal:0,

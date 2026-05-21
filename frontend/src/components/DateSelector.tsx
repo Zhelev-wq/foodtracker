@@ -1,8 +1,10 @@
 import { addDays, subDays } from 'date-fns';
-import axios from 'axios';
-import FoodItemList from './FoodItemList';
 
-export default function DateSelector({date, setDate}) {
+type DateSelectorProps = {
+    date: Date;
+    setDate: (d: Date) => void;
+}
+export default function DateSelector({date, setDate}: DateSelectorProps) {
 
     function addDate() {
         const newDate = addDays(date, 1);

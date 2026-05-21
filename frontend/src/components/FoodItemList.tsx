@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
-import { getFoodMacros } from '../util/GetFoodMacros.js'
+import type { components } from '../types/api';
 
-
-export default function FoodItemList({foodData}) {
+type FoodListItemProps = {
+    foodData: components['schemas']['FoodEntryOut-Output'][]
+}
+export default function FoodItemList({foodData}: FoodListItemProps) {
 
     const foodRows = foodData.map(foodItem =>
         <tr>

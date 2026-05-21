@@ -1,12 +1,9 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import './App.css'
-import './components/DateSelector.jsx'
-import DateSelector from './components/DateSelector.jsx'
-import FoodItemList from './components/FoodItemList';
-import FoodSummary from './components/FoodSummary.jsx'
+import './components/DateSelector.js'
+import DateSelector from './components/DateSelector.js'
+import FoodItemList from './components/FoodItemList.js';
+import FoodSummary from './components/FoodSummary.js'
 import axios from 'axios';
 
 function App() {
