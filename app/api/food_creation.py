@@ -9,19 +9,25 @@ from sqlalchemy import select, func, insert
 from app.db.tables.food_entries import FoodEntry, FoodEntryItem
 from app.db.tables.food import Food
 import uuid
+from pydantic import BaseModel
+
+class CreateFoodEntryPayload(BaseModel):
+    #temp location, move to other place, TODO
+    food_uuid: uuid.UUID
+    grams: int
 
 
 @router.post("/create_food_entry")
 def create_food_entry(
-    request: Request, food_uuid: uuid.UUID, grams: int, db: Session = Depends(get_db)
+    request: Request, payload: CreateFoodEntryPayload, db: Session = Depends(get_db)
 ):
-    food_item = db.execute(select(Food).where(Food.id == food_uuid)).scalars().first()
+    food_item = db.execute(select(Food).where(Food.id == payload.food_uuid)).scalars().first()
 
     if not food_item:
         return JSONResponse(content={"error": "Food doesn't exist"})
 
     food_entry = FoodEntry(
-        food_items=[FoodEntryItem(food_id=food_uuid, food_grams=grams)]
+        food_items=[FoodEntryItem(food_id=payload.food_uuid, food_grams=payload.grams)]
     )
     db.add(food_entry)
     db.commit()

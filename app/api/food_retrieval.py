@@ -10,7 +10,7 @@ from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry
 import datetime
 import uuid
-from app.validators.food import FoodEntryOut
+from app.validators.food import FoodEntryOut, FoodOut
 
 
 @router.get("/search/name/{food_name}")
@@ -19,7 +19,7 @@ def search_food_by_name(
     iteration: int = 1,
     page_size: int = 20,
     db: Session = Depends(get_db),
-):  # fuzzy search, will return 20 results of things with similarity to food_name
+) -> list[FoodOut]:  # fuzzy search, will return 20 results of things with similarity to food_name
     food_query = (
         select(Food)
         .where(Food.name.op("%")(food_name))
@@ -28,7 +28,7 @@ def search_food_by_name(
         .limit(page_size)
     )
     food_results = db.scalars(food_query).all()
-    return JSONResponse(content=jsonable_encoder(food_results))
+    return food_results
 
 
 @router.get("/search/specific/")

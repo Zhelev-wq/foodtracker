@@ -57,6 +57,7 @@ class FoodOut(BaseModel):
     protein: float
     fat: float
     kcal: float
+    id: uuid.UUID
     alcohol: Optional[float] = 0
     caffeine: Optional[float] = 0
     barcode: str

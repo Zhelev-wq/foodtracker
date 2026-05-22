@@ -256,6 +256,11 @@ export interface components {
             /** Kcal */
             kcal: number;
             /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
              * Alcohol
              * @default 0
              */
@@ -470,7 +475,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["FoodOut"][];
                 };
             };
             /** @description Validation Error */
