@@ -2,7 +2,7 @@ from dotenv import dotenv_values
 from sqlalchemy import Column, MetaData, Table, create_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-config = dotenv_values(".env")
+config = dotenv_values("./app/.env")
 db = config.get("DB")
 username = config.get("USERNAME")
 password = config.get("PASSWORD")
