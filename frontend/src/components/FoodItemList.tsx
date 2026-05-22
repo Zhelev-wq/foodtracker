@@ -4,7 +4,11 @@ type FoodListItemProps = {
     foodData: components['schemas']['FoodEntryOut-Output'][]
 }
 export default function FoodItemList({foodData}: FoodListItemProps) {
-
+    /*
+    TODO:
+        add functionality for removing and editing food entries
+        create api methods to handle it
+    */
     const foodRows = foodData.map(foodItem =>
         <tr>
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">

@@ -17,8 +17,8 @@ export default function DateSelector({date, setDate}: DateSelectorProps) {
     }       
         /*
         TODO:
-        this should have a visual calendar element 
-        which allows us to click on specific dates rather than just doing -+1
+            this should have a visual calendar element 
+            which allows us to click on specific dates rather than just doing -+1
         */
     return (
         <div className="date-selector">
@@ -26,7 +26,7 @@ export default function DateSelector({date, setDate}: DateSelectorProps) {
                 onClick={subDate}>-1</button>
             <p>{date.toISOString()}</p>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            onClick={addDate}>+1</button>
+                onClick={addDate}>+1</button>
         </div>
     );
 }
