@@ -13,16 +13,35 @@ TODO:
 */
 type FoodOut = components["schemas"]["FoodOut"]
 type FoodResultsListProps = {
-    foodSearchResults: FoodOut[],
+    foodSearchResults: FoodOut[]|null,
     date: Date
 }
 
 export default function FoodResultList({foodSearchResults, date}: FoodResultsListProps) {
 
-    const [foodEntryFormData, setFoodEntryFormData] = useState({});
+    const [foodEntryFormData, setFoodEntryFormData] = useState<FoodOut|null>(null);
+    const [foodEntryFormVisible, setFoodEntryFormVisible] = useState(false);
+    const [prevFoodData, setPrevFoodData] = useState(foodSearchResults);
     
+    if (!foodSearchResults){
+        return null;
+    }
+
+
+    if (foodSearchResults !== prevFoodData) {
+        if (prevFoodData !== null ){
+            const currentIDs = new Set(foodSearchResults.map(r => r.id));
+            const isSubset = prevFoodData.every(entry => currentIDs.has(entry.id))
+            if (!isSubset) {
+                setFoodEntryFormVisible(false);
+            }   
+        } 
+        setPrevFoodData(foodSearchResults);
+
+    }
+
     const formattedSearchResults = foodSearchResults.map((result:FoodOut) => 
-        <li className="pb-3 sm:pb-4">
+        <li key={result.id} className="pb-3 sm:pb-4">
             <div className="flex items-center space-x-4 rtl:space-x-reverse">
 
                 <div className="flex-1 min-w-0">
@@ -35,18 +54,23 @@ export default function FoodResultList({foodSearchResults, date}: FoodResultsLis
                     </p>
                 </div>
                 <div className="inline-flex items-center text-base font-semibold text-heading">
-                    <button onClick={() => setFoodEntryFormData(result)}  >Add</button>
+                    <button onClick={() => {
+                        setFoodEntryFormData(result);
+                        setFoodEntryFormVisible(true);
+                        }}  >Add</button>
                 </div>
             </div>
         </li>
     )
 
     return (
-        <div className="flex items-center justify">
+        <div className="flex items-center">
             <ul className="max-w-md divide-y divide-default a border">
                 {formattedSearchResults}
             </ul>
-            <FoodEntryForm foodEntryFormData={foodEntryFormData} date={date}/>
+            <FoodEntryForm 
+                foodEntryFormData={foodEntryFormData} date={date} 
+                isVisible={foodEntryFormVisible} setVisible={setFoodEntryFormVisible}/>
         </div>
     )
 }

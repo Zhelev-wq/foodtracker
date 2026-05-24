@@ -5,10 +5,10 @@ import './components/DateSelector.js'
 import DateSelector from './components/DateSelector.js'
 import FoodItemList from './components/FoodItemList.js';
 import FoodSummary from './components/FoodSummary.js'
-import AddFoodButton from './components/SearchFood/AddFoodButton.js'
 import FoodSearchBar from './components/SearchFood/FoodSearchBar.js'
 import FoodResultList from './components/SearchFood/FoodResultsList.js';
 import { api } from './api/client';
+import { format } from 'date-fns';
 
 function App() {
   function getDate() {
@@ -21,8 +21,7 @@ function App() {
   const [foodData, setFoodData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-        const isoDate = date.toISOString();
-        const response = await api.get(`/api/search/date/${isoDate}`);
+        const response = await api.get(`/api/search/date/${format(date, 'yyyy-MM-dd')}`);
         setFoodData(response.data);
     };
 
@@ -30,14 +29,15 @@ function App() {
   }, [date]);
 
   const [searchText, setSearchText] = useState('');
-  const [foodSearchResults, setFoodSearchResults] = useState([]);
+  const [foodSearchResults, setFoodSearchResults] = useState(null);
+  const [showFoodResultsSection, setShowFoodResultsSection] = useState(false);
+
   useEffect(() => {
     if (!searchText) {
-      setFoodSearchResults([]);
+      setFoodSearchResults(null);
       return
     };
     const t = setTimeout(() => {
-      console.log(searchText);
       const fetchResults = async () => {
         const response = await api.get(`/api/search/name/${searchText}`)
         setFoodSearchResults(response.data);
@@ -61,7 +61,11 @@ function App() {
       <br></br>
 
       <section>
-        <AddFoodButton />
+        <div>
+          <button 
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            onClick={()=> setShowFoodResultsSection(!showFoodResultsSection)}>Add Food</button>
+        </div>
       </section>
       <br></br>
 
@@ -70,11 +74,12 @@ function App() {
       </section>
       <br></br>
 
-      <section>
-        <FoodSearchBar setSearchText={setSearchText} /> 
-        <br></br>
-        <FoodResultList foodSearchResults={foodSearchResults} date={date} /> 
-      </section>
+      {showFoodResultsSection && 
+        <section>
+          <FoodSearchBar setSearchText={setSearchText} /> 
+          <br></br>
+          <FoodResultList foodSearchResults={foodSearchResults} date={date} /> 
+      </section>}
       
     </>
   )

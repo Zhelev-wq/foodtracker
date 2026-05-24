@@ -3,19 +3,20 @@ import { useState } from 'react'
 import { api } from '../../api/client.ts'
 
 type FoodEntryFormProps = {
-    foodEntryFormData: components["schemas"]["FoodOut"],
-    date: Date
+    foodEntryFormData: null|components["schemas"]["FoodOut"],
+    date: Date,
+    isVisible: boolean,
+    setVisible: (arg: boolean) => void
 }
 
-export default function FoodEntryForm({foodEntryFormData, date}: FoodEntryFormProps) {
+export default function FoodEntryForm({foodEntryFormData, date, isVisible, setVisible}: FoodEntryFormProps) {
 
-    /* 
-    TODO: \
-        this element should be hidden by default
-        only shows up when individual food item is selected from search results.
-    */
+
+    if (!isVisible || !foodEntryFormData) {
+        return null;
+    }
     
-    function ProcessData(data){
+    function ProcessData(data: object){
         if (!data) {
             return <p>No data</p>
         }
@@ -41,11 +42,16 @@ export default function FoodEntryForm({foodEntryFormData, date}: FoodEntryFormPr
 
     return (
         <div className='border'>
-            <h2></h2>
-            <label>{name}</label>
+            
+            <div className="flex items-center">
+                <h2>{name}</h2>
+                <button
+                    onClick={() => setVisible(false)}
+                    >X</button>
+            </div>
+            
+
             <form>
-                
-                
                 <div className="flex">
                     <input 
                     onChange={(e) => setGrams(Number(e.target.value))}
