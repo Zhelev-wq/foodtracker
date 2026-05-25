@@ -1,15 +1,17 @@
 import type { components } from '../types/api';
+import { api } from '../api/client.ts'
 
 type FoodListItemProps = {
-    foodData: components['schemas']['FoodEntryOut-Output'][]
+    foodData: components['schemas']['FoodEntryOut-Output'][];
+    fetchFoodData: () => Promise<void>;
 }
-export default function FoodItemList({foodData}: FoodListItemProps) {
+export default function FoodItemList({foodData, fetchFoodData}: FoodListItemProps) {
     /*
     TODO:
         add functionality for removing and editing food entries
         create api methods to handle it
     */
-    const foodRows = foodData.map(foodItem =>
+    const foodRows = foodData.map(foodEntry =>
         <tr>
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
@@ -22,7 +24,7 @@ export default function FoodItemList({foodData}: FoodListItemProps) {
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
                 <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                <strong>{foodItem.name}</strong>
+                <strong>{foodEntry.name}</strong>
                 </p>
             </div>
             </td>
@@ -30,7 +32,7 @@ export default function FoodItemList({foodData}: FoodListItemProps) {
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
                 <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                {foodItem.food_grams}g
+                {foodEntry.food_grams}g
                 </p>
             </div>
             </td>
@@ -38,7 +40,7 @@ export default function FoodItemList({foodData}: FoodListItemProps) {
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
                 <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                {foodItem.kcal}
+                {foodEntry.kcal}
                 </p>
             </div>
             </td>
@@ -46,16 +48,7 @@ export default function FoodItemList({foodData}: FoodListItemProps) {
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
                 <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                {foodItem.carbs}g
-                </p>
-            </div>
-            </td>
-
-
-            <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-            <div className="inline bg-emerald-100/60 dark:bg-gray-800">
-                <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                {foodItem.protein}g
+                {foodEntry.carbs}g
                 </p>
             </div>
             </td>
@@ -64,13 +57,27 @@ export default function FoodItemList({foodData}: FoodListItemProps) {
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
                 <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-                {foodItem.fat}g
+                {foodEntry.protein}g
+                </p>
+            </div>
+            </td>
+
+
+            <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
+            <div className="inline bg-emerald-100/60 dark:bg-gray-800">
+                <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
+                {foodEntry.fat}g
                 </p>
             </div>
             </td>           
             <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
-                <button>
+                <button
+                    onClick={async ()=> {
+                        await api.delete(`/api/delete/food_entry/${foodEntry.id}`);
+                        fetchFoodData();                        
+                    }}
+                    >
                     X
                 </button>
             </div>

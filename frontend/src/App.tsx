@@ -17,15 +17,15 @@ function App() {
         return date;
   }
 
+  const fetchFoodData = async () => {
+    const response = await api.get(`/api/search/date/${format(date, 'yyyy-MM-dd')}`);
+    setFoodData(response.data);
+  };
+
   const [date, setDate] = useState(getDate());
   const [foodData, setFoodData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-        const response = await api.get(`/api/search/date/${format(date, 'yyyy-MM-dd')}`);
-        setFoodData(response.data);
-    };
-
-    fetchData();
+  useEffect(() => {  
+    fetchFoodData();
   }, [date]);
 
   const [searchText, setSearchText] = useState('');
@@ -70,7 +70,7 @@ function App() {
       <br></br>
 
       <section>
-        <FoodItemList foodData={foodData}/>
+        <FoodItemList foodData={foodData} fetchFoodData={fetchFoodData}/>
       </section>
       <br></br>
 

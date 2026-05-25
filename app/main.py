@@ -9,6 +9,7 @@ from app.db.tables.food import Food
 from app.api.router import router 
 import app.api.food_retrieval 
 import app.api.food_creation
+import app.api.food_removal
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
