@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import type { components } from '../../../../frontend/src/types/api.ts';
-import FoodEntryForm from './FoodEntryForm.tsx'
 
 /*
 take in search results
@@ -13,14 +12,22 @@ TODO:
 */
 type FoodOut = components["schemas"]["FoodOut"]
 type FoodResultsListProps = {
-    foodSearchResults: FoodOut[]|null,
-    date: Date
+    foodSearchResults: FoodOut[]|null,    
+    date: Date,
+    setFoodEntryFormData: (arg: FoodOut|null) => void,
+    setFoodEntryFormVisible: (arg: boolean) => void,
+    setFormMode: (arg: "add"|"edit") => void,    
 }
 
-export default function FoodResultList({foodSearchResults, date}: FoodResultsListProps) {
-
-    const [foodEntryFormData, setFoodEntryFormData] = useState<FoodOut|null>(null);
-    const [foodEntryFormVisible, setFoodEntryFormVisible] = useState(false);
+export default function FoodResultList(
+    {
+        foodSearchResults, 
+        date, 
+        setFoodEntryFormData, 
+        setFoodEntryFormVisible,
+        setFormMode,
+    }: FoodResultsListProps
+) {    
     const [prevFoodData, setPrevFoodData] = useState(foodSearchResults);
     
     if (!foodSearchResults){
@@ -55,8 +62,9 @@ export default function FoodResultList({foodSearchResults, date}: FoodResultsLis
                 </div>
                 <div className="inline-flex items-center text-base font-semibold text-heading">
                     <button onClick={() => {
-                        setFoodEntryFormData(result);
-                        setFoodEntryFormVisible(true);
+                        setFormMode("add"); 
+                        setFoodEntryFormData(result); 
+                        setFoodEntryFormVisible(true);                        
                         }}  >Add</button>
                 </div>
             </div>
@@ -68,9 +76,6 @@ export default function FoodResultList({foodSearchResults, date}: FoodResultsLis
             <ul className="max-w-md divide-y divide-default a border">
                 {formattedSearchResults}
             </ul>
-            <FoodEntryForm 
-                foodEntryFormData={foodEntryFormData} date={date} 
-                isVisible={foodEntryFormVisible} setVisible={setFoodEntryFormVisible}/>
         </div>
     )
 }

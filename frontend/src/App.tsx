@@ -9,6 +9,10 @@ import FoodSearchBar from './components/SearchFood/FoodSearchBar.js'
 import FoodResultList from './components/SearchFood/FoodResultsList.js';
 import { api } from './api/client';
 import { format } from 'date-fns';
+import FoodEntryForm from './components/SearchFood/FoodEntryForm.tsx'
+import type { components } from './types/api.ts';
+
+type FoodOut = components["schemas"]["FoodOut"]
 
 function App() {
   function getDate() {
@@ -48,6 +52,15 @@ function App() {
     return () => clearTimeout(t);
   }, [searchText]);
 
+  /* Add/Edit Food Form Values */
+  const [foodEntryFormData, setFoodEntryFormData] = useState<FoodOut|null>(null);
+  const [foodEntryFormVisible, setFoodEntryFormVisible] = useState(false);
+  const [existingGrams, setExistingGrams] = useState(100);
+  const [foodEntryItemID, setFoodEntryItemID] = useState("placeholder");
+  const [formMode, setFormMode] = useState<"add" | "edit">("add");
+
+
+
   return (
     <>
       <section id="date-selector-location">      
@@ -70,17 +83,36 @@ function App() {
       <br></br>
 
       <section>
-        <FoodItemList foodData={foodData} fetchFoodData={fetchFoodData}/>
+        <FoodItemList 
+          foodData={foodData} fetchFoodData={fetchFoodData} 
+          setFoodEntryFormData={setFoodEntryFormData} setFoodEntryFormVisible={setFoodEntryFormVisible}
+          setFormMode={setFormMode} setFoodEntryItemID={setFoodEntryItemID}
+          setExistingGrams={setExistingGrams} />
       </section>
       <br></br>
 
+      <div className="flex">
       {showFoodResultsSection && 
-        <section>
+        <section >
           <FoodSearchBar setSearchText={setSearchText} /> 
           <br></br>
-          <FoodResultList foodSearchResults={foodSearchResults} date={date} /> 
-      </section>}
-      
+          
+          <div className='flex justify'>
+            <FoodResultList 
+            foodSearchResults={foodSearchResults} date={date} 
+            setFoodEntryFormData={setFoodEntryFormData} setFormMode={setFormMode}
+            setFoodEntryFormVisible={setFoodEntryFormVisible} /> 
+            
+          </div>
+        </section>}
+  
+        <FoodEntryForm 
+          FoodOutData={foodEntryFormData}  FoodEntryItemId={foodEntryItemID}
+          isVisible={foodEntryFormVisible} setVisible={setFoodEntryFormVisible}
+          mode={formMode} existingGrams={existingGrams} 
+         />
+
+        </div>
     </>
   )
 }

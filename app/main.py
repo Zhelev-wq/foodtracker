@@ -10,6 +10,7 @@ from app.api.router import router
 import app.api.food_retrieval 
 import app.api.food_creation
 import app.api.food_removal
+import app.api.food_editing
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
