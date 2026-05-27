@@ -11,7 +11,7 @@ class FoodEntry(Base):
     __tablename__ = "food_entry"
 
     time: Mapped[datetime.datetime] = mapped_column(
-        DateTime, default=datetime.datetime.now()
+        DateTime, default=datetime.datetime.now
     )
     id: Mapped[uuid.UUID] = mapped_column(
         UUID, primary_key=True, as_uuid=True, default=uuid.uuid4
