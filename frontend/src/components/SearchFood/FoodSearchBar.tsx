@@ -10,9 +10,8 @@ export default function FoodSearchBar({setSearchText}: FoodSearchBarProps) {
         when pressing enter nothing should happen, now it crashes page
     */
     return (
-        <div>
             
-        <form className="max-w-md mx-auto">   
+        <form className="max-w-md mx-auto aling-top">   
             <div className="relative">
                 <input type="search" id="search" 
                     onChange={(e) => setSearchText(e.target.value)}
@@ -21,6 +20,6 @@ export default function FoodSearchBar({setSearchText}: FoodSearchBarProps) {
             </div>
         </form>
 
-        </div>
+
     )
 }

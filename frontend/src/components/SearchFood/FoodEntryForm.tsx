@@ -57,9 +57,9 @@ function AddFoodForm(
     return (
         <div className='border'>
             <h2>Add Food Entry</h2>
-            <div className="flex items-center">
+            <div className="flex justify-between">
                 <h2>{name}</h2>
-                <button
+                <button className='bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
                     onClick={() => setVisible(false)}
                     >X</button>
             </div>
@@ -73,7 +73,8 @@ function AddFoodForm(
                     className="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" 
                     required/>
 
-                    <button onClick={() => 
+                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
+                    onClick={() => 
                         {
                             api.post('/api/create_food_entry',
                             {
@@ -143,23 +144,24 @@ function EditFoodForm(
     return (
         <div className='border'>
             <h2>Edit Food Entry</h2>
-            <div className="flex items-center">
+            <div className="flex justify-between">
                 <h2>{name}</h2>
-                <button
+                <button className='bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
                     onClick={() => setVisible(false)}
                     >X</button>
             </div>
             
 
             <form>
-                <div className="flex">
+                <div className="flex ">
                     <input 
                     onChange={(e) => setGrams(Number(e.target.value))}
                     placeholder="weight" 
                     className="block w-full p-3 ps-9 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body" 
                     required/>
 
-                    <button onClick={() => 
+                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
+                    onClick={() => 
                         {
                             api.patch(`/api/edit/food_entry_item/${FoodEntryItemId}`,
                                {
