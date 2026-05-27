@@ -62,48 +62,39 @@ function App() {
 
 
   return (
-    <>
-      <section id="date-selector-location">      
-        <DateSelector date={date} setDate={setDate}/>
-      </section>
-      <br></br>
+    <div className="main space-x-10 space-y-15">
+      
+      <div className="flex justify-evenly items-center">
+      <DateSelector date={date} setDate={setDate}/>
 
-      <section>
-        <FoodSummary foodData={foodData} />
-      </section>
-      <br></br>
+      <FoodSummary foodData={foodData} />
+      </div>
 
-      <section>
-        <div>
-          <button 
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            onClick={()=> setShowFoodResultsSection(!showFoodResultsSection)}>Add Food</button>
-        </div>
-      </section>
-      <br></br>
+      <div>
+        <button 
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+          onClick={()=> setShowFoodResultsSection(!showFoodResultsSection)}>Add Food</button>
+      </div>
 
-      <section>
-        <FoodItemList 
-          foodData={foodData} fetchFoodData={fetchFoodData} 
-          setFoodEntryFormData={setFoodEntryFormData} setFoodEntryFormVisible={setFoodEntryFormVisible}
-          setFormMode={setFormMode} setFoodEntryItemID={setFoodEntryItemID}
-          setExistingGrams={setExistingGrams} />
-      </section>
-      <br></br>
 
-      <div className="flex">
+      <FoodItemList 
+        foodData={foodData} fetchFoodData={fetchFoodData} 
+        setFoodEntryFormData={setFoodEntryFormData} setFoodEntryFormVisible={setFoodEntryFormVisible}
+        setFormMode={setFormMode} setFoodEntryItemID={setFoodEntryItemID}
+        setExistingGrams={setExistingGrams} />
+
+
+      <div className="flex justify-evenly items-center">
       {showFoodResultsSection && 
         <section >
           <FoodSearchBar setSearchText={setSearchText} /> 
-          <br></br>
-          
-          <div className='flex justify'>
-            <FoodResultList 
-            foodSearchResults={foodSearchResults} date={date} 
-            setFoodEntryFormData={setFoodEntryFormData} setFormMode={setFormMode}
-            setFoodEntryFormVisible={setFoodEntryFormVisible} /> 
+
+          <FoodResultList 
+          foodSearchResults={foodSearchResults} date={date} 
+          setFoodEntryFormData={setFoodEntryFormData} setFormMode={setFormMode}
+          setFoodEntryFormVisible={setFoodEntryFormVisible} /> 
             
-          </div>
+
         </section>}
   
         <FoodEntryForm 
@@ -113,7 +104,7 @@ function App() {
          />
 
         </div>
-    </>
+    </div>
   )
 }
 
