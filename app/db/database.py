@@ -1,26 +1,30 @@
 from dotenv import dotenv_values
-from sqlalchemy import Column, MetaData, Table, create_engine
+from sqlalchemy import Column, MetaData, Table
+from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
+                                    create_async_engine)
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 config = dotenv_values("./app/.env")
-db = config.get("DB")
-username = config.get("USERNAME")
-password = config.get("PASSWORD")
-host_address = config.get("HOST_ADDRESS")
-port = config.get("PORT")
+db = config.get("db")
+username = config.get("username")
+password = config.get("password")
+host_address = config.get("host_address")
+port = config.get("port")
 
 
-engine = create_engine(
-    f"{db}://{username}:{password}@{host_address}:{port}/food", echo=True
+engine = create_async_engine(
+    f"{db}+asyncpg://{username}:{password}@{host_address}:{port}/food", echo=True
 )
 
-SessionLocal = sessionmaker(bind=engine)
+AsyncSessionLocal = async_sessionmaker(
+    engine, class_=AsyncSession, expire_on_commit=False
+)
 
 
 class Base(DeclarativeBase):
     pass
 
 
-def get_db():
-    with SessionLocal() as db:
-        yield db
+async def get_db():
+    async with AsyncSessionLocal() as session:
+        yield session
