@@ -3,17 +3,22 @@ from sqlalchemy import Column, MetaData, Table
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
+from app.config import settings
+from sqlalchemy.engine import URL
 
-config = dotenv_values("./app/.env")
-db = config.get("db")
-username = config.get("username")
-password = config.get("password")
-host_address = config.get("host_address")
-port = config.get("port")
+
+DATABASE_URL = URL.create(
+    drivername=f"{settings.db}+asyncpg",
+    username=settings.username.get_secret_value(),
+    password=settings.password.get_secret_value(),
+    host=str(settings.host_address),
+    port=settings.port,
+    database="food",
+)
 
 
 engine = create_async_engine(
-    f"{db}+asyncpg://{username}:{password}@{host_address}:{port}/food", echo=True
+    DATABASE_URL, echo=True
 )
 
 AsyncSessionLocal = async_sessionmaker(
