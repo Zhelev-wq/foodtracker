@@ -7,7 +7,6 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func, select
 
-from app.api.router import router
 from app.auth import (
     create_access_token,
     hash_password,

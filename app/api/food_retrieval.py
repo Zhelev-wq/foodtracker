@@ -9,7 +9,6 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.api.router import router
 from app.db.database import get_db
 from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry
