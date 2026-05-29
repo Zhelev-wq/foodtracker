@@ -101,7 +101,7 @@ export default function FoodItemList(
             <div className="inline bg-emerald-100/60 dark:bg-gray-800">
                 <button
                     onClick={async ()=> {
-                        await api.delete(`/api/delete/food_entry/${foodEntry.id}`);
+                        await api.delete(`/api/food_delete/food_entry/${foodEntry.id}`);
                         fetchFoodData();                        
                     }}
                     >

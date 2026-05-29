@@ -76,7 +76,7 @@ function AddFoodForm(
                     <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
                     onClick={() => 
                         {
-                            api.post('/api/create_food_entry',
+                            api.post('/api/food_create/food_entry',
                             {
                                 food_uuid: id,
                                 grams: grams
@@ -163,7 +163,7 @@ function EditFoodForm(
                     <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4'
                     onClick={() => 
                         {
-                            api.patch(`/api/edit/food_entry_item/${FoodEntryItemId}`,
+                            api.patch(`/api/food_edit/food_entry_item/${FoodEntryItemId}`,
                                {
                                 grams: grams
                                 }

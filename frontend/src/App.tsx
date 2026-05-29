@@ -22,7 +22,7 @@ function App() {
   }
 
   const fetchFoodData = async () => {
-    const response = await api.get(`/api/search/date/${format(date, 'yyyy-MM-dd')}`);
+    const response = await api.get(`/api/food_get/search/date/${format(date, 'yyyy-MM-dd')}`);
     setFoodData(response.data);
   };
 
@@ -43,7 +43,7 @@ function App() {
     };
     const t = setTimeout(() => {
       const fetchResults = async () => {
-        const response = await api.get(`/api/search/name/${searchText}`)
+        const response = await api.get(`/api/food_get/search/name/${searchText}`)
         setFoodSearchResults(response.data);
         return response.data;
       }      
