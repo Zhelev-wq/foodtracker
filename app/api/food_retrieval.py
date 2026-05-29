@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from fastapi import Depends, Request, status
+from fastapi import APIRouter, Depends, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from fastapi.responses import JSONResponse
@@ -14,6 +14,8 @@ from app.db.database import get_db
 from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry
 from app.validators.food import FoodEntryOut, FoodOut
+
+router = APIRouter()
 
 
 @router.get("/search/name/{food_name}")
@@ -46,13 +48,13 @@ async def search_food_by_uuid(
     if food_uuid and barcode:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            details="Provide only one: UUID or barcode",
+            detail="Provide only one: UUID or barcode",
         )
 
     if not any([food_uuid, barcode]):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            details="Provide either UUID or barcode",
+            detail="Provide either UUID or barcode",
         )
 
     food = None
@@ -64,7 +66,7 @@ async def search_food_by_uuid(
 
     if not food:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, details="Food not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Food not found"
         )
     return food
 

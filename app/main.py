@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 
-from fastapi import APIRouter, Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.exception_handlers import (
     http_exception_handler,
     request_validation_exception_handler,
@@ -8,15 +8,13 @@ from fastapi.exception_handlers import (
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
-import app.api.food_creation
-import app.api.food_editing
-import app.api.food_removal
-import app.api.food_retrieval
-from app.api.router import router
+from app.api.food_creation import router as food_creation_router
+from app.api.food_editing import router as food_editing_router
+from app.api.food_removal import router as food_remove_router
+from app.api.food_retrieval import router as food_retrieval_router
+from app.api.user import router as user_router
 from app.db.database import Base, engine, get_db
-from app.db.tables.food import Food
 
 
 @asynccontextmanager
@@ -28,7 +26,14 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(router)
+app.include_router(
+    food_creation_router,
+    prefix="/api/food_create",
+)
+app.include_router(food_editing_router, prefix="/api/food_edit")
+app.include_router(food_remove_router, prefix="/api/food_delete")
+app.include_router(food_retrieval_router, prefix="/api/food_get")
+app.include_router(user_router, prefix="/api/users")
 
 origins = [
     "http://localhost:5173",
