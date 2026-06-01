@@ -2,23 +2,22 @@ import datetime
 import uuid
 
 from fastapi import APIRouter, Depends, status
-from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
-from fastapi.responses import JSONResponse
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
+from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry
 from app.validators.food import FoodEntryOut, FoodOut
 
-router = APIRouter()
+router = APIRouter(tags=["food/read"])
 
 
 @router.get("/search/name/{food_name}")
 async def search_food_by_name(
+    user: CurrentUser,
     food_name: str,
     iteration: int = 1,
     page_size: int = 20,
@@ -29,6 +28,11 @@ async def search_food_by_name(
     food_query = (
         select(Food)
         .where(Food.name.op("%")(food_name))
+        .where(
+            or_(
+                Food.user_id == user.id, Food.user_id.is_(None)
+            )  # custom food belonging to user, or common food
+        )
         .order_by(func.similarity(Food.name, food_name).label("sim").desc())
         .offset((iteration - 1) * page_size)
         .limit(page_size)
@@ -40,6 +44,7 @@ async def search_food_by_name(
 
 @router.get("/search/specific/")
 async def search_food_by_uuid(
+    user: CurrentUser,
     food_uuid: uuid.UUID | None = None,
     barcode: str | None = None,
     db: AsyncSession = Depends(get_db),
@@ -58,10 +63,27 @@ async def search_food_by_uuid(
 
     food = None
     if food_uuid:
-        food = await db.get(Food, food_uuid)
+        result = await db.execute(
+            select(Food)
+            .where(Food.id == food_uuid)
+            .where(
+                or_(
+                    Food.user_id == user.id, Food.user_id.is_(None)
+                )  # custom food belonging to user, or common food
+            )
+        )
     if barcode and int(barcode):
-        result = await db.scalars(select(Food).where(Food.barcode == barcode))
-        food = result.first()
+        result = await db.execute(
+            select(Food)
+            .where(Food.barcode == barcode)
+            .where(
+                or_(
+                    Food.user_id == user.id, Food.user_id.is_(None)
+                )  # custom food belonging to user, or common food
+            )
+        )
+
+    food = result.scalars().first()
 
     if not food:
         raise HTTPException(
@@ -72,10 +94,14 @@ async def search_food_by_uuid(
 
 @router.get("/search/date/{date}")
 async def search_food_entries_by_date(
-    date: datetime.datetime, db: AsyncSession = Depends(get_db)
+    date: datetime.datetime, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> list[FoodEntryOut]:
 
-    db_query = select(FoodEntry).where(func.date(FoodEntry.time) == date.date())
+    db_query = (
+        select(FoodEntry)
+        .where(FoodEntry.user_id == user.id)
+        .where(func.date(FoodEntry.time) == date.date())
+    )
     results = await db.execute(db_query)
     food_entries = results.scalars().all()
     return food_entries

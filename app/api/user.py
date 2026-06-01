@@ -19,7 +19,7 @@ from app.db.database import AsyncSession, get_db
 from app.db.tables.user import User
 from app.validators.user import CreateUser, Token, UserPrivate, UserPublic, UserUpdate
 
-router = APIRouter()
+router = APIRouter(tags=["user"])
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)

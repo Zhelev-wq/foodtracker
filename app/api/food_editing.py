@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food_entries import FoodEntryItem
 from app.validators.food import FoodEntryItemOut
@@ -15,14 +16,21 @@ class FoodEntryItemEdit(BaseModel):
     grams: int
 
 
-router = APIRouter()
+router = APIRouter(tags=["food/update"])
 
 
 @router.patch("/food_entry_item/{item_id}")
 async def edit_food_entry_item(
-    item_id: uuid.UUID, payload: FoodEntryItemEdit, db: AsyncSession = Depends(get_db)
+    item_id: uuid.UUID,
+    payload: FoodEntryItemEdit,
+    user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
 ) -> FoodEntryItemOut:
-    result = await db.execute(select(FoodEntryItem).where(FoodEntryItem.id == item_id))
+    result = await db.execute(
+        select(FoodEntryItem)
+        .where(FoodEntryItem.id == item_id)
+        .where(FoodEntryItem.user_id == user.id)
+    )
     food_entry_item = result.scalars().first()
     if not food_entry_item:
         raise HTTPException(

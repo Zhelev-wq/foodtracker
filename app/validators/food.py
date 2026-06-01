@@ -1,25 +1,27 @@
-from pydantic import BaseModel, computed_field
-from functools import cached_property
-from typing import Optional, List
 import datetime
 import uuid
+from functools import cached_property
+from typing import List, Optional
+
+from pydantic import BaseModel, computed_field
+
 
 class Vitamins(BaseModel):
     vit_a: Optional[float] = 0
     vit_b1: Optional[float] = 0
     vit_b2: Optional[float] = 0
     vit_b3: Optional[float] = 0
-    pantothenic_acid: Optional[float] = 0 #also known as B5
+    pantothenic_acid: Optional[float] = 0  # also known as B5
     vit_b6: Optional[float] = 0
     vit_b7: Optional[float] = 0
-    biotin: Optional[float] = 0 #also known as B8
+    biotin: Optional[float] = 0  # also known as B8
     vit_b9: Optional[float] = 0
     vit_b12: Optional[float] = 0
     vit_c: Optional[float] = 0
     vit_d: Optional[float] = 0
     vit_e: Optional[float] = 0
     vit_k: Optional[float] = 0
-    
+
 
 class Minerals(BaseModel):
     calcium: Optional[float] = 0
@@ -39,6 +41,7 @@ class Minerals(BaseModel):
     potassium: Optional[float] = 0
     taurine: Optional[float] = 0
 
+
 class Fats(BaseModel):
     saturated_fat: Optional[float] = 0
     monounstaurated_fat: Optional[float] = 0
@@ -46,7 +49,8 @@ class Fats(BaseModel):
     omage_3_fat: Optional[float] = 0
     omage_6_fat: Optional[float] = 0
     omage_9_fat: Optional[float] = 0
-    trans_fat: Optional[float] = 0   
+    trans_fat: Optional[float] = 0
+
 
 class FoodOut(BaseModel):
 
@@ -58,12 +62,14 @@ class FoodOut(BaseModel):
     fat: float
     kcal: float
     id: uuid.UUID
+    user_id: uuid.UUID | None = None
     alcohol: Optional[float] = 0
     caffeine: Optional[float] = 0
     barcode: str
     vitamins: Optional[Vitamins]
     minerals: Optional[Minerals]
     fats: Optional[Fats]
+
 
 class FoodEntryItemOut(BaseModel):
 
@@ -72,11 +78,14 @@ class FoodEntryItemOut(BaseModel):
     food_id: uuid.UUID
     food_grams: int
     food: FoodOut
-    
+    user_id: uuid.UUID
+
+
 class FoodEntryOut(BaseModel):
     id: uuid.UUID
     time: datetime.datetime
     food_items: list[FoodEntryItemOut]
+    user_id: uuid.UUID
     model_config = {"from_attributes": True}
 
     @cached_property
@@ -89,7 +98,7 @@ class FoodEntryOut(BaseModel):
             "alcohol": 0,
             "caffeine": 0,
             "food_grams": 0,
-            "name": None
+            "name": None,
         }
 
         for item in self.food_items:
@@ -100,7 +109,7 @@ class FoodEntryOut(BaseModel):
             total["alcohol"] += (item.food.alcohol or 0) * item.food_grams / 100
             total["caffeine"] += (item.food.caffeine or 0) * item.food_grams / 100
             total["food_grams"] += item.food_grams
-            
+
         total["name"] = self.food_items[0].food.name
         return total
 
@@ -113,17 +122,17 @@ class FoodEntryOut(BaseModel):
     @property
     def protein(self) -> float:
         return self._total.get("protein")
-    
+
     @computed_field
     @property
     def carbs(self) -> float:
         return self._total.get("carbs")
-    
+
     @computed_field
     @property
     def fat(self) -> float:
-        return self._total.get("fat")        
-    
+        return self._total.get("fat")
+
     @computed_field
     @property
     def kcal(self) -> float:
@@ -133,12 +142,12 @@ class FoodEntryOut(BaseModel):
     @property
     def alcohol(self) -> float:
         return self._total.get("alcohol")
-    
+
     @computed_field
     @property
     def caffeine(self) -> float:
         return self._total.get("caffeine")
-    
+
     @computed_field
     @property
     def food_grams(self) -> float:

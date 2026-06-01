@@ -2,6 +2,7 @@ import datetime
 import uuid
 
 from sqlalchemy import UUID, DateTime, ForeignKey, Integer
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.database import Base
@@ -23,6 +24,9 @@ class FoodEntry(Base):
         cascade="all, delete-orphan",
         lazy="selectin",
     )  # this will pull all FoodEntryItems where FoodEntryItem.food_id == FoodEntry.id
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID, ForeignKey("user.id"), nullable=False, as_uuid=True
+    )
 
 
 class FoodEntryItem(Base):
@@ -41,3 +45,4 @@ class FoodEntryItem(Base):
         UUID, ForeignKey("food_entry.id"), as_uuid=True
     )
     food_entry = relationship("FoodEntry", back_populates="food_items")
+    user_id = association_proxy("food_entry", "user_id")
