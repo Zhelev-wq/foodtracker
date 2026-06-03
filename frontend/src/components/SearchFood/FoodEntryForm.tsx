@@ -77,10 +77,10 @@ function AddFoodForm(
                     onClick={() => 
                         {
                             api.post('/api/food_create/food_entry',
-                            {
+                            [{
                                 food_uuid: id,
                                 grams: grams
-                                }
+                                }]
                             )
                         }
                         }>Save Entry</button>
