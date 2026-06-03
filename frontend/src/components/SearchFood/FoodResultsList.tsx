@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import type { components } from "../../../../frontend/src/types/api.ts";
+import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
 
 /*
 take in search results
@@ -13,18 +14,10 @@ TODO:
 type FoodOut = components["schemas"]["FoodOut"];
 type FoodResultsListProps = {
   foodSearchResults: FoodOut[] | null;
-  date: Date;
-  setFoodEntryFormData: (arg: FoodOut | null) => void;
-  setFoodEntryFormVisible: (arg: boolean) => void;
-  setFormMode: (arg: "add" | "edit") => void;
 };
 
 export default function FoodResultList({
   foodSearchResults,
-  date,
-  setFoodEntryFormData,
-  setFoodEntryFormVisible,
-  setFormMode,
 }: FoodResultsListProps) {
   const [prevFoodData, setPrevFoodData] = useState(foodSearchResults);
 
@@ -32,7 +25,8 @@ export default function FoodResultList({
     return null;
   }
 
-  if (foodSearchResults !== prevFoodData) {
+  /* TODO: this may be broken. revise later 
+  if (foodSearchResults !== prevFoodData) { 
     if (prevFoodData !== null) {
       const currentIDs = new Set(foodSearchResults.map((r) => r.id));
       const isSubset = prevFoodData.every((entry) => currentIDs.has(entry.id));
@@ -41,7 +35,10 @@ export default function FoodResultList({
       }
     }
     setPrevFoodData(foodSearchResults);
-  }
+  }*/
+
+  const foodEntryFormContext = useContext(FoodEntryFormContext);
+  const openAdd = foodEntryFormContext.openAdd;
 
   const formattedSearchResults = foodSearchResults.map((result: FoodOut) => (
     <li key={result.id} className="pb-3 sm:pb-4">
@@ -58,9 +55,11 @@ export default function FoodResultList({
         <div className="inline-flex items-center text-base font-semibold text-heading">
           <button
             onClick={() => {
-              setFormMode("add");
-              setFoodEntryFormData(result);
-              setFoodEntryFormVisible(true);
+              /* 
+              here, show foodentry form with mode "add"
+              provide "result" var as value
+              */
+              openAdd(result);
             }}
           >
             Add

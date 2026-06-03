@@ -1,16 +1,11 @@
-import type { components } from "../types/api";
+import type { components } from "../types/api.ts";
 import { api } from "../api/client.ts";
+import { useContext } from "react";
+import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
 
-type FoodOut = components["schemas"]["FoodOut"];
-
-type FoodListItemProps = {
-  foodData: components["schemas"]["FoodEntryOut-Output"][];
+type DailyLogProps = {
+  foodData: components["schemas"]["FoodEntryOut"][];
   fetchFoodData: () => Promise<void>;
-  setFoodEntryFormData: (arg: FoodOut) => void;
-  setFoodEntryFormVisible: (arg: boolean) => void;
-  setFormMode: (arg: "add" | "edit") => void;
-  setExistingGrams: (arg: number) => void;
-  setFoodEntryItemID: (arg: string) => void;
 };
 
 /* 
@@ -18,20 +13,16 @@ TODO:
     consider adding a way to remove food_item elements from a food entry
 */
 
-export default function FoodItemList({
-  foodData,
-  fetchFoodData,
-  setFoodEntryFormData,
-  setFoodEntryFormVisible,
-  setFormMode,
-  setExistingGrams,
-  setFoodEntryItemID,
-}: FoodListItemProps) {
+export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
   /*
     TODO:
         add functionality for removing and editing food entries
         create api methods to handle it
     */
+
+  const foodEntryFormContext = useContext(FoodEntryFormContext);
+  const openEdit = foodEntryFormContext.openEdit;
+
   const foodRows = foodData.map((foodEntry) => (
     <tr>
       <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
@@ -40,14 +31,10 @@ export default function FoodItemList({
             <button
               onClick={() => {
                 /*                             
-                                For future, add food item selector for recipes here
-                            */
-                const FoodEntryItem = foodEntry.food_items[0];
-                setFormMode("edit");
-                setFoodEntryFormData(FoodEntryItem.food);
-                setFoodEntryItemID(FoodEntryItem.id);
-                setExistingGrams(FoodEntryItem.food_grams);
-                setFoodEntryFormVisible(true);
+                  For future, add food item selector for recipes here, default to food_item[0] for now
+
+                */
+                openEdit(foodEntry.food_items[0]);
               }}
             >
               Edit

@@ -4,75 +4,7 @@
  */
 
 export interface paths {
-  "/api/search/name/{food_name}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Search Food By Name */
-    get: operations["search_food_by_name_api_search_name__food_name__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/search/specific/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Search Food By Uuid */
-    get: operations["search_food_by_uuid_api_search_specific__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/search/date/{date}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Search Food Entries By Date */
-    get: operations["search_food_entries_by_date_api_search_date__date__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/search/food_entries/all": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** All Food Entries */
-    get: operations["all_food_entries_api_search_food_entries_all_get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/create_food_entry": {
+  "/api/food_create/food_entry": {
     parameters: {
       query?: never;
       header?: never;
@@ -82,14 +14,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** Create Food Entry */
-    post: operations["create_food_entry_api_create_food_entry_post"];
+    post: operations["create_food_entry_api_food_create_food_entry_post"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/api/create_custom_food": {
+  "/api/food_create/customer_food": {
     parameters: {
       query?: never;
       header?: never;
@@ -99,11 +31,164 @@ export interface paths {
     get?: never;
     put?: never;
     /** Create Custom Food */
-    post: operations["create_custom_food_api_create_custom_food_post"];
+    post: operations["create_custom_food_api_food_create_customer_food_post"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/food_edit/food_entry_item/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Edit Food Entry Item */
+    patch: operations["edit_food_entry_item_api_food_edit_food_entry_item__item_id__patch"];
+    trace?: never;
+  };
+  "/api/food_delete/food_entry/{food_entry_uuid}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Remove Food Entry */
+    delete: operations["remove_food_entry_api_food_delete_food_entry__food_entry_uuid__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_get/search/name/{food_name}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Search Food By Name */
+    get: operations["search_food_by_name_api_food_get_search_name__food_name__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_get/search/specific/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Search Food By Uuid */
+    get: operations["search_food_by_uuid_api_food_get_search_specific__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_get/search/date/{date}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Search Food Entries By Date */
+    get: operations["search_food_entries_by_date_api_food_get_search_date__date__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create User */
+    post: operations["create_user_api_users_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Login For Access Tokan */
+    post: operations["login_for_access_tokan_api_users_token_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Get Current User */
+    post: operations["get_current_user_api_users_me_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/{user_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update User */
+    patch: operations["update_user_api_users__user_id__patch"];
     trace?: never;
   };
   "/": {
@@ -127,6 +212,52 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    /** Body_login_for_access_tokan_api_users_token_post */
+    Body_login_for_access_tokan_api_users_token_post: {
+      /** Grant Type */
+      grant_type?: string | null;
+      /** Username */
+      username: string;
+      /**
+       * Password
+       * Format: password
+       */
+      password: string;
+      /**
+       * Scope
+       * @default
+       */
+      scope: string;
+      /** Client Id */
+      client_id?: string | null;
+      /**
+       * Client Secret
+       * Format: password
+       */
+      client_secret?: string | null;
+    };
+    /** CreateFoodEntryPayload */
+    CreateFoodEntryPayload: {
+      /**
+       * Food Uuid
+       * Format: uuid
+       */
+      food_uuid: string;
+      /** Grams */
+      grams: number;
+    };
+    /** CreateUser */
+    CreateUser: {
+      /** Name */
+      name?: string | null;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Password */
+      password: string;
+    };
     /** Fats */
     Fats: {
       /**
@@ -165,8 +296,13 @@ export interface components {
        */
       trans_fat: number | null;
     };
+    /** FoodEntryItemEdit */
+    FoodEntryItemEdit: {
+      /** Grams */
+      grams: number;
+    };
     /** FoodEntryItemOut */
-    "FoodEntryItemOut-Input": {
+    FoodEntryItemOut: {
       /**
        * Id
        * Format: uuid
@@ -180,25 +316,14 @@ export interface components {
       /** Food Grams */
       food_grams: number;
       food: components["schemas"]["FoodOut"];
-    };
-    /** FoodEntryItemOut */
-    "FoodEntryItemOut-Output": {
       /**
-       * Id
+       * User Id
        * Format: uuid
        */
-      id: string;
-      /**
-       * Food Id
-       * Format: uuid
-       */
-      food_id: string;
-      /** Food Grams */
-      food_grams: number;
-      food: components["schemas"]["FoodOut"];
+      user_id: string;
     };
     /** FoodEntryOut */
-    "FoodEntryOut-Input": {
+    FoodEntryOut: {
       /**
        * Id
        * Format: uuid
@@ -210,22 +335,12 @@ export interface components {
        */
       time: string;
       /** Food Items */
-      food_items: components["schemas"]["FoodEntryItemOut-Input"][];
-    };
-    /** FoodEntryOut */
-    "FoodEntryOut-Output": {
+      food_items: components["schemas"]["FoodEntryItemOut"][];
       /**
-       * Id
+       * User Id
        * Format: uuid
        */
-      id: string;
-      /**
-       * Time
-       * Format: date-time
-       */
-      time: string;
-      /** Food Items */
-      food_items: components["schemas"]["FoodEntryItemOut-Output"][];
+      user_id: string;
       /** Name */
       readonly name: string;
       /** Protein */
@@ -260,6 +375,8 @@ export interface components {
        * Format: uuid
        */
       id: string;
+      /** User Id */
+      user_id?: string | null;
       /**
        * Alcohol
        * @default 0
@@ -364,6 +481,43 @@ export interface components {
        */
       taurine: number | null;
     };
+    /** Token */
+    Token: {
+      /** Access Token */
+      access_token: string;
+      /** Token Type */
+      token_type: string;
+    };
+    /** UserPrivate */
+    UserPrivate: {
+      /** Name */
+      name: string;
+      /**
+       * Id
+       * Format: uuid4
+       */
+      id: string;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+    };
+    /** UserPublic */
+    UserPublic: {
+      /** Name */
+      name: string;
+    };
+    /** UserUpdate */
+    UserUpdate: {
+      /** Name */
+      name?: string | null;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+    };
     /** ValidationError */
     ValidationError: {
       /** Location */
@@ -455,7 +609,126 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  search_food_by_name_api_search_name__food_name__get: {
+  create_food_entry_api_food_create_food_entry_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateFoodEntryPayload"][];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FoodEntryOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  create_custom_food_api_food_create_customer_food_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  edit_food_entry_item_api_food_edit_food_entry_item__item_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FoodEntryItemEdit"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FoodEntryItemOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  remove_food_entry_api_food_delete_food_entry__food_entry_uuid__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        food_entry_uuid: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  search_food_by_name_api_food_get_search_name__food_name__get: {
     parameters: {
       query?: {
         iteration?: number;
@@ -489,7 +762,7 @@ export interface operations {
       };
     };
   };
-  search_food_by_uuid_api_search_specific__get: {
+  search_food_by_uuid_api_food_get_search_specific__get: {
     parameters: {
       query?: {
         food_uuid?: string | null;
@@ -507,7 +780,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["FoodOut"];
         };
       };
       /** @description Validation Error */
@@ -521,7 +794,7 @@ export interface operations {
       };
     };
   };
-  search_food_entries_by_date_api_search_date__date__get: {
+  search_food_entries_by_date_api_food_get_search_date__date__get: {
     parameters: {
       query?: never;
       header?: never;
@@ -538,7 +811,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodEntryOut-Output"][];
+          "application/json": components["schemas"]["FoodEntryOut"][];
         };
       };
       /** @description Validation Error */
@@ -552,7 +825,73 @@ export interface operations {
       };
     };
   };
-  all_food_entries_api_search_food_entries_all_get: {
+  create_user_api_users_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateUser"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserPublic"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  login_for_access_tokan_api_users_token_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["Body_login_for_access_tokan_api_users_token_post"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Token"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_current_user_api_users_me_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -567,22 +906,25 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodEntryOut-Output"][];
+          "application/json": components["schemas"]["UserPrivate"];
         };
       };
     };
   };
-  create_food_entry_api_create_food_entry_post: {
+  update_user_api_users__user_id__patch: {
     parameters: {
-      query: {
-        food_uuid: string;
-        grams: number;
-      };
+      query?: never;
       header?: never;
-      path?: never;
+      path: {
+        user_id: string;
+      };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UserUpdate"];
+      };
+    };
     responses: {
       /** @description Successful Response */
       200: {
@@ -590,7 +932,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["UserPrivate"];
         };
       };
       /** @description Validation Error */
@@ -600,26 +942,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  create_custom_food_api_create_custom_food_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
         };
       };
     };
