@@ -11,10 +11,14 @@ import { api } from './api/client';
 import { format } from 'date-fns';
 import FoodEntryForm from './components/SearchFood/FoodEntryForm.tsx'
 import type { components } from './types/api.ts';
+import BaseLayout from './layouts/BaseLayout.tsx'
+import { BrowserRouter, Route, Routes } from "react-router"
+import { ROUTES } from './routes.ts';
+import Login from './components/Login.tsx'
 
 type FoodOut = components["schemas"]["FoodOut"]
 
-function App() {
+function BaseApp() {
   function getDate() {
         const timestamp = Date.now();
         const date = new Date(timestamp);
@@ -106,6 +110,21 @@ function App() {
         </div>
     </div>
   )
+}
+
+function App() {
+  return (
+    <BaseLayout>
+      <BrowserRouter>
+        <Routes>
+          <Route path={ROUTES.TRACKER} element={<BaseApp />}/ >
+          <Route path={ROUTES.CUSTOM_FOODS} element={<div>PLACEHOLDER CUSTOM FOODS</div>} />
+          <Route path={ROUTES.STATISTICS} element={<div>PLACEHOLDER STATS</div>} />
+          <Route path={ROUTES.LOGIN} element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </BaseLayout>
+  )  
 }
 
 export default App
