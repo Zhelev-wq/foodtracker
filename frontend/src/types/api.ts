@@ -4,644 +4,966 @@
  */
 
 export interface paths {
-    "/api/search/name/{food_name}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Search Food By Name */
-        get: operations["search_food_by_name_api_search_name__food_name__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/api/food_create/food_entry": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/search/specific/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Search Food By Uuid */
-        get: operations["search_food_by_uuid_api_search_specific__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Create Food Entry */
+    post: operations["create_food_entry_api_food_create_food_entry_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_create/customer_food": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/search/date/{date}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Search Food Entries By Date */
-        get: operations["search_food_entries_by_date_api_search_date__date__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** Create Custom Food */
+    post: operations["create_custom_food_api_food_create_customer_food_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_edit/food_entry_item/{item_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/search/food_entries/all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** All Food Entries */
-        get: operations["all_food_entries_api_search_food_entries_all_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Edit Food Entry Item */
+    patch: operations["edit_food_entry_item_api_food_edit_food_entry_item__item_id__patch"];
+    trace?: never;
+  };
+  "/api/food_delete/food_entry/{food_entry_uuid}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/create_food_entry": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Food Entry */
-        post: operations["create_food_entry_api_create_food_entry_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Remove Food Entry */
+    delete: operations["remove_food_entry_api_food_delete_food_entry__food_entry_uuid__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_get/search/name/{food_name}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/api/create_custom_food": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Create Custom Food */
-        post: operations["create_custom_food_api_create_custom_food_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Search Food By Name */
+    get: operations["search_food_by_name_api_food_get_search_name__food_name__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_get/search/specific/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Home */
-        get: operations["home__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** Search Food By Uuid */
+    get: operations["search_food_by_uuid_api_food_get_search_specific__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_get/search/date/{date}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    /** Search Food Entries By Date */
+    get: operations["search_food_entries_by_date_api_food_get_search_date__date__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Create User */
+    post: operations["create_user_api_users_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/token": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Login For Access Tokan */
+    post: operations["login_for_access_tokan_api_users_token_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** Get Current User */
+    post: operations["get_current_user_api_users_me_post"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/users/{user_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** Update User */
+    patch: operations["update_user_api_users__user_id__patch"];
+    trace?: never;
+  };
+  "/": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** Home */
+    get: operations["home__get"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        /** Fats */
-        Fats: {
-            /**
-             * Saturated Fat
-             * @default 0
-             */
-            saturated_fat: number | null;
-            /**
-             * Monounstaurated Fat
-             * @default 0
-             */
-            monounstaurated_fat: number | null;
-            /**
-             * Polyunsaturated Fat
-             * @default 0
-             */
-            polyunsaturated_fat: number | null;
-            /**
-             * Omage 3 Fat
-             * @default 0
-             */
-            omage_3_fat: number | null;
-            /**
-             * Omage 6 Fat
-             * @default 0
-             */
-            omage_6_fat: number | null;
-            /**
-             * Omage 9 Fat
-             * @default 0
-             */
-            omage_9_fat: number | null;
-            /**
-             * Trans Fat
-             * @default 0
-             */
-            trans_fat: number | null;
-        };
-        /** FoodEntryItemOut */
-        "FoodEntryItemOut-Input": {
-            /**
-             * Id
-             * Format: uuid
-             */
-            id: string;
-            /**
-             * Food Id
-             * Format: uuid
-             */
-            food_id: string;
-            /** Food Grams */
-            food_grams: number;
-            food: components["schemas"]["FoodOut"];
-        };
-        /** FoodEntryItemOut */
-        "FoodEntryItemOut-Output": {
-            /**
-             * Id
-             * Format: uuid
-             */
-            id: string;
-            /**
-             * Food Id
-             * Format: uuid
-             */
-            food_id: string;
-            /** Food Grams */
-            food_grams: number;
-            food: components["schemas"]["FoodOut"];
-        };
-        /** FoodEntryOut */
-        "FoodEntryOut-Input": {
-            /**
-             * Id
-             * Format: uuid
-             */
-            id: string;
-            /**
-             * Time
-             * Format: date-time
-             */
-            time: string;
-            /** Food Items */
-            food_items: components["schemas"]["FoodEntryItemOut-Input"][];
-        };
-        /** FoodEntryOut */
-        "FoodEntryOut-Output": {
-            /**
-             * Id
-             * Format: uuid
-             */
-            id: string;
-            /**
-             * Time
-             * Format: date-time
-             */
-            time: string;
-            /** Food Items */
-            food_items: components["schemas"]["FoodEntryItemOut-Output"][];
-            /** Name */
-            readonly name: string;
-            /** Protein */
-            readonly protein: number;
-            /** Carbs */
-            readonly carbs: number;
-            /** Fat */
-            readonly fat: number;
-            /** Kcal */
-            readonly kcal: number;
-            /** Alcohol */
-            readonly alcohol: number;
-            /** Caffeine */
-            readonly caffeine: number;
-            /** Food Grams */
-            readonly food_grams: number;
-        };
-        /** FoodOut */
-        FoodOut: {
-            /** Name */
-            name: string;
-            /** Carbs */
-            carbs: number;
-            /** Protein */
-            protein: number;
-            /** Fat */
-            fat: number;
-            /** Kcal */
-            kcal: number;
-            /**
-             * Id
-             * Format: uuid
-             */
-            id: string;
-            /**
-             * Alcohol
-             * @default 0
-             */
-            alcohol: number | null;
-            /**
-             * Caffeine
-             * @default 0
-             */
-            caffeine: number | null;
-            /** Barcode */
-            barcode: string;
-            vitamins: components["schemas"]["Vitamins"] | null;
-            minerals: components["schemas"]["Minerals"] | null;
-            fats: components["schemas"]["Fats"] | null;
-        };
-        /** HTTPValidationError */
-        HTTPValidationError: {
-            /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
-        };
-        /** Minerals */
-        Minerals: {
-            /**
-             * Calcium
-             * @default 0
-             */
-            calcium: number | null;
-            /**
-             * Magnesium
-             * @default 0
-             */
-            magnesium: number | null;
-            /**
-             * Phosphorus
-             * @default 0
-             */
-            phosphorus: number | null;
-            /**
-             * Sodium
-             * @default 0
-             */
-            sodium: number | null;
-            /**
-             * Sulfur
-             * @default 0
-             */
-            sulfur: number | null;
-            /**
-             * Iron
-             * @default 0
-             */
-            iron: number | null;
-            /**
-             * Zinc
-             * @default 0
-             */
-            zinc: number | null;
-            /**
-             * Copper
-             * @default 0
-             */
-            copper: number | null;
-            /**
-             * Manganese
-             * @default 0
-             */
-            manganese: number | null;
-            /**
-             * Molybdenum
-             * @default 0
-             */
-            molybdenum: number | null;
-            /**
-             * Selenium
-             * @default 0
-             */
-            selenium: number | null;
-            /**
-             * Iodine
-             * @default 0
-             */
-            iodine: number | null;
-            /**
-             * Fluoride
-             * @default 0
-             */
-            fluoride: number | null;
-            /**
-             * Chromium
-             * @default 0
-             */
-            chromium: number | null;
-            /**
-             * Potassium
-             * @default 0
-             */
-            potassium: number | null;
-            /**
-             * Taurine
-             * @default 0
-             */
-            taurine: number | null;
-        };
-        /** ValidationError */
-        ValidationError: {
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
-            type: string;
-        };
-        /** Vitamins */
-        Vitamins: {
-            /**
-             * Vit A
-             * @default 0
-             */
-            vit_a: number | null;
-            /**
-             * Vit B1
-             * @default 0
-             */
-            vit_b1: number | null;
-            /**
-             * Vit B2
-             * @default 0
-             */
-            vit_b2: number | null;
-            /**
-             * Vit B3
-             * @default 0
-             */
-            vit_b3: number | null;
-            /**
-             * Pantothenic Acid
-             * @default 0
-             */
-            pantothenic_acid: number | null;
-            /**
-             * Vit B6
-             * @default 0
-             */
-            vit_b6: number | null;
-            /**
-             * Vit B7
-             * @default 0
-             */
-            vit_b7: number | null;
-            /**
-             * Biotin
-             * @default 0
-             */
-            biotin: number | null;
-            /**
-             * Vit B9
-             * @default 0
-             */
-            vit_b9: number | null;
-            /**
-             * Vit B12
-             * @default 0
-             */
-            vit_b12: number | null;
-            /**
-             * Vit C
-             * @default 0
-             */
-            vit_c: number | null;
-            /**
-             * Vit D
-             * @default 0
-             */
-            vit_d: number | null;
-            /**
-             * Vit E
-             * @default 0
-             */
-            vit_e: number | null;
-            /**
-             * Vit K
-             * @default 0
-             */
-            vit_k: number | null;
-        };
+  schemas: {
+    /** Body_login_for_access_tokan_api_users_token_post */
+    Body_login_for_access_tokan_api_users_token_post: {
+      /** Grant Type */
+      grant_type?: string | null;
+      /** Username */
+      username: string;
+      /**
+       * Password
+       * Format: password
+       */
+      password: string;
+      /**
+       * Scope
+       * @default
+       */
+      scope: string;
+      /** Client Id */
+      client_id?: string | null;
+      /**
+       * Client Secret
+       * Format: password
+       */
+      client_secret?: string | null;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** CreateFoodEntryPayload */
+    CreateFoodEntryPayload: {
+      /**
+       * Food Uuid
+       * Format: uuid
+       */
+      food_uuid: string;
+      /** Grams */
+      grams: number;
+    };
+    /** CreateUser */
+    CreateUser: {
+      /** Name */
+      name?: string | null;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+      /** Password */
+      password: string;
+    };
+    /** Fats */
+    Fats: {
+      /**
+       * Saturated Fat
+       * @default 0
+       */
+      saturated_fat: number | null;
+      /**
+       * Monounstaurated Fat
+       * @default 0
+       */
+      monounstaurated_fat: number | null;
+      /**
+       * Polyunsaturated Fat
+       * @default 0
+       */
+      polyunsaturated_fat: number | null;
+      /**
+       * Omage 3 Fat
+       * @default 0
+       */
+      omage_3_fat: number | null;
+      /**
+       * Omage 6 Fat
+       * @default 0
+       */
+      omage_6_fat: number | null;
+      /**
+       * Omage 9 Fat
+       * @default 0
+       */
+      omage_9_fat: number | null;
+      /**
+       * Trans Fat
+       * @default 0
+       */
+      trans_fat: number | null;
+    };
+    /** FoodEntryItemEdit */
+    FoodEntryItemEdit: {
+      /** Grams */
+      grams: number;
+    };
+    /** FoodEntryItemOut */
+    FoodEntryItemOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * Food Id
+       * Format: uuid
+       */
+      food_id: string;
+      /** Food Grams */
+      food_grams: number;
+      food: components["schemas"]["FoodOut"];
+      /**
+       * User Id
+       * Format: uuid
+       */
+      user_id: string;
+    };
+    /** FoodEntryOut */
+    FoodEntryOut: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /**
+       * Time
+       * Format: date-time
+       */
+      time: string;
+      /** Food Items */
+      food_items: components["schemas"]["FoodEntryItemOut"][];
+      /**
+       * User Id
+       * Format: uuid
+       */
+      user_id: string;
+      /** Name */
+      readonly name: string;
+      /** Protein */
+      readonly protein: number;
+      /** Carbs */
+      readonly carbs: number;
+      /** Fat */
+      readonly fat: number;
+      /** Kcal */
+      readonly kcal: number;
+      /** Alcohol */
+      readonly alcohol: number;
+      /** Caffeine */
+      readonly caffeine: number;
+      /** Food Grams */
+      readonly food_grams: number;
+    };
+    /** FoodOut */
+    FoodOut: {
+      /** Name */
+      name: string;
+      /** Carbs */
+      carbs: number;
+      /** Protein */
+      protein: number;
+      /** Fat */
+      fat: number;
+      /** Kcal */
+      kcal: number;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** User Id */
+      user_id?: string | null;
+      /**
+       * Alcohol
+       * @default 0
+       */
+      alcohol: number | null;
+      /**
+       * Caffeine
+       * @default 0
+       */
+      caffeine: number | null;
+      /** Barcode */
+      barcode: string;
+      vitamins: components["schemas"]["Vitamins"] | null;
+      minerals: components["schemas"]["Minerals"] | null;
+      fats: components["schemas"]["Fats"] | null;
+    };
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components["schemas"]["ValidationError"][];
+    };
+    /** Minerals */
+    Minerals: {
+      /**
+       * Calcium
+       * @default 0
+       */
+      calcium: number | null;
+      /**
+       * Magnesium
+       * @default 0
+       */
+      magnesium: number | null;
+      /**
+       * Phosphorus
+       * @default 0
+       */
+      phosphorus: number | null;
+      /**
+       * Sodium
+       * @default 0
+       */
+      sodium: number | null;
+      /**
+       * Sulfur
+       * @default 0
+       */
+      sulfur: number | null;
+      /**
+       * Iron
+       * @default 0
+       */
+      iron: number | null;
+      /**
+       * Zinc
+       * @default 0
+       */
+      zinc: number | null;
+      /**
+       * Copper
+       * @default 0
+       */
+      copper: number | null;
+      /**
+       * Manganese
+       * @default 0
+       */
+      manganese: number | null;
+      /**
+       * Molybdenum
+       * @default 0
+       */
+      molybdenum: number | null;
+      /**
+       * Selenium
+       * @default 0
+       */
+      selenium: number | null;
+      /**
+       * Iodine
+       * @default 0
+       */
+      iodine: number | null;
+      /**
+       * Fluoride
+       * @default 0
+       */
+      fluoride: number | null;
+      /**
+       * Chromium
+       * @default 0
+       */
+      chromium: number | null;
+      /**
+       * Potassium
+       * @default 0
+       */
+      potassium: number | null;
+      /**
+       * Taurine
+       * @default 0
+       */
+      taurine: number | null;
+    };
+    /** Token */
+    Token: {
+      /** Access Token */
+      access_token: string;
+      /** Token Type */
+      token_type: string;
+    };
+    /** UserPrivate */
+    UserPrivate: {
+      /** Name */
+      name: string;
+      /**
+       * Id
+       * Format: uuid4
+       */
+      id: string;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+    };
+    /** UserPublic */
+    UserPublic: {
+      /** Name */
+      name: string;
+    };
+    /** UserUpdate */
+    UserUpdate: {
+      /** Name */
+      name?: string | null;
+      /**
+       * Email
+       * Format: email
+       */
+      email: string;
+    };
+    /** ValidationError */
+    ValidationError: {
+      /** Location */
+      loc: (string | number)[];
+      /** Message */
+      msg: string;
+      /** Error Type */
+      type: string;
+    };
+    /** Vitamins */
+    Vitamins: {
+      /**
+       * Vit A
+       * @default 0
+       */
+      vit_a: number | null;
+      /**
+       * Vit B1
+       * @default 0
+       */
+      vit_b1: number | null;
+      /**
+       * Vit B2
+       * @default 0
+       */
+      vit_b2: number | null;
+      /**
+       * Vit B3
+       * @default 0
+       */
+      vit_b3: number | null;
+      /**
+       * Pantothenic Acid
+       * @default 0
+       */
+      pantothenic_acid: number | null;
+      /**
+       * Vit B6
+       * @default 0
+       */
+      vit_b6: number | null;
+      /**
+       * Vit B7
+       * @default 0
+       */
+      vit_b7: number | null;
+      /**
+       * Biotin
+       * @default 0
+       */
+      biotin: number | null;
+      /**
+       * Vit B9
+       * @default 0
+       */
+      vit_b9: number | null;
+      /**
+       * Vit B12
+       * @default 0
+       */
+      vit_b12: number | null;
+      /**
+       * Vit C
+       * @default 0
+       */
+      vit_c: number | null;
+      /**
+       * Vit D
+       * @default 0
+       */
+      vit_d: number | null;
+      /**
+       * Vit E
+       * @default 0
+       */
+      vit_e: number | null;
+      /**
+       * Vit K
+       * @default 0
+       */
+      vit_k: number | null;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    search_food_by_name_api_search_name__food_name__get: {
-        parameters: {
-            query?: {
-                iteration?: number;
-                page_size?: number;
-            };
-            header?: never;
-            path: {
-                food_name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FoodOut"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+  create_food_entry_api_food_create_food_entry_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    search_food_by_uuid_api_search_specific__get: {
-        parameters: {
-            query?: {
-                food_uuid?: string | null;
-                barcode?: string | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateFoodEntryPayload"][];
+      };
     };
-    search_food_entries_by_date_api_search_date__date__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                date: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FoodEntryOut-Output"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["FoodEntryOut"];
         };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
     };
-    all_food_entries_api_search_food_entries_all_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FoodEntryOut-Output"][];
-                };
-            };
-        };
+  };
+  create_custom_food_api_food_create_customer_food_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    create_food_entry_api_create_food_entry_post: {
-        parameters: {
-            query: {
-                food_uuid: string;
-                grams: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
+        content: {
+          "application/json": unknown;
         };
+      };
     };
-    create_custom_food_api_create_custom_food_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+  };
+  edit_food_entry_item_api_food_edit_food_entry_item__item_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        item_id: string;
+      };
+      cookie?: never;
     };
-    home__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FoodEntryItemEdit"];
+      };
     };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FoodEntryItemOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  remove_food_entry_api_food_delete_food_entry__food_entry_uuid__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        food_entry_uuid: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  search_food_by_name_api_food_get_search_name__food_name__get: {
+    parameters: {
+      query?: {
+        iteration?: number;
+        page_size?: number;
+      };
+      header?: never;
+      path: {
+        food_name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FoodOut"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  search_food_by_uuid_api_food_get_search_specific__get: {
+    parameters: {
+      query?: {
+        food_uuid?: string | null;
+        barcode?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FoodOut"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  search_food_entries_by_date_api_food_get_search_date__date__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        date: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FoodEntryOut"][];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  create_user_api_users_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateUser"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserPublic"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  login_for_access_tokan_api_users_token_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/x-www-form-urlencoded": components["schemas"]["Body_login_for_access_tokan_api_users_token_post"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Token"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  get_current_user_api_users_me_post: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserPrivate"];
+        };
+      };
+    };
+  };
+  update_user_api_users__user_id__patch: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        user_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UserUpdate"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserPrivate"];
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  home__get: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
 }

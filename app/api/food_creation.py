@@ -31,7 +31,9 @@ async def create_food_entry(
 
     food_ids = [food_entry.food_uuid for food_entry in payload]
     result = await db.execute(
-        select(Food).where(
+        select(Food)
+        .where(Food.id.in_(food_ids))
+        .where(
             or_(
                 Food.user_id == user.id, Food.user_id.is_(None)
             )  # custom food belonging to user, or common food
