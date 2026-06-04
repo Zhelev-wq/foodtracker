@@ -1,5 +1,4 @@
 import type { components } from "../types/api.ts";
-import { api } from "../api/client.ts";
 import { useContext } from "react";
 import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
 
@@ -14,12 +13,6 @@ TODO:
 */
 
 export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
-  /*
-    TODO:
-        add functionality for removing and editing food entries
-        create api methods to handle it
-    */
-
   const foodEntryFormContext = useContext(FoodEntryFormContext);
   const openEdit = foodEntryFormContext.openEdit;
 
@@ -94,8 +87,8 @@ export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
         <div className="inline bg-emerald-100/60 dark:bg-gray-800">
           <button
             onClick={async () => {
-              await api.delete(`/api/food_delete/food_entry/${foodEntry.id}`);
-              fetchFoodData();
+              await deleteFoodEntry(foodEntry.id);
+              await fetchFoodData();
             }}
           >
             X

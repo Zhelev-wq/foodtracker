@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import type { components } from "../../../../frontend/src/types/api.ts";
 import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
 
@@ -7,9 +7,6 @@ take in search results
 display each search result in its own list item with add button for each
 on click bring up form to enter food grams and submit
 
-TODO:
-    add button to bring in more results
-    wait for change in API to make use of date prop
 */
 type FoodOut = components["schemas"]["FoodOut"];
 type FoodResultsListProps = {
@@ -19,23 +16,9 @@ type FoodResultsListProps = {
 export default function FoodResultList({
   foodSearchResults,
 }: FoodResultsListProps) {
-  const [prevFoodData, setPrevFoodData] = useState(foodSearchResults);
-
   if (!foodSearchResults) {
     return null;
   }
-
-  /* TODO: this may be broken. revise later 
-  if (foodSearchResults !== prevFoodData) { 
-    if (prevFoodData !== null) {
-      const currentIDs = new Set(foodSearchResults.map((r) => r.id));
-      const isSubset = prevFoodData.every((entry) => currentIDs.has(entry.id));
-      if (!isSubset) {
-        setFoodEntryFormVisible(false);
-      }
-    }
-    setPrevFoodData(foodSearchResults);
-  }*/
 
   const foodEntryFormContext = useContext(FoodEntryFormContext);
   const openAdd = foodEntryFormContext.openAdd;

@@ -1,7 +1,6 @@
 import { FoodEntryFormContextProvider } from "./FoodEntryFormContext";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import { api } from ".././api/client";
 import DailyLog from "./DailyLog";
 import DateSelector from "./DateSelector";
 import FoodSummary from "./FoodSummary";
@@ -17,10 +16,9 @@ export default function Tracker() {
   }
 
   const fetchFoodData = async () => {
-    const response = await api.get(
-      `/api/food_get/search/date/${format(date, "yyyy-MM-dd")}`,
-    );
-    setFoodData(response.data);
+    const formattedDate = format(date, "yyyy-MM-dd");
+    const foodEntries = await getFoodEntriesForDate(formattedDate);
+    setFoodData(foodEntries);
   };
 
   const [date, setDate] = useState(getDate());
@@ -39,11 +37,8 @@ export default function Tracker() {
     }
     const t = setTimeout(() => {
       const fetchResults = async () => {
-        const response = await api.get(
-          `/api/food_get/search/name/${searchText}`,
-        );
-        setFoodSearchResults(response.data);
-        return response.data;
+        const searchResults = await searchFoodByName(searchText);
+        setFoodSearchResults(searchResults);
       };
       fetchResults();
     }, 500);

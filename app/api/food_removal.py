@@ -30,5 +30,3 @@ async def remove_food_entry(
 
     await db.delete(food_entry)
     await db.commit()
-
-    return food_entry

@@ -1,6 +1,5 @@
 import type { components } from "../../types/api.ts";
 import { useState, useContext } from "react";
-import { api } from "../../api/client.ts";
 import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
 
 type FoodOut = components["schemas"]["FoodOut"];
@@ -76,18 +75,10 @@ export default function FoodEntryForm() {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
             onClick={() => {
-              /*TODO: replace with helper functions for readability*/
               if (mode === "edit") {
-                api.patch(`/api/food_edit/food_entry_item/${FoodEntryItemId}`, {
-                  grams: grams,
-                });
+                editFoodEntry(FoodEntryItemId, grams);
               } else if (mode === "add") {
-                api.post("/api/food_create/food_entry", [
-                  {
-                    food_uuid: id,
-                    grams: grams,
-                  },
-                ]);
+                createFoodEntry(id, grams);
               }
             }}
           >

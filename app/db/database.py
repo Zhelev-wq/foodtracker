@@ -1,11 +1,11 @@
 from dotenv import dotenv_values
 from sqlalchemy import Column, MetaData, Table
+from sqlalchemy.engine import URL
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
-from app.config import settings
-from sqlalchemy.engine import URL
 
+from app.config import settings
 
 DATABASE_URL = URL.create(
     drivername=f"{settings.db}+asyncpg",
@@ -18,7 +18,7 @@ DATABASE_URL = URL.create(
 
 
 engine = create_async_engine(
-    DATABASE_URL, echo=True
+    DATABASE_URL,
 )
 
 AsyncSessionLocal = async_sessionmaker(

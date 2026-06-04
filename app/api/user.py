@@ -7,17 +7,13 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func, select
 
-from app.auth import (
-    create_access_token,
-    hash_password,
-    oauth2_scheme,
-    verify_access_token,
-    verify_password,
-)
+from app.auth import (create_access_token, hash_password, oauth2_scheme,
+                      verify_access_token, verify_password)
 from app.config import settings
 from app.db.database import AsyncSession, get_db
 from app.db.tables.user import User
-from app.validators.user import CreateUser, Token, UserPrivate, UserPublic, UserUpdate
+from app.validators.user import (CreateUser, Token, UserPrivate, UserPublic,
+                                 UserUpdate)
 
 router = APIRouter(tags=["user"])
 
@@ -74,7 +70,7 @@ async def login_for_access_tokan(
 
 @router.post("/me")
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],  # TODO: look into what this does
+    token: Annotated[str, Depends(oauth2_scheme)],
     db: AsyncSession = Depends(get_db),
 ) -> UserPrivate:
 

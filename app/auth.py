@@ -58,7 +58,7 @@ def verify_access_token(token: str) -> str | None:
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],  # TODO: look into what this does
+    token: Annotated[str, Depends(oauth2_scheme)],
     db: AsyncSession = Depends(get_db),
 ) -> User:
 
