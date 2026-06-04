@@ -3,4 +3,5 @@ export const ROUTES = {
   CUSTOM_FOODS: "/custom",
   STATISTICS: "/statistics",
   LOGIN: "/login",
+  REGISTER: "/register",
 };

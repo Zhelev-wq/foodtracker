@@ -31,20 +31,28 @@ export default function Login({}: LoginProps) {
     return (
       <div>
         <form onSubmit={handleSubmit}>
-          <input
-            name="username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            name="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div>
+            <label>Email: </label>
+            <input
+              name="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label>Password: </label>
+            <input
+              name="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
           <button type="submit">Log In</button>
         </form>
+        <a href="/register">Register here</a>
       </div>
     );
   }

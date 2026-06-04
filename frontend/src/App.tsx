@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import { ROUTES } from "./routes.ts";
 import Login from "./components/Login.tsx";
 import Tracker from "./components/Tracker.tsx";
+import Register from "./components/Register.tsx";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             element={<div>PLACEHOLDER STATS</div>}
           />
           <Route path={ROUTES.LOGIN} element={<Login />} />
+          <Route path={ROUTES.REGISTER} element={<Register />} />
         </Routes>
       </BrowserRouter>
     </BaseLayout>
