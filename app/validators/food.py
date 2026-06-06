@@ -44,13 +44,25 @@ class Minerals(BaseModel):
 
 class Fats(BaseModel):
     saturated_fat: Optional[float] = 0
-    monounstaurated_fat: Optional[float] = 0
+    monounsaturated_fat: Optional[float] = 0
     polyunsaturated_fat: Optional[float] = 0
-    omage_3_fat: Optional[float] = 0
-    omage_6_fat: Optional[float] = 0
-    omage_9_fat: Optional[float] = 0
+    omega_3_fat: Optional[float] = 0
+    omega_6_fat: Optional[float] = 0
+    omega_9_fat: Optional[float] = 0
     trans_fat: Optional[float] = 0
 
+class CustomFood(BaseModel):
+    name: str
+    carbs: float
+    protein: float
+    fat: float
+    kcal: float
+    alcohol: Optional[float] = 0
+    caffeine: Optional[float] = 0
+    barcode: Optional[str] = None
+    vitamins: Optional[Vitamins]
+    minerals: Optional[Minerals]
+    fats: Optional[Fats]
 
 class FoodOut(BaseModel):
 
@@ -65,7 +77,7 @@ class FoodOut(BaseModel):
     user_id: uuid.UUID | None = None
     alcohol: Optional[float] = 0
     caffeine: Optional[float] = 0
-    barcode: str
+    barcode: str | None = None
     vitamins: Optional[Vitamins]
     minerals: Optional[Minerals]
     fats: Optional[Fats]
@@ -110,7 +122,7 @@ class FoodEntryOut(BaseModel):
             total["caffeine"] += (item.food.caffeine or 0) * item.food_grams / 100
             total["food_grams"] += item.food_grams
 
-        total["name"] = self.food_items[0].food.name
+        total["name"] = self.name or self.food_items[0].food.name
         return total
 
     @computed_field
@@ -152,3 +164,10 @@ class FoodEntryOut(BaseModel):
     @property
     def food_grams(self) -> float:
         return self._total.get("food_grams")
+
+class RecipeItemOut(FoodEntryItemOut):
+    pass
+
+class RecipeOut(FoodEntryItemOut):
+    food_items: list[RecipeItemOut]
+    name: str

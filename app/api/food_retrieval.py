@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Food
-from app.db.tables.food_entries import FoodEntry
-from app.validators.food import FoodEntryOut, FoodOut
+from app.db.tables.food_entries import FoodEntry, Recipe
+from app.validators.food import FoodEntryOut, FoodOut, RecipeOut
 
 router = APIRouter(tags=["food/read"])
 
@@ -24,7 +24,7 @@ async def search_food_by_name(
     db: AsyncSession = Depends(get_db),
 ) -> list[
     FoodOut
-]:  # fuzzy search, will return 20 results of things with similarity to food_name
+] :  # fuzzy search, will return 20 results of things with similarity to food_name
     food_query = (
         select(Food)
         .where(Food.name.op("%")(food_name))
@@ -105,3 +105,17 @@ async def search_food_entries_by_date(
     results = await db.execute(db_query)
     food_entries = results.scalars().all()
     return food_entries
+
+@router.get("/search/recipes")
+async def get_user_recipes(
+    user: CurrentUser, db: AsyncSession = Depends(get_db)
+) -> list[RecipeOut]:
+    db_query = (
+        select(Recipe)
+        .where(Recipe.user_id) == user.id
+    )
+
+    results = db.execute(db_query)
+    recipes = results.scalars().all()
+
+    return recipes
