@@ -7,6 +7,7 @@ import FoodSummary from "./FoodSummary";
 import FoodSearchBar from "./SearchFood/FoodSearchBar";
 import FoodResultList from "./SearchFood/FoodResultsList";
 import FoodEntryForm from "./SearchFood/FoodEntryForm";
+import {getFoodEntriesForDate, searchFoodByName} from "../api/utils.ts"
 
 export default function Tracker() {
   function getDate() {
