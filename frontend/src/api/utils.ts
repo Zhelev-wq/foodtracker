@@ -41,3 +41,30 @@ export async function searchFoodByName(searchText: string) {
   const data = response.data;
   return data;
 }
+
+export async function getCustomFoods() {
+  const response = await api.get(`/api/food_get/search/custom_food`);
+  const data = response.data;
+  return data;
+}
+
+export async function getRecipes() {
+  const response = await api.get(`/api/food_get/search/recipes`);
+  const data = response.data;
+  return data;
+}
+
+export async function createCustomFood(foodData) {
+  const response = await api.post(`/api/food_create/custom_food`, foodData);
+  const data = response.data;
+  return data;
+}
+
+export async function editCustomFood(foodData, food_uuid) {
+  const response = await api.put(
+    `/api/food_edit/custom_food/${food_uuid}`,
+    foodData,
+  );
+  const data = response.data;
+  return data;
+}
