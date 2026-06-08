@@ -8,9 +8,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth import CurrentUser
 from app.db.database import get_db
-from app.db.tables.food import Food, Vitamins, Fats, Minerals
-from app.db.tables.food_entries import FoodEntry, FoodEntryItem, Recipe, RecipeEntryItem
-from app.validators.food import FoodEntryOut, CustomFood
+from app.db.tables.food import Fats, Food, Minerals, Vitamins
+from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
+                                        RecipeEntryItem)
+from app.validators.food import CustomFood, FoodEntryOut
 
 
 class CreateFoodEntryPayload(BaseModel):
@@ -18,9 +19,11 @@ class CreateFoodEntryPayload(BaseModel):
     food_uuid: uuid.UUID
     grams: int
 
+
 class CreateRecipePayload(BaseModel):
     food_items: list[CreateFoodEntryPayload]
-    name: str
+    recipe_name: str
+
 
 router = APIRouter(tags=["food/create"])
 
@@ -65,24 +68,26 @@ async def create_food_entry(
 
 @router.post("/custom_food")
 async def create_custom_food(
-    payload: CustomFood,
-    user: CurrentUser,
-    db: AsyncSession = Depends(get_db)
-): 
+    payload: CustomFood, user: CurrentUser, db: AsyncSession = Depends(get_db)
+):
 
     custom_food = Food(
-        name = payload.name,
-        carbs = payload.carbs,
-        protein = payload.protein,
-        fat = payload.fat,
-        kcal = payload.kcal,
-        alcohol = payload.alcohol,
-        caffeine = payload.caffeine,
-        barcode = payload.barcode,
-        vitamins = Vitamins(**payload.vitamins.model_dump() if payload.vitamins else None),
-        fats = Fats(**payload.fats.model_dump() if payload.fats else None),
-        minerals = Minerals(**payload.minerals.model_dump() if payload.minerals else None),
-        user_id = user.id,
+        name=payload.name,
+        carbs=payload.carbs,
+        protein=payload.protein,
+        fat=payload.fat,
+        kcal=payload.kcal,
+        alcohol=payload.alcohol,
+        caffeine=payload.caffeine,
+        barcode=payload.barcode,
+        vitamins=Vitamins(
+            **payload.vitamins.model_dump() if payload.vitamins else None
+        ),
+        fats=Fats(**payload.fats.model_dump() if payload.fats else None),
+        minerals=Minerals(
+            **payload.minerals.model_dump() if payload.minerals else None
+        ),
+        user_id=user.id,
     )
 
     db.add(custom_food)
@@ -94,9 +99,7 @@ async def create_custom_food(
 
 @router.post("/recipe")
 async def create_recipe(
-    payload: CreateRecipePayload,
-    user: CurrentUser,
-    db: AsyncSession = Depends(get_db)
+    payload: CreateRecipePayload, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ):
 
     food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
@@ -118,7 +121,7 @@ async def create_recipe(
         )
 
     recipe = Recipe(
-        name=payload.name,
+        recipe_name=payload.recipe_name,
         food_items=[
             RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams)
             for item in payload.food_items
@@ -129,3 +132,13 @@ async def create_recipe(
     await db.commit()
     await db.refresh(recipe)
     return recipe
+
+
+@router.post("/entry_from_recipe")
+async def add_recipe_entry(
+    payload,
+    user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+):
+
+    ...

@@ -24,7 +24,7 @@ async def search_food_by_name(
     db: AsyncSession = Depends(get_db),
 ) -> list[
     FoodOut
-] :  # fuzzy search, will return 20 results of things with similarity to food_name
+]:  # fuzzy search, will return 20 results of things with similarity to food_name
     food_query = (
         select(Food)
         .where(Food.name.op("%")(food_name))
@@ -106,16 +106,26 @@ async def search_food_entries_by_date(
     food_entries = results.scalars().all()
     return food_entries
 
+
 @router.get("/search/recipes")
 async def get_user_recipes(
     user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> list[RecipeOut]:
-    db_query = (
-        select(Recipe)
-        .where(Recipe.user_id) == user.id
-    )
+    db_query = select(Recipe).where(Recipe.user_id == user.id)
 
-    results = db.execute(db_query)
+    results = await db.execute(db_query)
     recipes = results.scalars().all()
 
     return recipes
+
+
+@router.get("/search/custom_food")
+async def get_user_custom_food(
+    user: CurrentUser, db: AsyncSession = Depends(get_db)
+) -> list[FoodOut]:
+    db_query = select(Food).where(Food.user_id == user.id)
+
+    results = await db.execute(db_query)
+    custom_foods = results.scalars().all()
+
+    return custom_foods
