@@ -7,6 +7,14 @@ from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
 from app.db.database import Base
 
+"""
+TODO: 
+    rename classes and attributes to something that makes sense
+    current setup is confusing af
+        food_entry is attr and table name
+    
+"""
+
 
 class EntryBase(Base):
     __abstract__ = True
@@ -39,9 +47,7 @@ class FoodEntry(EntryBase):
 class Recipe(EntryBase):
     __tablename__ = "recipe"
     owned_item_class_name = "RecipeEntryItem"
-    recipe_name: Mapped[str] = mapped_column(
-        String, nullable=False
-    )
+    recipe_name: Mapped[str] = mapped_column(String, nullable=False)
 
 
 class ItemBase(Base):
@@ -57,7 +63,10 @@ class ItemBase(Base):
         UUID, ForeignKey("food.id"), as_uuid=True
     )
     food_grams: Mapped[int] = mapped_column(Integer)
-    user_id = association_proxy(owner_table, "user_id")
+
+    @declared_attr
+    def user_id(cls):
+        return association_proxy("food_entry", "user_id")
 
     @declared_attr
     def food(cls):
@@ -69,7 +78,9 @@ class ItemBase(Base):
 
     @declared_attr
     def food_entry(cls):
-        return relationship(cls.owner_table_class_name, back_populates="food_items")
+        return relationship(
+            cls.owner_table_class_name, back_populates="food_items", lazy="selectin"
+        )
 
 
 class FoodEntryItem(ItemBase):

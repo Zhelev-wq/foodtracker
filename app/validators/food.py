@@ -51,6 +51,7 @@ class Fats(BaseModel):
     omega_9_fat: Optional[float] = 0
     trans_fat: Optional[float] = 0
 
+
 class CustomFood(BaseModel):
     name: str
     carbs: float
@@ -63,6 +64,7 @@ class CustomFood(BaseModel):
     vitamins: Optional[Vitamins]
     minerals: Optional[Minerals]
     fats: Optional[Fats]
+
 
 class FoodOut(BaseModel):
 
@@ -122,7 +124,11 @@ class FoodEntryOut(BaseModel):
             total["caffeine"] += (item.food.caffeine or 0) * item.food_grams / 100
             total["food_grams"] += item.food_grams
 
-        total["name"] = self.name or self.food_items[0].food.name
+        try:
+            name = self.recipe_name
+        except Exception:
+            name = self.food_items[0].food.name
+        total["name"] = name
         return total
 
     @computed_field
@@ -165,9 +171,11 @@ class FoodEntryOut(BaseModel):
     def food_grams(self) -> float:
         return self._total.get("food_grams")
 
+
 class RecipeItemOut(FoodEntryItemOut):
     pass
 
-class RecipeOut(FoodEntryItemOut):
+
+class RecipeOut(FoodEntryOut):
+    recipe_name: str
     food_items: list[RecipeItemOut]
-    name: str
