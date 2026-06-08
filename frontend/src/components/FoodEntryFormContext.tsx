@@ -11,6 +11,7 @@ export function FoodEntryFormContextProvider({ children }) {
   const [foodEntryItemID, setFoodEntryItemID] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<"add" | "edit" | null>(null);
   const [existingGrams, setExistingGrams] = useState<number>(100);
+  const [selectorData, setSelectorData] = useState<FoodEntryItemOut[] | []>([]);
 
   const openAdd = (FoodOut: FoodOut) => {
     setFoodOutData(FoodOut);
@@ -35,10 +36,12 @@ export function FoodEntryFormContextProvider({ children }) {
     foodEntryItemID: foodEntryItemID,
     formMode: formMode,
     existingGrams: existingGrams,
+    selectorData: selectorData,
 
     openAdd: openAdd,
     openEdit: openEdit,
     closeForm: closeForm,
+    setSelectorData: setSelectorData,
   };
 
   return (

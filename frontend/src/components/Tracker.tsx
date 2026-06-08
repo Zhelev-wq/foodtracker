@@ -7,7 +7,8 @@ import FoodSummary from "./FoodSummary";
 import FoodSearchBar from "./SearchFood/FoodSearchBar";
 import FoodResultList from "./SearchFood/FoodResultsList";
 import FoodEntryForm from "./SearchFood/FoodEntryForm";
-import {getFoodEntriesForDate, searchFoodByName} from "../api/utils.ts"
+import { getFoodEntriesForDate, searchFoodByName } from "../api/utils.ts";
+import FoodEntryItemSelector from "./FoodEntryItemSelector.tsx";
 
 export default function Tracker() {
   function getDate() {
@@ -55,6 +56,7 @@ export default function Tracker() {
 
       <FoodEntryFormContextProvider>
         <DailyLog foodData={foodData} fetchFoodData={fetchFoodData} />
+        <FoodEntryItemSelector />
         <FoodSearchBar setSearchText={setSearchText} />
         <div className="flex">
           <FoodResultList foodSearchResults={foodSearchResults} />

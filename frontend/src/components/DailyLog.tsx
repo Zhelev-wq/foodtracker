@@ -1,6 +1,7 @@
 import type { components } from "../types/api.ts";
 import { useContext } from "react";
 import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
+import { deleteFoodEntry } from "../api/utils.ts";
 
 type DailyLogProps = {
   foodData: components["schemas"]["FoodEntryOut"][];
@@ -15,6 +16,7 @@ TODO:
 export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
   const foodEntryFormContext = useContext(FoodEntryFormContext);
   const openEdit = foodEntryFormContext.openEdit;
+  const setSelectorData = foodEntryFormContext.setSelectorData;
 
   const foodRows = foodData.map((foodEntry) => (
     <tr>
@@ -25,9 +27,14 @@ export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
               onClick={() => {
                 /*                             
                   For future, add food item selector for recipes here, default to food_item[0] for now
+                  openSelector(foodEntry.food_items)
 
-                */
-                openEdit(foodEntry.food_items[0]);
+                  */
+                if (foodEntry.food_items.length > 1) {
+                  setSelectorData(foodEntry.food_items);
+                } else {
+                  openEdit(foodEntry.food_items[0]);
+                }
               }}
             >
               Edit

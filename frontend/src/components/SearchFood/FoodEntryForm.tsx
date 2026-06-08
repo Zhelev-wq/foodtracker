@@ -1,7 +1,7 @@
 import type { components } from "../../types/api.ts";
 import { useState, useContext } from "react";
 import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
-import { editFoodEntry, createFoodEntry } from "../../api/utils.ts"
+import { editFoodEntry, createFoodEntry } from "../../api/utils.ts";
 
 type FoodOut = components["schemas"]["FoodOut"];
 
