@@ -1,11 +1,11 @@
 import "./App.css";
-import "./components/DateSelector.js";
+import "./components/Tracker/DateSelector.js";
 import BaseLayout from "./layouts/BaseLayout.tsx";
 import { BrowserRouter, Route, Routes } from "react-router";
 import { ROUTES } from "./routes.ts";
-import Login from "./components/Login.tsx";
-import Tracker from "./components/Tracker.tsx";
-import Register from "./components/Register.tsx";
+import Login from "./components/UserControl/Login.tsx";
+import Tracker from "./components/Tracker/Tracker.tsx";
+import Register from "./components/UserControl/Register.tsx";
 import CustomBase from "./components/CustomFood/CustomBase.tsx";
 
 function App() {

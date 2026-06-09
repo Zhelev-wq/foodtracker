@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import type { components } from "../../../../frontend/src/types/api.ts";
-import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
 /*
 take in search results

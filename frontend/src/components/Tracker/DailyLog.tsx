@@ -1,7 +1,7 @@
-import type { components } from "../types/api.ts";
+import type { components } from "../../types/api.ts";
 import { useContext } from "react";
 import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
-import { deleteFoodEntry } from "../api/utils.ts";
+import { deleteFoodEntry } from "../../api/utils.ts";
 
 type DailyLogProps = {
   foodData: components["schemas"]["FoodEntryOut"][];

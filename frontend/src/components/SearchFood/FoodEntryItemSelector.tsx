@@ -1,4 +1,4 @@
-import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 import { useContext } from "react";
 
 export default function FoodEntryItemSelector() {

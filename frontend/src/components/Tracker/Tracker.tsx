@@ -1,14 +1,14 @@
-import { FoodEntryFormContextProvider } from "./FoodEntryFormContext";
+import { FoodEntryFormContextProvider } from "./FoodEntryFormContext.tsx";
 import { format } from "date-fns";
 import { useState, useEffect } from "react";
-import DailyLog from "./DailyLog";
-import DateSelector from "./DateSelector";
-import FoodSummary from "./FoodSummary";
-import FoodSearchBar from "./SearchFood/FoodSearchBar";
-import FoodResultList from "./SearchFood/FoodResultsList";
-import FoodEntryForm from "./SearchFood/FoodEntryForm";
-import { getFoodEntriesForDate, searchFoodByName } from "../api/utils.ts";
-import FoodEntryItemSelector from "./FoodEntryItemSelector.tsx";
+import DailyLog from "./DailyLog.tsx";
+import DateSelector from "./DateSelector.tsx";
+import FoodSummary from "./FoodSummary.tsx";
+import FoodSearchBar from "../SearchFood/FoodSearchBar.tsx";
+import FoodResultList from "../SearchFood/FoodResultsList.tsx";
+import FoodEntryForm from "../SearchFood/FoodEntryForm.tsx";
+import { getFoodEntriesForDate, searchFoodByName } from "../../api/utils.ts";
+import FoodEntryItemSelector from "../SearchFood/FoodEntryItemSelector.tsx";
 
 export default function Tracker() {
   function getDate() {

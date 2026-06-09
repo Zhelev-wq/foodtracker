@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { components } from "../types/api.ts";
+import { components } from "../../types/api.ts";
 
 type FoodOut = components["schemas"]["FoodOut"];
 type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
