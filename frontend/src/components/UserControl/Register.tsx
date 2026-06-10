@@ -1,6 +1,6 @@
 import { components } from "../types/api";
 import { useState } from "react";
-import { api } from "../../api/client.ts"
+import { api } from "../../api/client.ts";
 
 export default function Register() {
   const handleSubmit = async (e) => {
