@@ -15,8 +15,7 @@ TODO:
 
 export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
   const foodEntryFormContext = useContext(FoodEntryFormContext);
-  const openEdit = foodEntryFormContext.openEdit;
-  const setSelectorData = foodEntryFormContext.setSelectorData;
+  const passFoodEntryToForm = foodEntryFormContext.passFoodEntryToForm;
 
   const foodRows = foodData.map((foodEntry) => (
     <tr>
@@ -25,16 +24,7 @@ export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
           <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
             <button
               onClick={() => {
-                /*                             
-                  For future, add food item selector for recipes here, default to food_item[0] for now
-                  openSelector(foodEntry.food_items)
-
-                  */
-                if (foodEntry.food_items.length > 1) {
-                  setSelectorData(foodEntry.food_items);
-                } else {
-                  openEdit(foodEntry.food_items[0]);
-                }
+                passFoodEntryToForm(foodEntry);
               }}
             >
               Edit

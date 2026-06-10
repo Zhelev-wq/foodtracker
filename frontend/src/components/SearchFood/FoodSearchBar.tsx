@@ -1,12 +1,26 @@
+import React, { useContext } from "react";
+
 type FoodSearchBarProps = {
   setSearchText: (input: string) => void;
+  contextProp: React.Context;
 };
 
-export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
+export default function FoodSearchBar({
+  setSearchText,
+  contextProp,
+}: FoodSearchBarProps) {
   /* 
     TODO:
         when pressing enter nothing should happen, now it crashes page
     */
+
+  const context = useContext(contextProp);
+  const formTarget = context.formTarget;
+
+  if (!formTarget) {
+    return null;
+  }
+
   return (
     <form className="max-w-md mx-auto aling-top">
       <div className="relative">

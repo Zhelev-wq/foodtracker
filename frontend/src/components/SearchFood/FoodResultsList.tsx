@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import type { components } from "../../../../frontend/src/types/api.ts";
+import React, { useContext } from "react";
+import { components } from "../../types/api.ts";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
 /*
@@ -11,16 +11,18 @@ on click bring up form to enter food grams and submit
 type FoodOut = components["schemas"]["FoodOut"];
 type FoodResultsListProps = {
   foodSearchResults: FoodOut[] | null;
+  context: React.Context;
 };
 
 export default function FoodResultList({
   foodSearchResults,
+  context,
 }: FoodResultsListProps) {
   if (!foodSearchResults) {
     return null;
   }
 
-  const foodEntryFormContext = useContext(FoodEntryFormContext);
+  const foodEntryFormContext = useContext(context);
   const openAdd = foodEntryFormContext.openAdd;
 
   const formattedSearchResults = foodSearchResults.map((result: FoodOut) => (

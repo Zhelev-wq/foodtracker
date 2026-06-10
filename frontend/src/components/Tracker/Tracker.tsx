@@ -1,6 +1,6 @@
 import { FoodEntryFormContextProvider } from "./FoodEntryFormContext.tsx";
 import { format } from "date-fns";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import DailyLog from "./DailyLog.tsx";
 import DateSelector from "./DateSelector.tsx";
 import FoodSummary from "./FoodSummary.tsx";
@@ -9,6 +9,22 @@ import FoodResultList from "../SearchFood/FoodResultsList.tsx";
 import FoodEntryForm from "../SearchFood/FoodEntryForm.tsx";
 import { getFoodEntriesForDate, searchFoodByName } from "../../api/utils.ts";
 import FoodEntryItemSelector from "../SearchFood/FoodEntryItemSelector.tsx";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
+
+function AddFoodButton({ contextProp }) {
+  const context = useContext(contextProp);
+  const setFormTarget = context.setFormTarget;
+
+  return (
+    <button
+      onClick={() => {
+        setFormTarget("daily-log");
+      }}
+    >
+      ADD FOOD
+    </button>
+  );
+}
 
 export default function Tracker() {
   function getDate() {
@@ -49,18 +65,28 @@ export default function Tracker() {
 
   return (
     <div>
-      <div className="flex justify-evenly items-center">
-        <DateSelector date={date} setDate={setDate} />
-        <FoodSummary foodData={foodData} />
-      </div>
-
       <FoodEntryFormContextProvider>
+        <div className="flex justify-evenly items-center">
+          <DateSelector date={date} setDate={setDate} />
+          <FoodSummary foodData={foodData} />
+          <AddFoodButton contextProp={FoodEntryFormContext} />
+        </div>
         <DailyLog foodData={foodData} fetchFoodData={fetchFoodData} />
-        <FoodEntryItemSelector />
-        <FoodSearchBar setSearchText={setSearchText} />
-        <div className="flex">
-          <FoodResultList foodSearchResults={foodSearchResults} />
-          <FoodEntryForm />
+        <div className="flex justify-evenly">
+          <div>
+            <FoodEntryItemSelector formContext={FoodEntryFormContext} />
+            <FoodEntryForm contextProp={FoodEntryFormContext} />
+          </div>
+          <div>
+            <FoodSearchBar
+              setSearchText={setSearchText}
+              contextProp={FoodEntryFormContext}
+            />
+            <FoodResultList
+              foodSearchResults={foodSearchResults}
+              context={FoodEntryFormContext}
+            />
+          </div>
         </div>
       </FoodEntryFormContextProvider>
     </div>
