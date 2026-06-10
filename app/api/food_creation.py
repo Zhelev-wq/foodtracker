@@ -9,21 +9,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Fats, Food, Minerals, Vitamins
-from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
-                                        RecipeEntryItem)
-from app.validators.food import CustomFood, FoodEntryOut
-
-
-class CreateFoodEntryPayload(BaseModel):
-    # temp location, move to other place, TODO
-    food_uuid: uuid.UUID
-    grams: int
-
-
-class CreateRecipePayload(BaseModel):
-    food_items: list[CreateFoodEntryPayload]
-    recipe_name: str
-
+from app.db.tables.food_entries import FoodEntry, FoodEntryItem, Recipe, RecipeEntryItem
+from app.validators.food import (
+    CreateFoodEntryPayload,
+    CreateRecipePayload,
+    CustomFood,
+    FoodEntryOut,
+)
 
 router = APIRouter(tags=["food/create"])
 
@@ -139,6 +131,4 @@ async def add_recipe_entry(
     payload,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-):
-
-    ...
+): ...

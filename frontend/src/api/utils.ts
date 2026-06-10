@@ -1,6 +1,9 @@
 import { api } from "./client";
 
-export async function editFoodEntry(foodEntryItemID: string, grams: number) {
+export async function editFoodEntryItem(
+  foodEntryItemID: string,
+  grams: number,
+) {
   const response = await api.patch(
     `/api/food_edit/food_entry_item/${foodEntryItemID}`,
     {
@@ -64,6 +67,16 @@ export async function editCustomFood(foodData, food_uuid) {
   const response = await api.put(
     `/api/food_edit/custom_food/${food_uuid}`,
     foodData,
+  );
+  const data = response.data;
+  return data;
+}
+
+export async function saveFoodEntryEdit(foodEntryData, foodEntryID) {
+  console.log(foodEntryData);
+  const response = await api.put(
+    `/api/food_edit/food_entry/food_items/${foodEntryID}`,
+    foodEntryData,
   );
   const data = response.data;
   return data;

@@ -6,6 +6,8 @@ from typing import List, Optional
 from pydantic import BaseModel, computed_field
 
 
+# TODO: Create separate validators for input/output;
+# clean up these in separate files as makes sense
 class Vitamins(BaseModel):
     vit_a: Optional[float] = 0
     vit_b1: Optional[float] = 0
@@ -93,6 +95,7 @@ class FoodEntryItemOut(BaseModel):
     food_grams: int
     food: FoodOut
     user_id: uuid.UUID
+    food_entry_id: uuid.UUID
 
 
 class FoodEntryOut(BaseModel):
@@ -179,3 +182,21 @@ class RecipeItemOut(FoodEntryItemOut):
 class RecipeOut(FoodEntryOut):
     recipe_name: str
     food_items: list[RecipeItemOut]
+
+
+class FoodEntryItemsEdit(BaseModel):
+    food_items: list[FoodEntryItemOut]
+
+
+class CreateFoodEntryPayload(BaseModel):
+    food_uuid: uuid.UUID
+    grams: int
+
+
+class CreateRecipePayload(BaseModel):
+    food_items: list[CreateFoodEntryPayload]
+    recipe_name: str
+
+
+class FoodEntryItemEdit(BaseModel):
+    grams: int

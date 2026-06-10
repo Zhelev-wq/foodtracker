@@ -9,13 +9,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Fats, Food, Minerals, Vitamins
-from app.db.tables.food_entries import FoodEntryItem
-from app.validators.food import CustomFood, FoodEntryItemOut, FoodOut
-
-
-class FoodEntryItemEdit(BaseModel):
-    grams: int
-
+from app.db.tables.food_entries import FoodEntry, FoodEntryItem
+from app.validators.food import (
+    CreateFoodEntryPayload,
+    CustomFood,
+    FoodEntryItemEdit,
+    FoodEntryItemOut,
+    FoodEntryItemsEdit,
+    FoodOut,
+)
 
 router = APIRouter(tags=["food/update"])
 
@@ -93,3 +95,54 @@ async def edit_custom_food(
     await db.commit()
     await db.refresh(existing_food)
     return existing_food
+
+
+@router.put("/food_entry/food_items/{food_entry_id}")
+async def edit_food_entry_food_items(
+    food_entry_id: uuid.UUID,
+    food_items: list[FoodEntryItemOut | CreateFoodEntryPayload],
+    user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+):
+    if not food_items:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Food items not provided"
+        )
+
+    db_query = (
+        select(FoodEntry)
+        .where(FoodEntry.id == food_entry_id)
+        .where(FoodEntry.user_id == user.id)
+    )
+    result = await db.execute(db_query)
+    food_entry = result.scalars().first()
+
+    if not food_entry:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Food entry associated with items not found",
+        )
+
+    incoming_existing = [
+        item for item in food_items if isinstance(item, FoodEntryItemOut)
+    ]  # maybe original, maybe edited
+    incoming_new = [
+        item for item in food_items if isinstance(item, CreateFoodEntryPayload)
+    ]  # completely new
+    incoming_by_id = {(item.id): item for item in incoming_existing}
+
+    kept_items = []
+    for existing_item in food_entry.food_items:
+        incoming = incoming_by_id.get(existing_item.id, None)
+        if incoming is not None:
+            existing_item.food_grams = incoming.food_grams
+            kept_items.append(existing_item)
+
+    new_items = []
+    for item in incoming_new:
+        new_items.append(FoodEntryItem(food_id=item.food_uuid, food_grams=item.grams))
+
+    food_entry.food_items = kept_items + new_items
+    await db.commit()
+    await db.refresh(food_entry)
+    return food_entry
