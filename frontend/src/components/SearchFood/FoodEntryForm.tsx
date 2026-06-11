@@ -24,7 +24,8 @@ export default function FoodEntryForm({ contextProp }: FoodEntryFormProps) {
   const existingGrams = context.existingGrams;
   const [grams, setGrams] = useState(existingGrams);
   const FoodOutData = context.foodOutData;
-  if (!FoodOutData) {
+  const formTarget = context.formTarget;
+  if (!FoodOutData || !formTarget) {
     return null;
   }
   const closeForm = context.closeForm;

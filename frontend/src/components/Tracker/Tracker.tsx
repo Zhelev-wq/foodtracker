@@ -14,11 +14,13 @@ import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 function AddFoodButton({ contextProp }) {
   const context = useContext(contextProp);
   const setFormTarget = context.setFormTarget;
+  const setSelectorData = context.setSelectorData;
 
   return (
     <button
       onClick={() => {
         setFormTarget("daily-log");
+        setSelectorData(null);
       }}
     >
       ADD FOOD

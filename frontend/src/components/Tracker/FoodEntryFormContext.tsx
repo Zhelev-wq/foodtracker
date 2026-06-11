@@ -43,6 +43,7 @@ export function FoodEntryFormContextProvider({ children }) {
     setFormMode(null);
     setFoodEntryItemID(null);
     setExistingGrams(100);
+    setFormTarget(null);
   };
 
   function writeFoodItemEditToSelectorData(
@@ -61,6 +62,13 @@ export function FoodEntryFormContextProvider({ children }) {
     });
     setSelectorData(updatedItems);
   }
+
+  const removeItemFromEntry = (foodEntryItem) => {
+    const updatedItems = selectorData.filter(
+      (item) => item.id !== foodEntryItem.id,
+    );
+    setSelectorData(updatedItems);
+  };
 
   const saveEntryToLog = (grams) => {
     if (formMode === "edit-single") {
@@ -100,14 +108,15 @@ export function FoodEntryFormContextProvider({ children }) {
   };
 
   const passFoodEntryToForm = (foodEntry) => {
-    setFormTarget("daily-log");
     setFoodEntryID(foodEntry.id);
     if (foodEntry.food_items.length === 1) {
+      setFormTarget("daily-log");
+      setSelectorData(null);
       openEditSingle(foodEntry.food_items[0]);
     } else {
       setSelectorData(foodEntry.food_items);
     }
-  }
+  };
 
   const contextValue = {
     foodOutData: foodOutData,
@@ -118,7 +127,6 @@ export function FoodEntryFormContextProvider({ children }) {
     formTarget: formTarget,
     foodEntryID: foodEntryID,
 
-      
     setSelectorData: setSelectorData,
     setFormTarget: setFormTarget,
     setFoodEntryID: setFoodEntryID,
@@ -129,6 +137,7 @@ export function FoodEntryFormContextProvider({ children }) {
     saveEntryToLog: saveEntryToLog,
     submitForm: submitForm,
     passFoodEntryToForm: passFoodEntryToForm,
+    removeItemFromEntry: removeItemFromEntry,
   };
 
   return (

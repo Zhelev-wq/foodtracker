@@ -15,6 +15,7 @@ export default function FoodEntryItemSelector({
   const openEdit = context.openEdit;
   const setFormTarget = context.setFormTarget;
   const foodEntryID = context.foodEntryID;
+  const removeItemFromEntry = context.removeItemFromEntry;
 
   if (!foodEntryItems || foodEntryItems.length === 0) {
     return null;
@@ -47,7 +48,15 @@ export default function FoodEntryItemSelector({
 
   const formattedResults = foodEntryItems.map((foodEntryItem) => (
     <li key={foodEntryItem.id} className="pb-3 sm:pb-4">
-      <div className="flex justify-evenly space-x-4- rlt:space-x-reverse">
+      <div className="flex gap-4 justify-between items-center">
+        <button
+          onClick={() => {
+            setFormTarget("food-entry");
+            openEdit(foodEntryItem); /* -> opens FoodEntryForm */
+          }}
+        >
+          Edit
+        </button>
         <p className="text-sm font-medium text-heading truncate">
           <strong>
             {foodEntryItem.food.name} |
@@ -56,12 +65,12 @@ export default function FoodEntryItemSelector({
           </strong>
         </p>
         <button
+          className="ml-auto"
           onClick={() => {
-            setFormTarget("food-entry");
-            openEdit(foodEntryItem); /* -> opens FoodEntryForm */
+            removeItemFromEntry(foodEntryItem);
           }}
         >
-          Edit
+          Remove
         </button>
       </div>
     </li>
@@ -73,7 +82,9 @@ export default function FoodEntryItemSelector({
         <h2>Select Food Item</h2>
         <button
           onClick={() => {
+            /*TODO: make helper function - closeSelector()*/
             setSelectorData([]);
+            setFormTarget(null);
           }}
         >
           X
