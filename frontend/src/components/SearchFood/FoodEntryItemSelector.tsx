@@ -1,15 +1,9 @@
 import React, { useContext } from "react";
-import { CustomRecipeFormContext } from "../CustomFood/CustomRecipeFormContext";
 import { saveFoodEntryEdit } from "../../api/utils";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
 
-type FoodEntryItemSelectorProps = {
-  formContext: React.Context;
-};
-
-export default function FoodEntryItemSelector({
-  formContext,
-}: FoodEntryItemSelectorProps) {
-  const context = useContext(formContext);
+export default function FoodEntryItemSelector() {
+  const context = useContext(FoodEntryFormContext);
   const foodEntryItems = context.selectorData;
   const setSelectorData = context.setSelectorData;
   const openEdit = context.openEdit;

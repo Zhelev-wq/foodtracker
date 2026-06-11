@@ -1,20 +1,17 @@
 import React, { useContext } from "react";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
 
 type FoodSearchBarProps = {
   setSearchText: (input: string) => void;
-  contextProp: React.Context;
 };
 
-export default function FoodSearchBar({
-  setSearchText,
-  contextProp,
-}: FoodSearchBarProps) {
+export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
   /* 
     TODO:
         when pressing enter nothing should happen, now it crashes page
     */
 
-  const context = useContext(contextProp);
+  const context = useContext(FoodEntryFormContext);
   const formTarget = context.formTarget;
 
   if (!formTarget) {

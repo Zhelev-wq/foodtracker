@@ -11,18 +11,16 @@ on click bring up form to enter food grams and submit
 type FoodOut = components["schemas"]["FoodOut"];
 type FoodResultsListProps = {
   foodSearchResults: FoodOut[] | null;
-  context: React.Context;
 };
 
 export default function FoodResultList({
   foodSearchResults,
-  context,
 }: FoodResultsListProps) {
   if (!foodSearchResults) {
     return null;
   }
 
-  const foodEntryFormContext = useContext(context);
+  const foodEntryFormContext = useContext(FoodEntryFormContext);
   const openAdd = foodEntryFormContext.openAdd;
 
   const formattedSearchResults = foodSearchResults.map((result: FoodOut) => (

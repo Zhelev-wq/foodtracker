@@ -11,14 +11,15 @@ import { getFoodEntriesForDate, searchFoodByName } from "../../api/utils.ts";
 import FoodEntryItemSelector from "../SearchFood/FoodEntryItemSelector.tsx";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
-function AddFoodButton({ contextProp }) {
-  const context = useContext(contextProp);
+function AddFoodButton() {
+  const context = useContext(FoodEntryFormContext);
   const setFormTarget = context.setFormTarget;
   const setSelectorData = context.setSelectorData;
 
   return (
     <button
       onClick={() => {
+        /* TODO: create descriptive helper function */
         setFormTarget("daily-log");
         setSelectorData(null);
       }}
@@ -71,23 +72,17 @@ export default function Tracker() {
         <div className="flex justify-evenly items-center">
           <DateSelector date={date} setDate={setDate} />
           <FoodSummary foodData={foodData} />
-          <AddFoodButton contextProp={FoodEntryFormContext} />
+          <AddFoodButton />
         </div>
         <DailyLog foodData={foodData} fetchFoodData={fetchFoodData} />
         <div className="flex justify-evenly">
           <div>
-            <FoodEntryItemSelector formContext={FoodEntryFormContext} />
-            <FoodEntryForm contextProp={FoodEntryFormContext} />
+            <FoodEntryItemSelector />
+            <FoodEntryForm />
           </div>
           <div>
-            <FoodSearchBar
-              setSearchText={setSearchText}
-              contextProp={FoodEntryFormContext}
-            />
-            <FoodResultList
-              foodSearchResults={foodSearchResults}
-              context={FoodEntryFormContext}
-            />
+            <FoodSearchBar setSearchText={setSearchText} />
+            <FoodResultList foodSearchResults={foodSearchResults} />
           </div>
         </div>
       </FoodEntryFormContextProvider>

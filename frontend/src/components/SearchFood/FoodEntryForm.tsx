@@ -5,9 +5,7 @@ import { editFoodEntryItem, createFoodEntry } from "../../api/utils.ts";
 
 type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
 type FoodOut = components["schemas"]["FoodOut"];
-type FoodEntryFormProps = {
-  contextProp: React.Context;
-};
+
 /*
 revised version:
     FoodEntryForm will take two types of input
@@ -19,8 +17,8 @@ revised version:
     mode will dictate what api call is sent out 
 */
 
-export default function FoodEntryForm({ contextProp }: FoodEntryFormProps) {
-  const context = useContext(contextProp);
+export default function FoodEntryForm() {
+  const context = useContext(FoodEntryFormContext);
   const existingGrams = context.existingGrams;
   const [grams, setGrams] = useState(existingGrams);
   const FoodOutData = context.foodOutData;
