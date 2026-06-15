@@ -2,7 +2,7 @@ import { createCustomFood, editCustomFood } from "../../api/utils";
 import { components } from "../../types/api";
 
 type CustomFoodEntryFormProps = {
-  foodDetails: components["schemas"]["FoodOut"];
+  foodDetails: components["schemas"]["FoodOut"] | null;
   formMode: "edit" | "add" | null;
   setFormMode: (arg: "edit" | "add" | null) => void;
 };
@@ -115,7 +115,6 @@ export default function CustomFoodEntryForm({
             name="barcode"
             defaultValue={foodDetails?.barcode}
             type="text"
-            я
           />
         </label>
 

@@ -15,16 +15,22 @@ function AddFoodButton() {
   const context = useContext(FoodEntryFormContext);
   const setFormTarget = context.setFormTarget;
   const setSelectorData = context.setSelectorData;
+  const setFormMode = context.setFormMode;
+  const setForDailyLog = context.setForDailyLog;
+  const setShowSearchBar = context.setShowSearchBar;
 
   return (
     <button
       onClick={() => {
         /* TODO: create descriptive helper function */
-        setFormTarget("daily-log");
         setSelectorData(null);
+        setForDailyLog(true);
+        setFormMode("add");
+        setFormTarget("food-entry");
+        setShowSearchBar(true);
       }}
     >
-      ADD FOOD
+      Create New Food Entry
     </button>
   );
 }

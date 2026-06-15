@@ -1,21 +1,17 @@
 import uuid
 
+from app.auth import CurrentUser
+from app.db.database import get_db
+from app.db.tables.food import Fats, Food, Minerals, Vitamins
+from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
+                                        RecipeEntryItem)
+from app.validators.food import (CreateFoodEntryPayload, CreateRecipePayload,
+                                 CustomFood, FoodEntryOut)
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.auth import CurrentUser
-from app.db.database import get_db
-from app.db.tables.food import Fats, Food, Minerals, Vitamins
-from app.db.tables.food_entries import FoodEntry, FoodEntryItem, Recipe, RecipeEntryItem
-from app.validators.food import (
-    CreateFoodEntryPayload,
-    CreateRecipePayload,
-    CustomFood,
-    FoodEntryOut,
-)
 
 router = APIRouter(tags=["food/create"])
 
@@ -93,6 +89,7 @@ async def create_custom_food(
 async def create_recipe(
     payload: CreateRecipePayload, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ):
+    # TODO: solve duplicate naming
 
     food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
     result = await db.execute(

@@ -72,12 +72,35 @@ export async function editCustomFood(foodData, food_uuid) {
   return data;
 }
 
-export async function saveFoodEntryEdit(foodEntryData, foodEntryID) {
-  console.log(foodEntryData);
+export async function saveFoodEntryEdit(foodEntry) {
   const response = await api.put(
-    `/api/food_edit/food_entry/food_items/${foodEntryID}`,
-    foodEntryData,
+    `/api/food_edit/food_entry/${foodEntry.id}`,
+    foodEntry.food_items,
   );
   const data = response.data;
   return data;
+}
+
+export async function createRecipe(selectorData) {
+  const payload = {
+    food_items: selectorData.food_items,
+    recipe_name: selectorData.recipe_name,
+  };
+
+  const response = await api.post(`/api/food_create/recipe`, payload);
+  return response.data;
+}
+
+export async function editRecipe(selectorData) {
+  /* TODO: create */
+  const payload = {
+    food_items: selectorData.food_items,
+    recipe_name: selectorData.recipe_name,
+  };
+
+  const response = await api.put(
+    `/api/food_edit/recipe/${selectorData.id}`,
+    payload,
+  );
+  return response.data;
 }

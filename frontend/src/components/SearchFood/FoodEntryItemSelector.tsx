@@ -1,17 +1,22 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { saveFoodEntryEdit } from "../../api/utils";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
 
 export default function FoodEntryItemSelector() {
   const context = useContext(FoodEntryFormContext);
-  const foodEntryItems = context.selectorData;
+  const selectorData = context.selectorData;
   const setSelectorData = context.setSelectorData;
   const openEdit = context.openEdit;
   const setFormTarget = context.setFormTarget;
-  const foodEntryID = context.foodEntryID;
   const removeItemFromEntry = context.removeItemFromEntry;
+  const formTarget = context.formTarget;
+  const commitFoodComposition = context.commitFoodComposition;
+  const setRecipeName = context.setRecipeName;
+  const setFormMode = context.setFormMode;
+  const setShowSearchBar = context.setShowSearchBar;
 
-  if (!foodEntryItems || foodEntryItems.length === 0) {
+  if (!selectorData) {
+    /* if selectorData is empty or foodEntryID not new */
     return null;
   }
 
@@ -19,7 +24,8 @@ export default function FoodEntryItemSelector() {
     return (
       <button
         onClick={() => {
-          setFormTarget("food-entry");
+          /* TODO: figure out how to make this work*/
+          setShowSearchBar(true);
         }}
       >
         Add Food
@@ -30,9 +36,17 @@ export default function FoodEntryItemSelector() {
   function SaveRecipeButton() {
     return (
       <button
-        onClick={() => {
-          saveFoodEntryEdit(foodEntryItems, foodEntryID);
+        onClick={async () => {
+          if (formTarget === "recipe") {
+            await commitFoodComposition(); /* only create implemented. TODO: add visual element to confirm  */
+          } else if (formTarget === "food-entry") {
+            saveFoodEntryEdit(
+              selectorData,
+            ); /* method part of commitFoodComposition() replace entire ifelse with it after testing*/
+          }
+          /*
           window.location.reload();
+          */
         }}
       >
         Save Recipe
@@ -40,35 +54,43 @@ export default function FoodEntryItemSelector() {
     );
   }
 
-  const formattedResults = foodEntryItems.map((foodEntryItem) => (
-    <li key={foodEntryItem.id} className="pb-3 sm:pb-4">
-      <div className="flex gap-4 justify-between items-center">
-        <button
-          onClick={() => {
-            setFormTarget("food-entry");
-            openEdit(foodEntryItem); /* -> opens FoodEntryForm */
-          }}
-        >
-          Edit
-        </button>
-        <p className="text-sm font-medium text-heading truncate">
-          <strong>
-            {foodEntryItem.food.name} |
-            {(foodEntryItem.food.kcal * foodEntryItem.food_grams) / 100} kcal |
-            {foodEntryItem.food_grams} g
-          </strong>
-        </p>
-        <button
-          className="ml-auto"
-          onClick={() => {
-            removeItemFromEntry(foodEntryItem);
-          }}
-        >
-          Remove
-        </button>
-      </div>
-    </li>
-  ));
+  function FormattedResults() {
+    if (selectorData) {
+      const formattedResults = selectorData.food_items.map((foodEntryItem) => (
+        <li key={foodEntryItem.id} className="pb-3 sm:pb-4">
+          <div className="flex gap-4 justify-between items-center">
+            <button
+              onClick={() => {
+                openEdit(foodEntryItem); /* -> opens FoodEntryForm */
+                setFormMode("edit");
+              }}
+            >
+              Edit
+            </button>
+            <p className="text-sm font-medium text-heading truncate">
+              <strong>
+                {foodEntryItem.food.name} |
+                {(foodEntryItem.food.kcal *
+                  (foodEntryItem.food_grams || foodEntryItem.grams)) /
+                  100}{" "}
+                kcal |{foodEntryItem.food_grams || foodEntryItem.grams} g
+              </strong>
+            </p>
+            <button
+              className="ml-auto"
+              onClick={() => {
+                removeItemFromEntry(foodEntryItem);
+              }}
+            >
+              Remove
+            </button>
+          </div>
+        </li>
+      ));
+      return formattedResults;
+    }
+    return null;
+  }
 
   return (
     <div>
@@ -77,15 +99,22 @@ export default function FoodEntryItemSelector() {
         <button
           onClick={() => {
             /*TODO: make helper function - closeSelector()*/
-            setSelectorData([]);
+            setSelectorData(null);
             setFormTarget(null);
           }}
         >
           X
         </button>
       </div>
+
+      <input
+        name="recipe-name"
+        value={selectorData?.recipe_name ?? ""}
+        onChange={(e) => setRecipeName(e.target.value)}
+      />
+
       <ul className="max-w-md divide-y divide-default a border">
-        {formattedResults}
+        <FormattedResults />
       </ul>
       <div className="flex justify-evenly">
         <AddFoodButton />

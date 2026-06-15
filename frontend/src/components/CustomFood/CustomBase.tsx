@@ -1,36 +1,24 @@
 import { getCustomFoods, getRecipes } from "../../api/utils";
 import { useEffect, useState } from "react";
-import { components } from "../../types/api";
 import CustomFood from "./CustomFood";
-
-export type FoodOut = components["schemas"]["FoodOut"];
-
-function Recipes({ recipes }) {
-  return (
-    <div>
-      <h1>[PLACEHOLDER] Recipes</h1>
-    </div>
-  );
-}
+import CustomRecipes from "./CustomRecipes";
 
 export default function CustomBase() {
   const [activeTab, setActivateTab] = useState("custom-foods");
   const [customFood, setCustomFood] = useState([]);
   const [recipes, setRecipes] = useState([]);
 
+
   useEffect(() => {
     const fetchCustomFood = async () => {
       const food = await getCustomFoods();
       setCustomFood(food);
     };
-    fetchCustomFood();
-  }, []);
-
-  useEffect(() => {
     const fetchRecipes = async () => {
       const recipeList = await getRecipes();
       setRecipes(recipeList);
     };
+    fetchCustomFood();
     fetchRecipes();
   }, []);
 
@@ -38,6 +26,7 @@ export default function CustomBase() {
   const inactive = "bg-gray-200 text-gray-700 hover:bg-gray-300";
   const active = "bg-blue-600 text-white hover:bg-blue-700";
 
+  /* TODO: on tab change, reset data*/
   return (
     <div>
       <div role="tablist" className="flex gap-2">
@@ -74,7 +63,7 @@ export default function CustomBase() {
 
       <div role="tabpanel" className="mt-4">
         {activeTab === "custom-foods" && <CustomFood customFood={customFood} />}
-        {activeTab === "recipes" && <Recipes recipes={recipes} />}
+        {activeTab === "recipes" && <CustomRecipes recipes={recipes} />}
         {activeTab === "placeholder" && (
           <div>
             <h1>[PLACEHOLDER] </h1>

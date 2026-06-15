@@ -1,23 +1,18 @@
 import uuid
 
+from app.auth import CurrentUser
+from app.db.database import get_db
+from app.db.tables.food import Fats, Food, Minerals, Vitamins
+from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
+                                        RecipeEntryItem)
+from app.validators.food import (CreateFoodEntryPayload, CustomFood,
+                                 FoodEntryItemEdit, FoodEntryItemOut, FoodOut,
+                                 RecipeItemOut)
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.auth import CurrentUser
-from app.db.database import get_db
-from app.db.tables.food import Fats, Food, Minerals, Vitamins
-from app.db.tables.food_entries import FoodEntry, FoodEntryItem
-from app.validators.food import (
-    CreateFoodEntryPayload,
-    CustomFood,
-    FoodEntryItemEdit,
-    FoodEntryItemOut,
-    FoodEntryItemsEdit,
-    FoodOut,
-)
 
 router = APIRouter(tags=["food/update"])
 
@@ -97,7 +92,7 @@ async def edit_custom_food(
     return existing_food
 
 
-@router.put("/food_entry/food_items/{food_entry_id}")
+@router.put("/food_entry/{food_entry_id}")
 async def edit_food_entry_food_items(
     food_entry_id: uuid.UUID,
     food_items: list[FoodEntryItemOut | CreateFoodEntryPayload],
@@ -120,7 +115,7 @@ async def edit_food_entry_food_items(
     if not food_entry:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Food entry associated with items not found",
+            detail=f"Food entry with ID: {food_entry_id} not found",
         )
 
     incoming_existing = [
@@ -146,3 +141,64 @@ async def edit_food_entry_food_items(
     await db.commit()
     await db.refresh(food_entry)
     return food_entry
+
+
+class EditRecipePayload(BaseModel):
+    food_items: list[
+        RecipeItemOut, CreateFoodEntryPayload
+    ]  # TODO: validators clarification
+    recipe_name: str
+
+
+@router.put("/recipe/{recipe_id}")
+async def edit_recipe(
+    recipe_id: uuid.UUID,
+    payload: EditRecipePayload,
+    user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+):
+    food_items = payload.food_items
+    if not food_items:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="Food items not provided"
+        )
+
+    db_query = (
+        select(Recipe).where(Recipe.id == recipe_id).where(Recipe.user_id == user.id)
+    )
+    result = await db.execute(db_query)
+    recipe = result.scalars().first()
+
+    if not recipe:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Recipe with ID: {recipe_id} not found.",
+        )
+
+    incoming_existing = [
+        item for item in food_items if isinstance(item, RecipeItemOut)
+    ]  # maybe original, maybe edited
+    incoming_new = [
+        item for item in food_items if isinstance(item, CreateFoodEntryPayload)
+    ]  # completely new
+    incoming_by_id = {(item.id): item for item in incoming_existing}
+
+    kept_items = []
+    for existing_item in recipe.food_items:
+        incoming = incoming_by_id.get(existing_item.id, None)
+        if incoming is not None:
+            existing_item.food_grams = incoming.food_grams
+            kept_items.append(existing_item)
+
+    new_items = []
+    for item in incoming_new:
+        new_items.append(RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams))
+
+    recipe_name = payload.recipe_name
+    if recipe.recipe_name != recipe_name:
+        recipe.recipe_name = recipe_name
+
+    recipe.food_items = kept_items + new_items
+    await db.commit()
+    await db.refresh(recipe)
+    return recipe

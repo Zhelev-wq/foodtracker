@@ -3,8 +3,11 @@ import CustomFoodEntryForm from "./CustomFoodEntryForm";
 import { components } from "../../types/api";
 
 type FoodOut = components["schemas"]["FoodOut"];
+type CustomFoodProps = {
+  customFood: FoodOut[] | [];
+};
 
-export default function CustomFood({ customFood }: FoodOut[] | []) {
+export default function CustomFood({ customFood }: CustomFoodProps) {
   if (!customFood) {
     return null;
   }

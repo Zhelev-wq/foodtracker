@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
 
 type FoodSearchBarProps = {
@@ -13,18 +13,23 @@ export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
 
   const context = useContext(FoodEntryFormContext);
   const formTarget = context.formTarget;
+  const formMode = context.formMode;
+  const showSearchBar = context.showSearchBar;
 
-  if (!formTarget) {
+  if (!formMode || !showSearchBar) {
     setSearchText("");
     return null;
   }
 
   const Heading = () => {
-    console.log(formTarget);
     if (formTarget === "daily-log") {
       return <h2>Add Food to Daily Log</h2>;
     } else if (formTarget === "food-entry") {
       return <h2>Add Food to Food Entry</h2>;
+    } else if (formTarget === "recipe") {
+      return <h2>Add Food to Recipe</h2>;
+    } else {
+      return <h2>Search Food</h2>;
     }
   };
 

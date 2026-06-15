@@ -20,10 +20,13 @@ revised version:
 export default function FoodEntryForm() {
   const context = useContext(FoodEntryFormContext);
   const existingGrams = context.existingGrams;
+  const foodOutData = context.foodOutData;
+  const formMode = context.formMode;
+
   const [grams, setGrams] = useState(existingGrams);
-  const FoodOutData = context.foodOutData;
   const formTarget = context.formTarget;
-  if (!FoodOutData || !formTarget) {
+
+  if (!foodOutData || !formMode) {
     return null;
   }
   const closeForm = context.closeForm;
@@ -43,7 +46,7 @@ export default function FoodEntryForm() {
   }
 
   const { name, vitamins, minerals, fats, id, barcode, ...macros } =
-    FoodOutData;
+    foodOutData;
 
   const ratio = grams / 100;
 
@@ -77,6 +80,7 @@ export default function FoodEntryForm() {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
             onClick={(e) => {
+              /* TODO: create logic to close form on submit, add to helper function*/
               submitForm(e, grams);
             }}
           >
