@@ -8,7 +8,6 @@ export default function CustomBase() {
   const [customFood, setCustomFood] = useState([]);
   const [recipes, setRecipes] = useState([]);
 
-
   useEffect(() => {
     const fetchCustomFood = async () => {
       const food = await getCustomFoods();

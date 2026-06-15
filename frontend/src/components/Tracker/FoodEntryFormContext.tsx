@@ -9,7 +9,7 @@ import {
 } from "../../api/utils.ts";
 
 type FoodOut = components["schemas"]["FoodOut"];
-type FoodEntry = components["schemas"]["FoodEntry"];
+type FoodEntry = components["schemas"]["FoodEntryOut"];
 type Recipe = null; /* placeholder */
 type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
 
@@ -18,16 +18,16 @@ export const FoodEntryFormContext = createContext(null);
 export function FoodEntryFormContextProvider({ children }) {
   const [foodOutData, setFoodOutData] = useState<FoodOut | null>(null);
   const [foodEntryItemID, setFoodEntryItemID] = useState<string | null>(null);
-  const [formMode, setFormMode] = useState<
-    "add" | "edit" | null
-  >(null);  /* only set by Add Food / Edit Buttons / Close buttons. used for calling correct api method on submit */
+  const [formMode, setFormMode] = useState<"add" | "edit" | null>(
+    null,
+  ); /* only set by Add Food / Edit Buttons / Close buttons. used for calling correct api method on submit */
   const [existingGrams, setExistingGrams] = useState<number>(100);
   const [selectorData, setSelectorData] = useState<FoodEntry | Recipe | null>(
     null,
   ); /* editing for foodEntries/Recipes happens to this element. once editied, its sent via api call*/
-  const [formTarget, setFormTarget] = useState<
-    "food-entry" | "recipe" | null
-  >(null); /*  */
+  const [formTarget, setFormTarget] = useState<"food-entry" | "recipe" | null>(
+    null,
+  ); /*  */
   const [forDailyLog, setForDailyLog] = useState<boolean>(false);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
 
@@ -35,11 +35,15 @@ export function FoodEntryFormContextProvider({ children }) {
     setFoodOutData(FoodOut);
     setExistingGrams(100);
   };
-  const openEdit = (foodEntryItemOut: FoodEntryItemOut) => { /* TODO: create type for this new struct with localId */
+  const openEdit = (foodEntryItem: FoodEntryItemOut) => {
+    /* TODO: create type for this new struct with localId */
     setFormMode("edit");
-    setFoodOutData(foodEntryItemOut.food);
-    setExistingGrams(foodEntryItemOut.food_grams);
-    setFoodEntryItemID(foodEntryItemOut.food_id);
+    if (forDailyLog) {
+      setForDailyLog(false);
+    }
+    setFoodOutData(foodEntryItem.food);
+    setExistingGrams(foodEntryItem.food_grams);
+    setFoodEntryItemID(foodEntryItem.food_id);
   };
   const openEditSingle = (foodEntryItemOut: FoodEntryItemOut) => {
     /* for single-item foodEntry, pass item directly to foodEntryForm, 
@@ -54,31 +58,39 @@ export function FoodEntryFormContextProvider({ children }) {
   const closeForm = () => {
     setFoodOutData(null);
     setFoodEntryItemID(null);
-    setExistingGrams(100);    
+    setExistingGrams(100);
+    if (forDailyLog) {
+      setForDailyLog(false);
+    }
     /*
     setFormMode(null);
     setFormTarget(null);
     */
   };
 
-  function updateItemInSelector(
-    targetFoodEntryItemID: string,
-    grams: number,
-  ) {
+  const foodIdOf = (item) => item.food_id ?? item.food_uuid;
+
+  function updateItemInSelector(targetFoodID: string, grams: number) {
     /* changes target item's grams, appends all items to new array, 
     writes new array to selectorData*/
-    const updatedItems = [];
-    selectorData.food_items.forEach((foodEntryItem: FoodEntryItemOut) => {
 
-      if (foodEntryItem.id === targetFoodEntryItemID) {
-        const updatedItem = { ...foodEntryItem };
-        updatedItem.food_grams = grams;
-        updatedItems.push(updatedItem);
-      } 
-      else {
-        updatedItems.push(foodEntryItem);
+    const withGrams = (item, grams) => {
+      const copy = Object.assign({}, item);
+      if ("food_grams" in copy) {
+        copy.food_grams = grams;
+      } else {
+        copy.grams = grams;
       }
+      return copy;
+    };
+
+    const updatedItems = selectorData?.food_items.map((item) => {
+      if (foodIdOf(item) === targetFoodID) {
+        return withGrams(item, grams);
+      }
+      return item;
     });
+
     const updatedSelectorData = Object.assign({}, selectorData);
     updatedSelectorData.food_items = updatedItems;
     setSelectorData(updatedSelectorData);
@@ -87,7 +99,7 @@ export function FoodEntryFormContextProvider({ children }) {
   const removeItemFromEntry = (foodEntryItem) => {
     /* returns new array minus target item, writes new array to selectorData */
     const updatedItems = selectorData.food_items.filter(
-      (item) => item.food_id !== foodEntryItem.food_id,
+      (item) => foodIdOf(item) !== foodIdOf(foodEntryItem),
     );
     const updatedSelectorData = Object.assign({}, selectorData);
     updatedSelectorData.food_items = updatedItems;
@@ -105,7 +117,11 @@ export function FoodEntryFormContextProvider({ children }) {
   };
 
   function pushNewEntryToSelectorData(grams) {
-    /* appends new entry to selectorData array */
+    /* appends new entry to selectorData array 
+    newItem fields mismatch RecipeEntryItem model fields. this is intentional
+    edit recipe/food_entry has two types of validators - existing items/incoming items
+    fields mismatch force existing items into one schema, new items into another
+    */
     const newItem = {
       food_uuid: foodOutData.id,
       grams: grams,
@@ -115,20 +131,19 @@ export function FoodEntryFormContextProvider({ children }) {
     updatedItems.push(newItem);
     const updatedSelectorData = Object.assign({}, selectorData);
     updatedSelectorData.food_items = updatedItems;
-    setSelectorData(updatedSelectorData);      
-    }
-  
+    setSelectorData(updatedSelectorData);
+  }
 
   function writeDataToEntry(grams) {
     /* checks if form item exists in entry/recipe
     if yes - updates it with new grams; if no - appends it
     */
     const existing = selectorData.food_items.find(
-      (item) => item.food_id === foodOutData.id
-    )
+      (item) => foodIdOf(item) === foodOutData.id,
+    );
 
     if (existing) {
-      updateItemInSelector(existing.id, grams)
+      updateItemInSelector(foodIdOf(existing), grams);
     } else {
       pushNewEntryToSelectorData(grams);
     }
@@ -138,31 +153,28 @@ export function FoodEntryFormContextProvider({ children }) {
     e.preventDefault();
     if (forDailyLog) {
       saveEntryToLog(grams);
+      setForDailyLog(false);
       return;
-    } 
+    }
 
     writeDataToEntry(grams);
-
-    console.log(`FormTarget: ${formTarget}`)
-    console.log(`SelectorData: ${JSON.stringify(selectorData)}`);
-    console.log(`FormMode: ${formMode}`)
   };
 
   const passFoodEntryToForm = (foodEntry) => {
-    setFormMode("edit")
+    setFormMode("edit");
     if (foodEntry.food_items.length === 1) {
       setSelectorData(null);
       openEditSingle(foodEntry.food_items[0]);
     } else {
       setSelectorData(foodEntry);
-      setFormTarget("food-entry")
+      setFormTarget("food-entry");
     }
   };
 
   async function updateOrCreateRecipe(selectorData) {
-    if (formMode==="edit") {
+    if (formMode === "edit") {
       await editRecipe(selectorData);
-    } else if (formMode==="add") {
+    } else if (formMode === "add") {
       await createRecipe(selectorData);
     }
   }
@@ -206,6 +218,7 @@ export function FoodEntryFormContextProvider({ children }) {
     setFormMode: setFormMode,
     setForDailyLog: setForDailyLog,
     setShowSearchBar: setShowSearchBar,
+    foodIdOf: foodIdOf,
   };
 
   return (

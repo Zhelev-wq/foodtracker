@@ -14,6 +14,7 @@ export default function FoodEntryItemSelector() {
   const setRecipeName = context.setRecipeName;
   const setFormMode = context.setFormMode;
   const setShowSearchBar = context.setShowSearchBar;
+  const foodIdOf = context.foodIdOf
 
   if (!selectorData) {
     /* if selectorData is empty or foodEntryID not new */
@@ -57,7 +58,7 @@ export default function FoodEntryItemSelector() {
   function FormattedResults() {
     if (selectorData) {
       const formattedResults = selectorData.food_items.map((foodEntryItem) => (
-        <li key={foodEntryItem.id} className="pb-3 sm:pb-4">
+        <li key={foodIdOf(foodEntryItem)} className="pb-3 sm:pb-4">
           <div className="flex gap-4 justify-between items-center">
             <button
               onClick={() => {
