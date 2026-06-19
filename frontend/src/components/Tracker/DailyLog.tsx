@@ -1,20 +1,21 @@
-import type { components } from "../types/api.ts";
+import type { components } from "../../types/api.ts";
 import { useContext } from "react";
 import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
+import { deleteFoodEntry } from "../../api/utils.ts";
 
 type DailyLogProps = {
   foodData: components["schemas"]["FoodEntryOut"][];
   fetchFoodData: () => Promise<void>;
 };
 
-/* 
-TODO:       
-    consider adding a way to remove food_item elements from a food entry
-*/
-
 export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
-  const foodEntryFormContext = useContext(FoodEntryFormContext);
-  const openEdit = foodEntryFormContext.openEdit;
+  const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+  const passFoodEntryToForm = context.passFoodEntryToForm;
 
   const foodRows = foodData.map((foodEntry) => (
     <tr>
@@ -23,11 +24,7 @@ export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
           <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
             <button
               onClick={() => {
-                /*                             
-                  For future, add food item selector for recipes here, default to food_item[0] for now
-
-                */
-                openEdit(foodEntry.food_items[0]);
+                passFoodEntryToForm(foodEntry);
               }}
             >
               Edit

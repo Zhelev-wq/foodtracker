@@ -1,14 +1,40 @@
+import { useContext } from "react";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
+
 type FoodSearchBarProps = {
   setSearchText: (input: string) => void;
 };
 
 export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
-  /* 
-    TODO:
-        when pressing enter nothing should happen, now it crashes page
-    */
+  const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+  const formTarget = context.formTarget;
+  const formMode = context.formMode;
+  const showSearchBar = context.showSearchBar;
+
+  if (!formMode || !showSearchBar) {
+    return null;
+  }
+
+  const Heading = () => {
+    if (formTarget === "daily-log") {
+      return <h2>Add Food to Daily Log</h2>;
+    } else if (formTarget === "food-entry") {
+      return <h2>Add Food to Food Entry</h2>;
+    } else if (formTarget === "recipe") {
+      return <h2>Add Food to Recipe</h2>;
+    } else {
+      return <h2>Search Food</h2>;
+    }
+  };
+
   return (
-    <form className="max-w-md mx-auto aling-top">
+    <div>
+      <Heading />
       <div className="relative">
         <input
           type="search"
@@ -19,6 +45,6 @@ export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
           required
         />
       </div>
-    </form>
+    </div>
   );
 }

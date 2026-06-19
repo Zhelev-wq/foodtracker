@@ -3,9 +3,11 @@ import uuid
 from functools import cached_property
 from typing import List, Optional
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, computed_field, model_validator
 
 
+# TODO: Create separate validators for input/output;
+# clean up these in separate files as makes sense
 class Vitamins(BaseModel):
     vit_a: Optional[float] = 0
     vit_b1: Optional[float] = 0
@@ -44,12 +46,26 @@ class Minerals(BaseModel):
 
 class Fats(BaseModel):
     saturated_fat: Optional[float] = 0
-    monounstaurated_fat: Optional[float] = 0
+    monounsaturated_fat: Optional[float] = 0
     polyunsaturated_fat: Optional[float] = 0
-    omage_3_fat: Optional[float] = 0
-    omage_6_fat: Optional[float] = 0
-    omage_9_fat: Optional[float] = 0
+    omega_3_fat: Optional[float] = 0
+    omega_6_fat: Optional[float] = 0
+    omega_9_fat: Optional[float] = 0
     trans_fat: Optional[float] = 0
+
+
+class CustomFood(BaseModel):
+    name: str
+    carbs: float
+    protein: float
+    fat: float
+    kcal: float
+    alcohol: Optional[float] = 0
+    caffeine: Optional[float] = 0
+    barcode: Optional[str] = None
+    vitamins: Optional[Vitamins]
+    minerals: Optional[Minerals]
+    fats: Optional[Fats]
 
 
 class FoodOut(BaseModel):
@@ -65,7 +81,7 @@ class FoodOut(BaseModel):
     user_id: uuid.UUID | None = None
     alcohol: Optional[float] = 0
     caffeine: Optional[float] = 0
-    barcode: str
+    barcode: str | None = None
     vitamins: Optional[Vitamins]
     minerals: Optional[Minerals]
     fats: Optional[Fats]
@@ -79,6 +95,7 @@ class FoodEntryItemOut(BaseModel):
     food_grams: int
     food: FoodOut
     user_id: uuid.UUID
+    food_entry_id: uuid.UUID
 
 
 class FoodEntryOut(BaseModel):
@@ -87,6 +104,7 @@ class FoodEntryOut(BaseModel):
     food_items: list[FoodEntryItemOut]
     user_id: uuid.UUID
     model_config = {"from_attributes": True}
+    name: Optional[str] = None
 
     @cached_property
     def _total(self):
@@ -110,13 +128,18 @@ class FoodEntryOut(BaseModel):
             total["caffeine"] += (item.food.caffeine or 0) * item.food_grams / 100
             total["food_grams"] += item.food_grams
 
-        total["name"] = self.food_items[0].food.name
+        try:
+            name = self.name
+        except AttributeError:
+            name = self.food_items[0].food.name
+        total["name"] = name
         return total
 
-    @computed_field
-    @property
-    def name(self) -> str:
-        return self._total.get("name")
+    @model_validator(mode="after")
+    def fallback_name(self) -> str:
+        if not self.name and self.food_items:
+            self.name = self.food_items[0].food.name
+        return self
 
     @computed_field
     @property
@@ -152,3 +175,30 @@ class FoodEntryOut(BaseModel):
     @property
     def food_grams(self) -> float:
         return self._total.get("food_grams")
+
+
+class RecipeItemOut(FoodEntryItemOut):
+    pass
+
+
+class RecipeOut(FoodEntryOut):
+    recipe_name: str
+    food_items: list[RecipeItemOut]
+
+
+class FoodEntryItemsEdit(BaseModel):
+    food_items: list[FoodEntryItemOut]
+
+
+class CreateFoodEntryPayload(BaseModel):
+    food_uuid: uuid.UUID
+    grams: int
+
+
+class CreateRecipePayload(BaseModel):
+    food_items: list[CreateFoodEntryPayload]
+    recipe_name: str
+
+
+class FoodEntryItemEdit(BaseModel):
+    grams: int

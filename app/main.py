@@ -1,10 +1,8 @@
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Request
-from fastapi.exception_handlers import (
-    http_exception_handler,
-    request_validation_exception_handler,
-)
+from fastapi.exception_handlers import (http_exception_handler,
+                                        request_validation_exception_handler)
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -47,12 +45,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-templates = Jinja2Templates(directory="app/frontend/pages")
-
-
-@app.get("/")
-async def home(request: Request, db: AsyncSession = Depends(get_db)):
-    ctx = {}
-    return templates.TemplateResponse(request, "base.html", context=ctx)

@@ -1,6 +1,6 @@
-import { useContext } from "react";
-import type { components } from "../../../../frontend/src/types/api.ts";
-import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
+import React, { useContext } from "react";
+import { components } from "../../types/api.ts";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
 /*
 take in search results
@@ -16,12 +16,19 @@ type FoodResultsListProps = {
 export default function FoodResultList({
   foodSearchResults,
 }: FoodResultsListProps) {
-  if (!foodSearchResults) {
+  const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+
+  const showSearchBar = context.showSearchBar;
+  if (!foodSearchResults || !showSearchBar) {
     return null;
   }
 
-  const foodEntryFormContext = useContext(FoodEntryFormContext);
-  const openAdd = foodEntryFormContext.openAdd;
+  const openAdd = context.openAdd;
 
   const formattedSearchResults = foodSearchResults.map((result: FoodOut) => (
     <li key={result.id} className="pb-3 sm:pb-4">
@@ -31,8 +38,8 @@ export default function FoodResultList({
             <strong>{result.name}</strong>
           </p>
           <p className="text-sm text-body truncate">
-            {result.kcal} kcal | {result.protein} Protein | {result.carbs} Carbs
-            | {result.fat} Fat
+            {result.kcal.toFixed(1)} kcal | {result.protein.toFixed(1)} Protein
+            | {result.carbs.toFixed(1)} Carbs | {result.fat.toFixed(1)} Fat
           </p>
         </div>
         <div className="inline-flex items-center text-base font-semibold text-heading">

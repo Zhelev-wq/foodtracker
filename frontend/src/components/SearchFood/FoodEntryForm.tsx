@@ -1,7 +1,8 @@
 import type { components } from "../../types/api.ts";
 import { useState, useContext } from "react";
-import { FoodEntryFormContext } from "../FoodEntryFormContext.tsx";
+import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
+type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
 type FoodOut = components["schemas"]["FoodOut"];
 
 /*
@@ -16,16 +17,23 @@ revised version:
 */
 
 export default function FoodEntryForm() {
-  const contextData = useContext(FoodEntryFormContext);
-  const existingGrams = contextData.existingGrams;
-  const [grams, setGrams] = useState(existingGrams);
-  const FoodOutData = contextData.foodOutData;
-  if (!FoodOutData) {
-    return <p>No FoodOutData</p>;
+  const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
   }
-  const mode = contextData.formMode;
-  const FoodEntryItemId = contextData.foodEntryItemID;
-  const closeForm = contextData.closeForm;
+  const existingGrams = context.existingGrams;
+  const foodOutData = context.foodOutData;
+  const formMode = context.formMode;
+
+  const [grams, setGrams] = useState(existingGrams);
+
+  if (!foodOutData || !formMode) {
+    return null;
+  }
+  const closeForm = context.closeForm;
+  const submitForm = context.submitForm;
 
   function ProcessData(FoodOutData: FoodOut) {
     if (!FoodOutData) {
@@ -41,7 +49,7 @@ export default function FoodEntryForm() {
   }
 
   const { name, vitamins, minerals, fats, id, barcode, ...macros } =
-    FoodOutData;
+    foodOutData;
 
   const ratio = grams / 100;
 
@@ -74,12 +82,8 @@ export default function FoodEntryForm() {
 
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
-            onClick={() => {
-              if (mode === "edit") {
-                editFoodEntry(FoodEntryItemId, grams);
-              } else if (mode === "add") {
-                createFoodEntry(id, grams);
-              }
+            onClick={(e) => {
+              submitForm(e, grams);
             }}
           >
             Save Entry

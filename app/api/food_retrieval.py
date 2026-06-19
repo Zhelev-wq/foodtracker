@@ -9,8 +9,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Food
-from app.db.tables.food_entries import FoodEntry
-from app.validators.food import FoodEntryOut, FoodOut
+from app.db.tables.food_entries import FoodEntry, Recipe
+from app.validators.food import FoodEntryOut, FoodOut, RecipeOut
 
 router = APIRouter(tags=["food/read"])
 
@@ -72,7 +72,7 @@ async def search_food_by_uuid(
                 )  # custom food belonging to user, or common food
             )
         )
-    if barcode and int(barcode):
+    if barcode and int(barcode):  # TODO: this may be broken, rework later
         result = await db.execute(
             select(Food)
             .where(Food.barcode == barcode)
@@ -105,3 +105,27 @@ async def search_food_entries_by_date(
     results = await db.execute(db_query)
     food_entries = results.scalars().all()
     return food_entries
+
+
+@router.get("/search/recipes")
+async def get_user_recipes(
+    user: CurrentUser, db: AsyncSession = Depends(get_db)
+) -> list[RecipeOut]:
+    db_query = select(Recipe).where(Recipe.user_id == user.id)
+
+    results = await db.execute(db_query)
+    recipes = results.scalars().all()
+
+    return recipes
+
+
+@router.get("/search/custom_food")
+async def get_user_custom_food(
+    user: CurrentUser, db: AsyncSession = Depends(get_db)
+) -> list[FoodOut]:
+    db_query = select(Food).where(Food.user_id == user.id)
+
+    results = await db.execute(db_query)
+    custom_foods = results.scalars().all()
+
+    return custom_foods

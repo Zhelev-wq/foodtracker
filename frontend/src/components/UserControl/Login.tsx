@@ -1,4 +1,4 @@
-import { api } from "../api/client.ts";
+import { api } from "../../api/client.ts";
 import { useState } from "react";
 
 type LoginProps = {};
