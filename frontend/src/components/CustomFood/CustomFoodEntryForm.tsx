@@ -5,12 +5,14 @@ type CustomFoodEntryFormProps = {
   foodDetails: components["schemas"]["FoodOut"] | null;
   formMode: "edit" | "add" | null;
   setFormMode: (arg: "edit" | "add" | null) => void;
+  reload: () => void;
 };
 
 export default function CustomFoodEntryForm({
   foodDetails,
   formMode,
   setFormMode,
+  reload,
 }: CustomFoodEntryFormProps) {
   if (!(formMode === "edit" || formMode === "add")) {
     return null;
@@ -31,7 +33,7 @@ export default function CustomFoodEntryForm({
       vit_c: Number(rawData.vit_c),
       vit_d: Number(rawData.vit_d),
       vit_e: Number(rawData.vit_e),
-      vit_k: Number(rawData.vik_k),
+      vit_k: Number(rawData.vit_k),
     };
     const mineralsData = {
       calcium: Number(rawData.calcium),
@@ -86,7 +88,7 @@ export default function CustomFoodEntryForm({
     } else {
       editCustomFood(formattedData, foodDetails.id);
     }
-    window.location.reload();
+    reload();
   };
 
   return (
@@ -391,52 +393,148 @@ export default function CustomFoodEntryForm({
           <summary className="cursor-pointer font-medium">Minerals</summary>
           <div className="flex flex-col gap-2 pt-2">
             <label>
-              Calcium <input name="calcium" type="number" step="any" />
+              Calcium{" "}
+              <input
+                name="calcium"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.calcium ?? 0}
+              />
             </label>
             <label>
-              Magnesium <input name="magnesium" type="number" step="any" />
+              Magnesium{" "}
+              <input
+                name="magnesium"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.magnesium ?? 0}
+              />
             </label>
             <label>
-              Phosphorus <input name="phosphorus" type="number" step="any" />
+              Phosphorus{" "}
+              <input
+                name="phosphorus"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.phosphorus ?? 0}
+              />
             </label>
             <label>
-              Sodium <input name="sodium" type="number" step="any" />
+              Sodium{" "}
+              <input
+                name="sodium"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.sodium ?? 0}
+              />
             </label>
             <label>
-              Sulfur <input name="sulfur" type="number" step="any" />
+              Sulfur{" "}
+              <input
+                name="sulfur"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.sulfur ?? 0}
+              />
             </label>
             <label>
-              Iron <input name="iron" type="number" step="any" />
+              Iron{" "}
+              <input
+                name="iron"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.iron ?? 0}
+              />
             </label>
             <label>
-              Zinc <input name="zinc" type="number" step="any" />
+              Zinc{" "}
+              <input
+                name="zinc"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.zinc ?? 0}
+              />
             </label>
             <label>
-              Copper <input name="copper" type="number" step="any" />
+              Copper{" "}
+              <input
+                name="copper"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.copper ?? 0}
+              />
             </label>
             <label>
-              Manganese <input name="manganese" type="number" step="any" />
+              Manganese{" "}
+              <input
+                name="manganese"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.manganese ?? 0}
+              />
             </label>
             <label>
-              Molybdenum <input name="molybdenum" type="number" step="any" />
+              Molybdenum{" "}
+              <input
+                name="molybdenum"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.molybdenum ?? 0}
+              />
             </label>
             <label>
-              Selenium <input name="selenium" type="number" step="any" />
+              Selenium{" "}
+              <input
+                name="selenium"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.selenium ?? 0}
+              />
             </label>
             <label>
-              Iodine <input name="iodine" type="number" step="any" />
+              Iodine{" "}
+              <input
+                name="iodine"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.iodine ?? 0}
+              />
             </label>
             <label>
-              Fluoride <input name="fluoride" type="number" step="any" />
+              Fluoride{" "}
+              <input
+                name="fluoride"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.fluoride ?? 0}
+              />
             </label>
             <label>
-              Chromium <input name="chromium" type="number" step="any" />
+              Chromium{" "}
+              <input
+                name="chromium"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.chromium ?? 0}
+              />
             </label>
             <label>
-              Potassium <input name="potassium" type="number" step="any" />
+              Potassium{" "}
+              <input
+                name="potassium"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.potassium ?? 0}
+              />
             </label>
             <label>
-              Taurine <input name="taurine" type="number" step="any" />
+              Taurine{" "}
+              <input
+                name="taurine"
+                type="number"
+                step="any"
+                defaultValue={foodDetails?.minerals?.taurine ?? 0}
+              />
             </label>
           </div>
         </details>

@@ -1,5 +1,11 @@
 import uuid
 
+from fastapi import APIRouter, Depends, status
+from fastapi.exceptions import HTTPException
+from pydantic import BaseModel
+from sqlalchemy import or_, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Fats, Food, Minerals, Vitamins
@@ -7,11 +13,6 @@ from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
                                         RecipeEntryItem)
 from app.validators.food import (CreateFoodEntryPayload, CreateRecipePayload,
                                  CustomFood, FoodEntryOut)
-from fastapi import APIRouter, Depends, status
-from fastapi.exceptions import HTTPException
-from pydantic import BaseModel
-from sqlalchemy import or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(tags=["food/create"])
 
@@ -123,9 +124,32 @@ async def create_recipe(
     return recipe
 
 
-@router.post("/entry_from_recipe")
-async def add_recipe_entry(
-    payload,
+@router.post("/entry_from_recipe/{recipe_id}")
+async def create_entry_from_recipe(
+    recipe_id: uuid.UUID,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-): ...
+):
+    db_query = (
+        select(Recipe).where(Recipe.id == recipe_id).where(Recipe.user_id == user.id)
+    )
+    result = await db.execute(db_query)
+    recipe = result.scalars().first()
+
+    if not recipe:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not")
+
+    food_entry = FoodEntry(
+        food_items=[
+            FoodEntryItem(food_id=item.food_id, food_grams=item.food_grams)
+            for item in recipe.food_items
+        ],
+        user_id=user.id,
+        name=recipe.recipe_name,
+    )
+
+    db.add(food_entry)
+    await db.commit()
+    await db.refresh(food_entry)
+
+    return food_entry

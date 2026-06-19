@@ -48,11 +48,18 @@ export default function Tracker() {
     setFoodData(foodEntries);
   };
 
-  const [date, setDate] = useState(getDate());
   const [foodData, setFoodData] = useState([]);
+  const [date, setDate] = useState(getDate());
+  const [reloadTracker, setReloadTracker] = useState(0);
   useEffect(() => {
     fetchFoodData();
-  }, [date]);
+    console.log(reloadTracker);
+  }, [date, reloadTracker]);
+
+  const reload = () => {
+    const count = reloadTracker + 1;
+    setReloadTracker(count);
+  };
 
   const [searchText, setSearchText] = useState("");
   const [foodSearchResults, setFoodSearchResults] = useState(null);
@@ -74,7 +81,7 @@ export default function Tracker() {
 
   return (
     <div>
-      <FoodEntryFormContextProvider>
+      <FoodEntryFormContextProvider onLogChange={reload}>
         <div className="flex justify-evenly items-center">
           <DateSelector date={date} setDate={setDate} />
           <FoodSummary foodData={foodData} />
@@ -83,7 +90,7 @@ export default function Tracker() {
         <DailyLog foodData={foodData} fetchFoodData={fetchFoodData} />
         <div className="flex justify-evenly">
           <div>
-            <FoodEntryItemSelector />
+            <FoodEntryItemSelector reload={reload} />
             <FoodEntryForm />
           </div>
           <div>

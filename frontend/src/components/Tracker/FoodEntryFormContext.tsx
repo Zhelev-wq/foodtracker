@@ -15,7 +15,7 @@ type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
 
 export const FoodEntryFormContext = createContext(null);
 
-export function FoodEntryFormContextProvider({ children }) {
+export function FoodEntryFormContextProvider({ children, onLogChange }) {
   const [foodOutData, setFoodOutData] = useState<FoodOut | null>(null);
   const [foodEntryItemID, setFoodEntryItemID] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<"add" | "edit" | null>(
@@ -106,14 +106,14 @@ export function FoodEntryFormContextProvider({ children }) {
     setSelectorData(updatedSelectorData);
   };
 
-  const saveEntryToLog = (grams) => {
+  const saveEntryToLog = async (grams) => {
     /* TODO: figure out what this does, rename as necessary */
     if (formMode === "edit") {
-      editFoodEntryItem(foodEntryItemID, grams);
+      await editFoodEntryItem(foodEntryItemID, grams);
     } else if (formMode === "add") {
-      createFoodEntry(foodOutData.id, grams);
+      await createFoodEntry(foodOutData.id, grams);
     }
-    window.location.reload();
+    onLogChange?.();
   };
 
   function pushNewEntryToSelectorData(grams) {

@@ -42,6 +42,7 @@ class EntryBase(Base):
 class FoodEntry(EntryBase):
     __tablename__ = "food_entry"
     owned_item_class_name = "FoodEntryItem"
+    name: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class Recipe(EntryBase):

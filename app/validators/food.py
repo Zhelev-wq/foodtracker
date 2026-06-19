@@ -3,7 +3,7 @@ import uuid
 from functools import cached_property
 from typing import List, Optional
 
-from pydantic import BaseModel, computed_field
+from pydantic import BaseModel, computed_field, model_validator
 
 
 # TODO: Create separate validators for input/output;
@@ -104,6 +104,7 @@ class FoodEntryOut(BaseModel):
     food_items: list[FoodEntryItemOut]
     user_id: uuid.UUID
     model_config = {"from_attributes": True}
+    name: Optional[str] = None
 
     @cached_property
     def _total(self):
@@ -128,16 +129,17 @@ class FoodEntryOut(BaseModel):
             total["food_grams"] += item.food_grams
 
         try:
-            name = self.recipe_name
-        except Exception:
+            name = self.name
+        except AttributeError:
             name = self.food_items[0].food.name
         total["name"] = name
         return total
 
-    @computed_field
-    @property
-    def name(self) -> str:
-        return self._total.get("name")
+    @model_validator(mode="after")
+    def fallback_name(self) -> str:
+        if not self.name and self.food_items:
+            self.name = self.food_items[0].food.name
+        return self
 
     @computed_field
     @property

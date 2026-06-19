@@ -31,8 +31,8 @@ export default function FoodResultList({
             <strong>{result.name}</strong>
           </p>
           <p className="text-sm text-body truncate">
-            {result.kcal} kcal | {result.protein} Protein | {result.carbs} Carbs
-            | {result.fat} Fat
+            {result.kcal.toFixed(1)} kcal | {result.protein.toFixed(1)} Protein
+            | {result.carbs.toFixed(1)} Carbs | {result.fat.toFixed(1)} Fat
           </p>
         </div>
         <div className="inline-flex items-center text-base font-semibold text-heading">

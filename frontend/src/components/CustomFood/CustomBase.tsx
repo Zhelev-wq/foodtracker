@@ -5,21 +5,6 @@ import CustomRecipes from "./CustomRecipes";
 
 export default function CustomBase() {
   const [activeTab, setActivateTab] = useState("custom-foods");
-  const [customFood, setCustomFood] = useState([]);
-  const [recipes, setRecipes] = useState([]);
-
-  useEffect(() => {
-    const fetchCustomFood = async () => {
-      const food = await getCustomFoods();
-      setCustomFood(food);
-    };
-    const fetchRecipes = async () => {
-      const recipeList = await getRecipes();
-      setRecipes(recipeList);
-    };
-    fetchCustomFood();
-    fetchRecipes();
-  }, []);
 
   const base = "rounded-full px-4 py-2 text-sm font-medium transition-colors";
   const inactive = "bg-gray-200 text-gray-700 hover:bg-gray-300";
@@ -61,8 +46,8 @@ export default function CustomBase() {
       </div>
 
       <div role="tabpanel" className="mt-4">
-        {activeTab === "custom-foods" && <CustomFood customFood={customFood} />}
-        {activeTab === "recipes" && <CustomRecipes recipes={recipes} />}
+        {activeTab === "custom-foods" && <CustomFood />}
+        {activeTab === "recipes" && <CustomRecipes />}
         {activeTab === "placeholder" && (
           <div>
             <h1>[PLACEHOLDER] </h1>

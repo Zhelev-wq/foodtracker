@@ -1,5 +1,11 @@
 import uuid
 
+from fastapi import APIRouter, Depends, status
+from fastapi.exceptions import HTTPException
+from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Fats, Food, Minerals, Vitamins
@@ -8,11 +14,6 @@ from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
 from app.validators.food import (CreateFoodEntryPayload, CustomFood,
                                  FoodEntryItemEdit, FoodEntryItemOut, FoodOut,
                                  RecipeItemOut)
-from fastapi import APIRouter, Depends, status
-from fastapi.exceptions import HTTPException
-from pydantic import BaseModel
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(tags=["food/update"])
 
@@ -145,7 +146,7 @@ async def edit_food_entry_food_items(
 
 class EditRecipePayload(BaseModel):
     food_items: list[
-        RecipeItemOut, CreateFoodEntryPayload
+        RecipeItemOut | CreateFoodEntryPayload
     ]  # TODO: validators clarification
     recipe_name: str
 

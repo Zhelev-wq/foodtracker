@@ -2,7 +2,11 @@ import React, { useContext, useState } from "react";
 import { saveFoodEntryEdit } from "../../api/utils";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
 
-export default function FoodEntryItemSelector() {
+type SelectorProps = {
+  reload: () => void;
+};
+
+export default function FoodEntryItemSelector(props: SelectorProps) {
   const context = useContext(FoodEntryFormContext);
   const selectorData = context.selectorData;
   const setSelectorData = context.setSelectorData;
@@ -14,7 +18,9 @@ export default function FoodEntryItemSelector() {
   const setRecipeName = context.setRecipeName;
   const setFormMode = context.setFormMode;
   const setShowSearchBar = context.setShowSearchBar;
-  const foodIdOf = context.foodIdOf
+  const foodIdOf = context.foodIdOf;
+
+  const reload = props.reload;
 
   if (!selectorData) {
     /* if selectorData is empty or foodEntryID not new */
@@ -41,13 +47,9 @@ export default function FoodEntryItemSelector() {
           if (formTarget === "recipe") {
             await commitFoodComposition(); /* only create implemented. TODO: add visual element to confirm  */
           } else if (formTarget === "food-entry") {
-            saveFoodEntryEdit(
-              selectorData,
-            ); /* method part of commitFoodComposition() replace entire ifelse with it after testing*/
+            await saveFoodEntryEdit(selectorData);
           }
-          /*
-          window.location.reload();
-          */
+          reload();
         }}
       >
         Save Recipe
@@ -71,9 +73,11 @@ export default function FoodEntryItemSelector() {
             <p className="text-sm font-medium text-heading truncate">
               <strong>
                 {foodEntryItem.food.name} |
-                {(foodEntryItem.food.kcal *
-                  (foodEntryItem.food_grams || foodEntryItem.grams)) /
-                  100}{" "}
+                {(
+                  (foodEntryItem.food.kcal *
+                    (foodEntryItem.food_grams || foodEntryItem.grams)) /
+                  100
+                ).toFixed(1)}{" "}
                 kcal |{foodEntryItem.food_grams || foodEntryItem.grams} g
               </strong>
             </p>

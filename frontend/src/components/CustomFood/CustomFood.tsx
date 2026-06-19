@@ -1,16 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CustomFoodEntryForm from "./CustomFoodEntryForm";
 import { components } from "../../types/api";
+import { getCustomFoods } from "../../api/utils";
 
 type FoodOut = components["schemas"]["FoodOut"];
 type CustomFoodProps = {
   customFood: FoodOut[] | [];
 };
 
-export default function CustomFood({ customFood }: CustomFoodProps) {
-  if (!customFood) {
-    return null;
-  }
+export default function CustomFood() {
+  const [customFood, setCustomFood] = useState([]);
+  const [reloadTracker, setReloadTracker] = useState(0);
+
+  useEffect(() => {
+    const fetchCustomFood = async () => {
+      const food = await getCustomFoods();
+      setCustomFood(food);
+    };
+    fetchCustomFood();
+  }, [reloadTracker]);
+
+  const reload = () => {
+    const count = reloadTracker + 1;
+    setReloadTracker(count);
+  };
 
   function openEdit(food: FoodOut) {
     setFormMode("edit");
@@ -25,7 +38,7 @@ export default function CustomFood({ customFood }: CustomFoodProps) {
   const [foodDetails, setFoodDetails] = useState<FoodOut | null>(null);
   const [formMode, setFormMode] = useState<"edit" | "add" | null>(null);
 
-  const formattedResults = customFood.map((food: FoodOut) => (
+  const formattedResults = customFood?.map((food: FoodOut) => (
     <li key={food.id} className="pb-3 sm:pb-4">
       <div className="flex items-center space-x-4- rlt:space-x-reverse">
         <p className="text-sm font-medium text-heading truncate">
@@ -54,6 +67,7 @@ export default function CustomFood({ customFood }: CustomFoodProps) {
         foodDetails={foodDetails}
         formMode={formMode}
         setFormMode={setFormMode}
+        reload={reload}
       />
     </div>
   );

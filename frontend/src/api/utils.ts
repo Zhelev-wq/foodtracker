@@ -92,7 +92,6 @@ export async function createRecipe(selectorData) {
 }
 
 export async function editRecipe(selectorData) {
-  /* TODO: create */
   const payload = {
     food_items: selectorData.food_items,
     recipe_name: selectorData.recipe_name,
@@ -103,4 +102,19 @@ export async function editRecipe(selectorData) {
     payload,
   );
   return response.data;
+}
+
+export async function addRecipeToLog(recipe_id) {
+  const response = await api.post(
+    `/api/food_create/entry_from_recipe/${recipe_id}`,
+  );
+  const data = response.data;
+
+  return data;
+}
+
+export async function deleteRecipe(recipe_id) {
+  const response = await api.delete(`/api/food_delete/recipe/${recipe_id}`);
+  const data = response.data;
+  return data;
 }
