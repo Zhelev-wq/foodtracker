@@ -1,5 +1,6 @@
 import { createCustomFood, editCustomFood } from "../../api/utils";
 import { components } from "../../types/api";
+import React from "react";
 
 type CustomFoodEntryFormProps = {
   foodDetails: components["schemas"]["FoodOut"] | null;
@@ -79,16 +80,17 @@ export default function CustomFoodEntryForm({
     return formattedData;
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const formattedData = formatRawFoodData(Object.fromEntries(fd));
     if (formMode === "add") {
-      createCustomFood(formattedData);
+      await createCustomFood(formattedData);
     } else {
-      editCustomFood(formattedData, foodDetails.id);
+      await editCustomFood(formattedData, foodDetails.id);
     }
     reload();
+    /* TODO: close form */
   };
 
   return (

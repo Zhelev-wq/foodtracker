@@ -7,6 +7,11 @@ type FoodSearchBarProps = {
 
 export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
   const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
   const formTarget = context.formTarget;
   const formMode = context.formMode;
   const showSearchBar = context.showSearchBar;

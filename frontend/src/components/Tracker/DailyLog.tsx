@@ -8,14 +8,14 @@ type DailyLogProps = {
   fetchFoodData: () => Promise<void>;
 };
 
-/* 
-TODO:       
-    consider adding a way to remove food_item elements from a food entry
-*/
-
 export default function DailyLog({ foodData, fetchFoodData }: DailyLogProps) {
-  const foodEntryFormContext = useContext(FoodEntryFormContext);
-  const passFoodEntryToForm = foodEntryFormContext.passFoodEntryToForm;
+  const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+  const passFoodEntryToForm = context.passFoodEntryToForm;
 
   const foodRows = foodData.map((foodEntry) => (
     <tr>

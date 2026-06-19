@@ -1,7 +1,6 @@
 import type { components } from "../../types/api.ts";
 import { useState, useContext } from "react";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
-import { editFoodEntryItem, createFoodEntry } from "../../api/utils.ts";
 
 type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
 type FoodOut = components["schemas"]["FoodOut"];
@@ -19,12 +18,16 @@ revised version:
 
 export default function FoodEntryForm() {
   const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
   const existingGrams = context.existingGrams;
   const foodOutData = context.foodOutData;
   const formMode = context.formMode;
 
   const [grams, setGrams] = useState(existingGrams);
-  const formTarget = context.formTarget;
 
   if (!foodOutData || !formMode) {
     return null;
@@ -80,7 +83,6 @@ export default function FoodEntryForm() {
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
             onClick={(e) => {
-              /* TODO: create logic to close form on submit, add to helper function*/
               submitForm(e, grams);
             }}
           >

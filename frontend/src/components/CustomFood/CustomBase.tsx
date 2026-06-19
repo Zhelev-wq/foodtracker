@@ -1,5 +1,4 @@
-import { getCustomFoods, getRecipes } from "../../api/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CustomFood from "./CustomFood";
 import CustomRecipes from "./CustomRecipes";
 

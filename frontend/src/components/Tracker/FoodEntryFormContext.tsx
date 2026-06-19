@@ -10,12 +10,18 @@ import {
 
 type FoodOut = components["schemas"]["FoodOut"];
 type FoodEntry = components["schemas"]["FoodEntryOut"];
-type Recipe = null; /* placeholder */
-type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
+type Recipe = components["schemas"]["RecipeOut-Output"];
+type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut-Output"];
+type RecipeEntryItemOut = components["schemas"]["RecipeItemOut-Output"];
 
 export const FoodEntryFormContext = createContext(null);
 
-export function FoodEntryFormContextProvider({ children, onLogChange }) {
+type props = {
+  children: any;
+  reload: () => void;
+};
+
+export function FoodEntryFormContextProvider({ children, reload }: props) {
   const [foodOutData, setFoodOutData] = useState<FoodOut | null>(null);
   const [foodEntryItemID, setFoodEntryItemID] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<"add" | "edit" | null>(
@@ -45,7 +51,7 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
     setExistingGrams(foodEntryItem.food_grams);
     setFoodEntryItemID(foodEntryItem.food_id);
   };
-  const openEditSingle = (foodEntryItemOut: FoodEntryItemOut) => {
+  const openDirectToForm = (foodEntryItemOut: FoodEntryItemOut) => {
     /* for single-item foodEntry, pass item directly to foodEntryForm, 
       skip FoodEntryItemSelector step,
       used to pass DailyLog entries  */
@@ -61,14 +67,12 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
     setExistingGrams(100);
     if (forDailyLog) {
       setForDailyLog(false);
+      setShowSearchBar(false);
     }
-    /*
-    setFormMode(null);
-    setFormTarget(null);
-    */
   };
 
-  const foodIdOf = (item) => item.food_id ?? item.food_uuid;
+  const foodIdOf = (item: FoodEntryItemOut | RecipeEntryItemOut) =>
+    item.food_id ?? item.food_uuid;
 
   function updateItemInSelector(targetFoodID: string, grams: number) {
     /* changes target item's grams, appends all items to new array, 
@@ -107,16 +111,15 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
   };
 
   const saveEntryToLog = async (grams) => {
-    /* TODO: figure out what this does, rename as necessary */
     if (formMode === "edit") {
       await editFoodEntryItem(foodEntryItemID, grams);
     } else if (formMode === "add") {
       await createFoodEntry(foodOutData.id, grams);
     }
-    onLogChange?.();
+    reload();
   };
 
-  function pushNewEntryToSelectorData(grams) {
+  function pushNewEntryToSelectorData(grams: Number) {
     /* appends new entry to selectorData array 
     newItem fields mismatch RecipeEntryItem model fields. this is intentional
     edit recipe/food_entry has two types of validators - existing items/incoming items
@@ -134,7 +137,7 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
     setSelectorData(updatedSelectorData);
   }
 
-  function writeDataToEntry(grams) {
+  function writeDataToEntry(grams: Number) {
     /* checks if form item exists in entry/recipe
     if yes - updates it with new grams; if no - appends it
     */
@@ -154,6 +157,7 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
     if (forDailyLog) {
       saveEntryToLog(grams);
       setForDailyLog(false);
+      closeForm();
       return;
     }
 
@@ -164,7 +168,7 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
     setFormMode("edit");
     if (foodEntry.food_items.length === 1) {
       setSelectorData(null);
-      openEditSingle(foodEntry.food_items[0]);
+      openDirectToForm(foodEntry.food_items[0]);
     } else {
       setSelectorData(foodEntry);
       setFormTarget("food-entry");
@@ -193,32 +197,65 @@ export function FoodEntryFormContextProvider({ children, onLogChange }) {
     setSelectorData(updatedSelectorData);
   };
 
+  function closeSelector() {
+    setSelectorData(null);
+    setFormTarget(null);
+  }
+
+  async function saveRecipe() {
+    if (formTarget === "recipe") {
+      await commitFoodComposition();
+    } else if (formTarget === "food-entry") {
+      await saveFoodEntryEdit(selectorData);
+    }
+    reload?.();
+    closeForm();
+    setShowSearchBar(false);
+    setSelectorData(null);
+  }
+
+  function openNewEmptyRecipe() {
+    setSelectorData({ food_items: [], recipe_name: "" });
+    setFormTarget("recipe");
+    setFormMode("add");
+  }
+
+  function openEditRecipe(recipe) {
+    setSelectorData(recipe);
+    setFormTarget("recipe");
+    setFormMode("edit");
+  }
+  function openNewEntryToLog() {
+    setSelectorData(null);
+    setForDailyLog(true);
+    setFormMode("add");
+    setFormTarget("food-entry");
+    setShowSearchBar(true);
+  }
   const contextValue = {
-    foodOutData: foodOutData,
-    foodEntryItemID: foodEntryItemID,
+    showSearchBar: showSearchBar,
     formMode: formMode,
     existingGrams: existingGrams,
+    foodOutData: foodOutData,
     selectorData: selectorData,
     formTarget: formTarget,
-    forDailyLog: forDailyLog,
-    showSearchBar: showSearchBar,
 
-    setSelectorData: setSelectorData,
-    setFormTarget: setFormTarget,
+    setRecipeName: setRecipeName,
+    setShowSearchBar: setShowSearchBar,
+
+    /* HELPER FUNCTIONS */
     openAdd: openAdd,
     openEdit: openEdit,
+    openEditRecipe: openEditRecipe,
     closeForm: closeForm,
-    openEditSingle: openEditSingle,
-    saveEntryToLog: saveEntryToLog,
     submitForm: submitForm,
     passFoodEntryToForm: passFoodEntryToForm,
     removeItemFromEntry: removeItemFromEntry,
-    commitFoodComposition: commitFoodComposition,
-    setRecipeName: setRecipeName,
-    setFormMode: setFormMode,
-    setForDailyLog: setForDailyLog,
-    setShowSearchBar: setShowSearchBar,
     foodIdOf: foodIdOf,
+    closeSelector: closeSelector,
+    saveRecipe: saveRecipe,
+    openNewEmptyRecipe: openNewEmptyRecipe,
+    openNewEntryToLog: openNewEntryToLog,
   };
 
   return (

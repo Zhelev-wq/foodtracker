@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { saveFoodEntryEdit } from "../../api/utils";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
 
 type SelectorProps = {
@@ -8,19 +7,20 @@ type SelectorProps = {
 
 export default function FoodEntryItemSelector(props: SelectorProps) {
   const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
   const selectorData = context.selectorData;
-  const setSelectorData = context.setSelectorData;
   const openEdit = context.openEdit;
-  const setFormTarget = context.setFormTarget;
   const removeItemFromEntry = context.removeItemFromEntry;
-  const formTarget = context.formTarget;
-  const commitFoodComposition = context.commitFoodComposition;
-  const setRecipeName = context.setRecipeName;
-  const setFormMode = context.setFormMode;
+  const setRecipeName =
+    context.setRecipeName; /*TODO: what does this do. do I need it? */
   const setShowSearchBar = context.setShowSearchBar;
   const foodIdOf = context.foodIdOf;
-
-  const reload = props.reload;
+  const saveRecipe = context.saveRecipe;
+  const closeSelector = context.closeSelector;
 
   if (!selectorData) {
     /* if selectorData is empty or foodEntryID not new */
@@ -31,7 +31,6 @@ export default function FoodEntryItemSelector(props: SelectorProps) {
     return (
       <button
         onClick={() => {
-          /* TODO: figure out how to make this work*/
           setShowSearchBar(true);
         }}
       >
@@ -42,56 +41,46 @@ export default function FoodEntryItemSelector(props: SelectorProps) {
 
   function SaveRecipeButton() {
     return (
-      <button
-        onClick={async () => {
-          if (formTarget === "recipe") {
-            await commitFoodComposition(); /* only create implemented. TODO: add visual element to confirm  */
-          } else if (formTarget === "food-entry") {
-            await saveFoodEntryEdit(selectorData);
-          }
-          reload();
-        }}
-      >
-        Save Recipe
-      </button>
+      <button onClick={async () => await saveRecipe()}>Save Recipe</button>
     );
   }
 
   function FormattedResults() {
     if (selectorData) {
-      const formattedResults = selectorData.food_items.map((foodEntryItem) => (
-        <li key={foodIdOf(foodEntryItem)} className="pb-3 sm:pb-4">
-          <div className="flex gap-4 justify-between items-center">
-            <button
-              onClick={() => {
-                openEdit(foodEntryItem); /* -> opens FoodEntryForm */
-                setFormMode("edit");
-              }}
-            >
-              Edit
-            </button>
-            <p className="text-sm font-medium text-heading truncate">
-              <strong>
-                {foodEntryItem.food.name} |
-                {(
-                  (foodEntryItem.food.kcal *
-                    (foodEntryItem.food_grams || foodEntryItem.grams)) /
-                  100
-                ).toFixed(1)}{" "}
-                kcal |{foodEntryItem.food_grams || foodEntryItem.grams} g
-              </strong>
-            </p>
-            <button
-              className="ml-auto"
-              onClick={() => {
-                removeItemFromEntry(foodEntryItem);
-              }}
-            >
-              Remove
-            </button>
-          </div>
-        </li>
-      ));
+      const formattedResults = selectorData?.food_items?.map(
+        (foodEntryItem) => (
+          <li key={foodIdOf(foodEntryItem)} className="pb-3 sm:pb-4">
+            <div className="flex gap-4 justify-between items-center">
+              <button
+                onClick={() => {
+                  openEdit(foodEntryItem); /* -> opens FoodEntryForm */
+                }}
+              >
+                Edit
+              </button>
+              <p className="text-sm font-medium text-heading truncate">
+                <strong>
+                  {foodEntryItem.food.name} |
+                  {(
+                    (foodEntryItem.food.kcal *
+                      (foodEntryItem.food_grams || foodEntryItem.grams)) /
+                    100
+                  ).toFixed(1)}{" "}
+                  kcal |{foodEntryItem.food_grams || foodEntryItem.grams} g
+                </strong>
+              </p>
+              <button
+                className="ml-auto"
+                onClick={() => {
+                  removeItemFromEntry(foodEntryItem);
+                }}
+              >
+                Remove
+              </button>
+            </div>
+          </li>
+        ),
+      );
       return formattedResults;
     }
     return null;
@@ -103,16 +92,14 @@ export default function FoodEntryItemSelector(props: SelectorProps) {
         <h2>Select Food Item</h2>
         <button
           onClick={() => {
-            /*TODO: make helper function - closeSelector()*/
-            setSelectorData(null);
-            setFormTarget(null);
+            closeSelector();
           }}
         >
           X
         </button>
       </div>
 
-      <input
+      <input /* TODO: disappear during dailyLog editing */
         name="recipe-name"
         value={selectorData?.recipe_name ?? ""}
         onChange={(e) => setRecipeName(e.target.value)}

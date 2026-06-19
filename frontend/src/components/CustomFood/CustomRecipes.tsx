@@ -13,14 +13,25 @@ import {
   deleteRecipe,
   getRecipes,
 } from "../../api/utils";
+import { components } from "../../types/api";
 
-function RecipesList({ recipes }) {
+type RecipeOut = components["schemas"]["RecipeOut-Output"];
+type RecipeListProps = {
+  recipes: RecipeOut[];
+};
+
+function RecipesList({ recipes }: RecipeListProps) {
+  /* TODO: create own file */
   const context = useContext(FoodEntryFormContext);
-  const setSelectorData = context.setSelectorData;
-  const setFormTarget = context.setFormTarget;
-  const setFormMode = context.setFormMode;
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+  const openNewEmptyRecipe = context.openNewEmptyRecipe;
+  const openEditRecipe = context.openEditRecipe;
 
-  const recipeList = recipes?.map((recipe) => (
+  const recipeList = recipes?.map((recipe: RecipeOut) => (
     <tr key={recipe.id} className="border">
       <td>
         <button
@@ -39,16 +50,7 @@ function RecipesList({ recipes }) {
       </td>
       <td>{recipe.kcal.toFixed(1)} kcal</td>
       <td>
-        <button
-          onClick={() => {
-            /* TODO: create helper function */
-            setSelectorData(recipe);
-            setFormTarget("recipe");
-            setFormMode("edit"); /* why add? */
-          }}
-        >
-          Edit
-        </button>
+        <button onClick={() => openEditRecipe(recipe)}>Edit</button>
       </td>
       <td>
         <button
@@ -61,17 +63,11 @@ function RecipesList({ recipes }) {
       </td>
     </tr>
   ));
+
   return (
     <div>
       <div>
-        <button
-          onClick={() => {
-            /* TODO: create helper function */
-            setSelectorData({ food_items: [], recipe_name: "" });
-            setFormTarget("recipe");
-            setFormMode("add");
-          }}
-        >
+        <button onClick={() => openNewEmptyRecipe()}>
           Create New Custom Recipe
         </button>
         <table className="border">
@@ -99,7 +95,7 @@ function RecipesList({ recipes }) {
 export default function CustomRecipes() {
   const [searchText, setSearchText] = useState("");
   const [foodSearchResults, setFoodSearchResults] = useState(null);
-  const [recipes, setRecipes] = useState(null);
+  const [recipes, setRecipes] = useState([]);
   const [reloadTracker, setReloadTracker] = useState(0);
 
   const reload = () => {
@@ -132,7 +128,7 @@ export default function CustomRecipes() {
 
   return (
     <div className="flex">
-      <FoodEntryFormContextProvider>
+      <FoodEntryFormContextProvider reload={reload}>
         <RecipesList recipes={recipes} />
         <FoodEntryItemSelector reload={reload} />
         <div>

@@ -55,7 +55,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/food_create/entry_from_recipe": {
+  "/api/food_create/entry_from_recipe/{recipe_id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -64,8 +64,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Add Recipe Entry */
-    post: operations["add_recipe_entry_api_food_create_entry_from_recipe_post"];
+    /** Create Entry From Recipe */
+    post: operations["create_entry_from_recipe_api_food_create_entry_from_recipe__recipe_id__post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -106,7 +106,7 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/food_edit/food_entry/food_items/{food_entry_id}": {
+  "/api/food_edit/food_entry/{food_entry_id}": {
     parameters: {
       query?: never;
       header?: never;
@@ -115,7 +115,24 @@ export interface paths {
     };
     get?: never;
     /** Edit Food Entry Food Items */
-    put: operations["edit_food_entry_food_items_api_food_edit_food_entry_food_items__food_entry_id__put"];
+    put: operations["edit_food_entry_food_items_api_food_edit_food_entry__food_entry_id__put"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_edit/recipe/{recipe_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** Edit Recipe */
+    put: operations["edit_recipe_api_food_edit_recipe__recipe_id__put"];
     post?: never;
     delete?: never;
     options?: never;
@@ -135,6 +152,23 @@ export interface paths {
     post?: never;
     /** Remove Food Entry */
     delete: operations["remove_food_entry_api_food_delete_food_entry__food_entry_uuid__delete"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/food_delete/recipe/{recipe_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** Remove Recipe */
+    delete: operations["remove_recipe_api_food_delete_recipe__recipe_id__delete"];
     options?: never;
     head?: never;
     patch?: never;
@@ -293,23 +327,6 @@ export interface paths {
     patch: operations["update_user_api_users__user_id__patch"];
     trace?: never;
   };
-  "/": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** Home */
-    get: operations["home__get"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -394,6 +411,16 @@ export interface components {
       vitamins: components["schemas"]["Vitamins"] | null;
       minerals: components["schemas"]["Minerals"] | null;
       fats: components["schemas"]["Fats"] | null;
+    };
+    /** EditRecipePayload */
+    EditRecipePayload: {
+      /** Food Items */
+      food_items: (
+        | components["schemas"]["RecipeItemOut-Input"]
+        | components["schemas"]["CreateFoodEntryPayload"]
+      )[];
+      /** Recipe Name */
+      recipe_name: string;
     };
     /** Fats */
     Fats: {
@@ -510,7 +537,7 @@ export interface components {
        */
       user_id: string;
       /** Name */
-      readonly name: string;
+      name?: string | null;
       /** Protein */
       readonly protein: number;
       /** Carbs */
@@ -720,6 +747,8 @@ export interface components {
        * Format: uuid
        */
       user_id: string;
+      /** Name */
+      name?: string | null;
       /** Recipe Name */
       recipe_name: string;
     };
@@ -742,10 +771,10 @@ export interface components {
        * Format: uuid
        */
       user_id: string;
+      /** Name */
+      name?: string | null;
       /** Recipe Name */
       recipe_name: string;
-      /** Name */
-      readonly name: string;
       /** Protein */
       readonly protein: number;
       /** Carbs */
@@ -988,13 +1017,13 @@ export interface operations {
       };
     };
   };
-  add_recipe_entry_api_food_create_entry_from_recipe_post: {
+  create_entry_from_recipe_api_food_create_entry_from_recipe__recipe_id__post: {
     parameters: {
-      query: {
-        payload: unknown;
-      };
+      query?: never;
       header?: never;
-      path?: never;
+      path: {
+        recipe_id: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -1089,7 +1118,7 @@ export interface operations {
       };
     };
   };
-  edit_food_entry_food_items_api_food_edit_food_entry_food_items__food_entry_id__put: {
+  edit_food_entry_food_items_api_food_edit_food_entry__food_entry_id__put: {
     parameters: {
       query?: never;
       header?: never;
@@ -1127,12 +1156,78 @@ export interface operations {
       };
     };
   };
+  edit_recipe_api_food_edit_recipe__recipe_id__put: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipe_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EditRecipePayload"];
+      };
+    };
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
   remove_food_entry_api_food_delete_food_entry__food_entry_uuid__delete: {
     parameters: {
       query?: never;
       header?: never;
       path: {
         food_entry_uuid: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  remove_recipe_api_food_delete_recipe__recipe_id__delete: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        recipe_id: string;
       };
       cookie?: never;
     };
@@ -1412,26 +1507,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
-  home__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
         };
       };
     };

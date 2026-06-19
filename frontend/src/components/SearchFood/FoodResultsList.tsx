@@ -16,12 +16,19 @@ type FoodResultsListProps = {
 export default function FoodResultList({
   foodSearchResults,
 }: FoodResultsListProps) {
-  if (!foodSearchResults) {
+  const context = useContext(FoodEntryFormContext);
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+
+  const showSearchBar = context.showSearchBar;
+  if (!foodSearchResults || !showSearchBar) {
     return null;
   }
 
-  const foodEntryFormContext = useContext(FoodEntryFormContext);
-  const openAdd = foodEntryFormContext.openAdd;
+  const openAdd = context.openAdd;
 
   const formattedSearchResults = foodSearchResults.map((result: FoodOut) => (
     <li key={result.id} className="pb-3 sm:pb-4">

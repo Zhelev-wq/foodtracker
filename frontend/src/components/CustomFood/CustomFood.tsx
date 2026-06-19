@@ -4,9 +4,6 @@ import { components } from "../../types/api";
 import { getCustomFoods } from "../../api/utils";
 
 type FoodOut = components["schemas"]["FoodOut"];
-type CustomFoodProps = {
-  customFood: FoodOut[] | [];
-};
 
 export default function CustomFood() {
   const [customFood, setCustomFood] = useState([]);

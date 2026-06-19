@@ -13,25 +13,15 @@ import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
 function AddFoodButton() {
   const context = useContext(FoodEntryFormContext);
-  const setFormTarget = context.setFormTarget;
-  const setSelectorData = context.setSelectorData;
-  const setFormMode = context.setFormMode;
-  const setForDailyLog = context.setForDailyLog;
-  const setShowSearchBar = context.setShowSearchBar;
+  if (!context) {
+    throw new Error(
+      "Component must be used inside FoodEntryFormContextProvider",
+    );
+  }
+  const openNewEntryToLog = context.openNewEntryToLog;
 
   return (
-    <button
-      onClick={() => {
-        /* TODO: create descriptive helper function */
-        setSelectorData(null);
-        setForDailyLog(true);
-        setFormMode("add");
-        setFormTarget("food-entry");
-        setShowSearchBar(true);
-      }}
-    >
-      Create New Food Entry
-    </button>
+    <button onClick={() => openNewEntryToLog()}>Create New Food Entry</button>
   );
 }
 
@@ -81,7 +71,7 @@ export default function Tracker() {
 
   return (
     <div>
-      <FoodEntryFormContextProvider onLogChange={reload}>
+      <FoodEntryFormContextProvider reload={reload}>
         <div className="flex justify-evenly items-center">
           <DateSelector date={date} setDate={setDate} />
           <FoodSummary foodData={foodData} />
