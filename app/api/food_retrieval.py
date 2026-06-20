@@ -10,7 +10,8 @@ from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Food
 from app.db.tables.food_entries import FoodEntry, Recipe
-from app.validators.food import FoodEntryOut, FoodOut, RecipeOut
+from app.validators.entries.entries_output import FoodEntryOutput, RecipeOutput
+from app.validators.food.food_output import FoodOutput
 
 router = APIRouter(tags=["food/read"])
 
@@ -23,7 +24,7 @@ async def search_food_by_name(
     page_size: int = 20,
     db: AsyncSession = Depends(get_db),
 ) -> list[
-    FoodOut
+    FoodOutput
 ]:  # fuzzy search, will return 20 results of things with similarity to food_name
     food_query = (
         select(Food)
@@ -48,7 +49,7 @@ async def search_food_by_uuid(
     food_uuid: uuid.UUID | None = None,
     barcode: str | None = None,
     db: AsyncSession = Depends(get_db),
-) -> FoodOut:
+) -> FoodOutput:
     if food_uuid and barcode:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -95,7 +96,7 @@ async def search_food_by_uuid(
 @router.get("/search/date/{date}")
 async def search_food_entries_by_date(
     date: datetime.datetime, user: CurrentUser, db: AsyncSession = Depends(get_db)
-) -> list[FoodEntryOut]:
+) -> list[FoodEntryOutput]:
 
     db_query = (
         select(FoodEntry)
@@ -110,7 +111,7 @@ async def search_food_entries_by_date(
 @router.get("/search/recipes")
 async def get_user_recipes(
     user: CurrentUser, db: AsyncSession = Depends(get_db)
-) -> list[RecipeOut]:
+) -> list[RecipeOutput]:
     db_query = select(Recipe).where(Recipe.user_id == user.id)
 
     results = await db.execute(db_query)
@@ -122,7 +123,7 @@ async def get_user_recipes(
 @router.get("/search/custom_food")
 async def get_user_custom_food(
     user: CurrentUser, db: AsyncSession = Depends(get_db)
-) -> list[FoodOut]:
+) -> list[FoodOutput]:
     db_query = select(Food).where(Food.user_id == user.id)
 
     results = await db.execute(db_query)

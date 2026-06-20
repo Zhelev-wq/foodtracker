@@ -11,19 +11,21 @@ from app.db.database import get_db
 from app.db.tables.food import Fats, Food, Minerals, Vitamins
 from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
                                         RecipeEntryItem)
-from app.validators.food import (CreateFoodEntryPayload, CreateRecipePayload,
-                                 CustomFood, FoodEntryOut)
+from app.validators.entries.entries_input import EntryItemInput, RecipeInput
+from app.validators.entries.entries_output import FoodEntryOutput, RecipeOutput
+from app.validators.food.food_input import CustomFoodInput
+from app.validators.food.food_output import FoodOutput
 
 router = APIRouter(tags=["food/create"])
 
 
 @router.post("/food_entry")
 async def create_food_entry(
-    payload: list[CreateFoodEntryPayload],
+    payload: list[EntryItemInput],
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-) -> FoodEntryOut:
-
+) -> FoodEntryOutput:
+    # normal use case is single-item entry, but options included for multi-item
     food_ids = [food_entry.food_uuid for food_entry in payload]
     result = await db.execute(
         select(Food)
@@ -57,8 +59,8 @@ async def create_food_entry(
 
 @router.post("/custom_food")
 async def create_custom_food(
-    payload: CustomFood, user: CurrentUser, db: AsyncSession = Depends(get_db)
-):
+    payload: CustomFoodInput, user: CurrentUser, db: AsyncSession = Depends(get_db)
+) -> FoodOutput:
 
     custom_food = Food(
         name=payload.name,
@@ -88,8 +90,8 @@ async def create_custom_food(
 
 @router.post("/recipe")
 async def create_recipe(
-    payload: CreateRecipePayload, user: CurrentUser, db: AsyncSession = Depends(get_db)
-):
+    payload: RecipeInput, user: CurrentUser, db: AsyncSession = Depends(get_db)
+) -> RecipeOutput:
     # TODO: solve duplicate naming
 
     food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
@@ -129,7 +131,7 @@ async def create_entry_from_recipe(
     recipe_id: uuid.UUID,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-):
+) -> FoodEntryOutput:
     db_query = (
         select(Recipe).where(Recipe.id == recipe_id).where(Recipe.user_id == user.id)
     )

@@ -2,7 +2,6 @@ import uuid
 
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
-from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -11,9 +10,16 @@ from app.db.database import get_db
 from app.db.tables.food import Fats, Food, Minerals, Vitamins
 from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
                                         RecipeEntryItem)
-from app.validators.food import (CreateFoodEntryPayload, CustomFood,
-                                 FoodEntryItemEdit, FoodEntryItemOut, FoodOut,
-                                 RecipeItemOut)
+from app.validators.entries.entries_input import (EntryItemInput,
+                                                  ExistingEntryItemInput,
+                                                  ExistingRecipeItemInput,
+                                                  FoodEntryItemEdit,
+                                                  RecipeEdit)
+from app.validators.entries.entries_output import (FoodEntryItemOutput,
+                                                   FoodEntryOutput,
+                                                   RecipeOutput)
+from app.validators.food.food_input import CustomFoodEdit
+from app.validators.food.food_output import FoodOutput
 
 router = APIRouter(tags=["food/update"])
 
@@ -24,7 +30,7 @@ async def edit_food_entry_item(
     payload: FoodEntryItemEdit,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-) -> FoodEntryItemOut:
+) -> FoodEntryItemOutput:
     result = await db.execute(
         select(FoodEntryItem)
         .where(FoodEntryItem.id == item_id)
@@ -47,10 +53,10 @@ async def edit_food_entry_item(
 @router.put("/custom_food/{food_id}")
 async def edit_custom_food(
     food_id: uuid.UUID,
-    payload: CustomFood,
+    payload: CustomFoodEdit,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-) -> FoodOut:
+) -> FoodOutput:
 
     db_query = select(Food).where(Food.id == food_id).where(Food.user_id == user.id)
 
@@ -96,10 +102,12 @@ async def edit_custom_food(
 @router.put("/food_entry/{food_entry_id}")
 async def edit_food_entry_food_items(
     food_entry_id: uuid.UUID,
-    food_items: list[FoodEntryItemOut | CreateFoodEntryPayload],
+    food_items: list[
+        ExistingEntryItemInput | EntryItemInput
+    ],  # recheck later if FoodEntryItemOutput is the right model for this job
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-):
+) -> FoodEntryOutput:
     if not food_items:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Food items not provided"
@@ -120,10 +128,10 @@ async def edit_food_entry_food_items(
         )
 
     incoming_existing = [
-        item for item in food_items if isinstance(item, FoodEntryItemOut)
+        item for item in food_items if isinstance(item, ExistingEntryItemInput)
     ]  # maybe original, maybe edited
     incoming_new = [
-        item for item in food_items if isinstance(item, CreateFoodEntryPayload)
+        item for item in food_items if isinstance(item, EntryItemInput)
     ]  # completely new
     incoming_by_id = {(item.id): item for item in incoming_existing}
 
@@ -144,20 +152,13 @@ async def edit_food_entry_food_items(
     return food_entry
 
 
-class EditRecipePayload(BaseModel):
-    food_items: list[
-        RecipeItemOut | CreateFoodEntryPayload
-    ]  # TODO: validators clarification
-    recipe_name: str
-
-
 @router.put("/recipe/{recipe_id}")
 async def edit_recipe(
     recipe_id: uuid.UUID,
-    payload: EditRecipePayload,
+    payload: RecipeEdit,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
-):
+) -> RecipeOutput:
     food_items = payload.food_items
     if not food_items:
         raise HTTPException(
@@ -177,10 +178,10 @@ async def edit_recipe(
         )
 
     incoming_existing = [
-        item for item in food_items if isinstance(item, RecipeItemOut)
+        item for item in food_items if isinstance(item, ExistingRecipeItemInput)
     ]  # maybe original, maybe edited
     incoming_new = [
-        item for item in food_items if isinstance(item, CreateFoodEntryPayload)
+        item for item in food_items if isinstance(item, EntryItemInput)
     ]  # completely new
     incoming_by_id = {(item.id): item for item in incoming_existing}
 
