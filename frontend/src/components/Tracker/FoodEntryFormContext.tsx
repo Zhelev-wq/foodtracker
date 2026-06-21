@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import React, { createContext, useState } from "react";
 import { components } from "../../types/api.ts";
 import {
   createFoodEntry,
@@ -8,27 +8,32 @@ import {
   editRecipe,
 } from "../../api/utils.ts";
 
-type FoodOut = components["schemas"]["FoodOut"];
-type FoodEntry = components["schemas"]["FoodEntryOut"];
-type Recipe = components["schemas"]["RecipeOut-Output"];
-type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut-Output"];
-type RecipeEntryItemOut = components["schemas"]["RecipeItemOut-Output"];
-
-export const FoodEntryFormContext = createContext(null);
-
-type props = {
-  children: any;
-  reload: () => void;
+type FoodOutput = components["schemas"]["FoodOutput"];
+type FoodEntryOutput = components["schemas"]["FoodEntryOutput"];
+type RecipeOutput = components["schemas"]["RecipeOutput"];
+type FoodEntryItemOutput = components["schemas"]["FoodEntryItemOutput"];
+type RecipeEntryItemOutput = components["schemas"]["RecipeItemOutput"];
+type NewItem = {
+  food_uuid: string;
+  grams: number;
+  food: FoodOutput;
 };
 
-export function FoodEntryFormContextProvider({ children, reload }: props) {
-  const [foodOutData, setFoodOutData] = useState<FoodOut | null>(null);
+type EmptyRecipe = {
+  food_items: [];
+  recipe_name: string;
+};
+
+function getContextValue(reload: () => void) {
+  const [foodOutData, setFoodOutData] = useState<FoodOutput | null>(null);
   const [foodEntryItemID, setFoodEntryItemID] = useState<string | null>(null);
   const [formMode, setFormMode] = useState<"add" | "edit" | null>(
     null,
   ); /* only set by Add Food / Edit Buttons / Close buttons. used for calling correct api method on submit */
   const [existingGrams, setExistingGrams] = useState<number>(100);
-  const [selectorData, setSelectorData] = useState<FoodEntry | Recipe | null>(
+  const [selectorData, setSelectorData] = useState<
+    FoodEntryOutput | RecipeOutput | EmptyRecipe | null
+  >(
     null,
   ); /* editing for foodEntries/Recipes happens to this element. once editied, its sent via api call*/
   const [formTarget, setFormTarget] = useState<"food-entry" | "recipe" | null>(
@@ -37,11 +42,11 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
   const [forDailyLog, setForDailyLog] = useState<boolean>(false);
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
 
-  const openAdd = (FoodOut: FoodOut) => {
+  const openAdd = (FoodOut: FoodOutput) => {
     setFoodOutData(FoodOut);
     setExistingGrams(100);
   };
-  const openEdit = (foodEntryItem: FoodEntryItemOut) => {
+  const openEdit = (foodEntryItem: FoodEntryItemOutput) => {
     /* TODO: create type for this new struct with localId */
     setFormMode("edit");
     if (forDailyLog) {
@@ -51,7 +56,7 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     setExistingGrams(foodEntryItem.food_grams);
     setFoodEntryItemID(foodEntryItem.food_id);
   };
-  const openDirectToForm = (foodEntryItemOut: FoodEntryItemOut) => {
+  const openDirectToForm = (foodEntryItemOut: FoodEntryItemOutput) => {
     /* for single-item foodEntry, pass item directly to foodEntryForm, 
       skip FoodEntryItemSelector step,
       used to pass DailyLog entries  */
@@ -71,14 +76,23 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     }
   };
 
-  const foodIdOf = (item: FoodEntryItemOut | RecipeEntryItemOut) =>
-    item.food_id ?? item.food_uuid;
+  const foodIdOf = (
+    item: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem,
+  ) => {
+    if ("food_id" in item) {
+      return item.food_id;
+    }
+    return item.food_uuid;
+  };
 
   function updateItemInSelector(targetFoodID: string, grams: number) {
     /* changes target item's grams, appends all items to new array, 
     writes new array to selectorData*/
 
-    const withGrams = (item, grams) => {
+    const withGrams = (
+      item: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem,
+      grams: number,
+    ) => {
       const copy = Object.assign({}, item);
       if ("food_grams" in copy) {
         copy.food_grams = grams;
@@ -88,20 +102,29 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
       return copy;
     };
 
-    const updatedItems = selectorData?.food_items.map((item) => {
-      if (foodIdOf(item) === targetFoodID) {
-        return withGrams(item, grams);
-      }
-      return item;
-    });
+    const updatedItems = selectorData?.food_items.map(
+      (item: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem) => {
+        if (foodIdOf(item) === targetFoodID) {
+          return withGrams(item, grams);
+        }
+        return item;
+      },
+    );
 
     const updatedSelectorData = Object.assign({}, selectorData);
     updatedSelectorData.food_items = updatedItems;
     setSelectorData(updatedSelectorData);
   }
 
-  const removeItemFromEntry = (foodEntryItem) => {
+  const removeItemFromEntry = (
+    foodEntryItem: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem,
+  ) => {
     /* returns new array minus target item, writes new array to selectorData */
+    if (!selectorData) {
+      throw new Error(
+        "selectorData attr empty when accessed by removeItemFrontEntry",
+      );
+    }
     const updatedItems = selectorData.food_items.filter(
       (item) => foodIdOf(item) !== foodIdOf(foodEntryItem),
     );
@@ -110,7 +133,12 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     setSelectorData(updatedSelectorData);
   };
 
-  const saveEntryToLog = async (grams) => {
+  const saveEntryToLog = async (grams: number) => {
+    if (!foodEntryItemID || !foodOutData) {
+      throw new Error(
+        "foodEntryItemID or foodOutData empty when accessed by saveEntryToLog",
+      );
+    }
     if (formMode === "edit") {
       await editFoodEntryItem(foodEntryItemID, grams);
     } else if (formMode === "add") {
@@ -125,6 +153,11 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     edit recipe/food_entry has two types of validators - existing items/incoming items
     fields mismatch force existing items into one schema, new items into another
     */
+    if (!selectorData || !foodOutData) {
+      throw new Error(
+        "selectorData or foodOutData empty when accessed by pushNewEntryToSelectorData",
+      );
+    }
     const newItem = {
       food_uuid: foodOutData.id,
       grams: grams,
@@ -137,10 +170,15 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     setSelectorData(updatedSelectorData);
   }
 
-  function writeDataToEntry(grams: Number) {
+  function writeDataToEntry(grams: number) {
     /* checks if form item exists in entry/recipe
     if yes - updates it with new grams; if no - appends it
     */
+    if (!selectorData || !foodOutData) {
+      throw new Error(
+        "selectorData or foodOutData empty when accessed by writeDataToEntry",
+      );
+    }
     const existing = selectorData.food_items.find(
       (item) => foodIdOf(item) === foodOutData.id,
     );
@@ -152,7 +190,7 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     }
   }
 
-  const submitForm = (e, grams) => {
+  const submitForm = (e: React.ChangeEvent<HTMLFormElement>, grams: number) => {
     e.preventDefault();
     if (forDailyLog) {
       saveEntryToLog(grams);
@@ -164,7 +202,7 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     writeDataToEntry(grams);
   };
 
-  const passFoodEntryToForm = (foodEntry) => {
+  const passFoodEntryToForm = (foodEntry: FoodEntryOutput) => {
     setFormMode("edit");
     if (foodEntry.food_items.length === 1) {
       setSelectorData(null);
@@ -175,7 +213,9 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     }
   };
 
-  async function updateOrCreateRecipe(selectorData) {
+  async function updateOrCreateRecipe(
+    selectorData: FoodEntryOutput | RecipeOutput,
+  ) {
     if (formMode === "edit") {
       await editRecipe(selectorData);
     } else if (formMode === "add") {
@@ -191,7 +231,8 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     }
   };
 
-  const setRecipeName = (name) => {
+  const setRecipeName = (name: string) => {
+    /* TODO: I have no idea what this does or why its here */
     const updatedSelectorData = Object.assign({}, selectorData);
     updatedSelectorData.recipe_name = name;
     setSelectorData(updatedSelectorData);
@@ -220,7 +261,7 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     setFormMode("add");
   }
 
-  function openEditRecipe(recipe) {
+  function openEditRecipe(recipe: RecipeOutput) {
     setSelectorData(recipe);
     setFormTarget("recipe");
     setFormMode("edit");
@@ -257,7 +298,20 @@ export function FoodEntryFormContextProvider({ children, reload }: props) {
     openNewEmptyRecipe: openNewEmptyRecipe,
     openNewEntryToLog: openNewEntryToLog,
   };
+  return contextValue;
+}
 
+type FoodEntryFormContextValue = ReturnType<typeof getContextValue>;
+export const FoodEntryFormContext =
+  createContext<FoodEntryFormContextValue | null>(null);
+
+type props = {
+  children: any;
+  reload: () => void;
+};
+
+export function FoodEntryFormContextProvider({ children, reload }: props) {
+  const contextValue = getContextValue(reload);
   return (
     <FoodEntryFormContext value={contextValue}>{children}</FoodEntryFormContext>
   );

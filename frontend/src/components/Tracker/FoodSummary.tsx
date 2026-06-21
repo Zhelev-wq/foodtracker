@@ -1,7 +1,7 @@
-import type { components } from "../types/api";
+import { components } from "../../types/api";
 
 type FoodListItemProps = {
-  foodData: components["schemas"]["FoodEntryOut-Output"][];
+  foodData: components["schemas"]["FoodEntryOutput"][];
 };
 
 export default function FoodSummary({ foodData }: FoodListItemProps) {

@@ -3,7 +3,7 @@ import CustomFoodEntryForm from "./CustomFoodEntryForm";
 import { components } from "../../types/api";
 import { getCustomFoods } from "../../api/utils";
 
-type FoodOut = components["schemas"]["FoodOut"];
+type FoodOutput = components["schemas"]["FoodOutput"];
 
 export default function CustomFood() {
   const [customFood, setCustomFood] = useState([]);
@@ -22,7 +22,7 @@ export default function CustomFood() {
     setReloadTracker(count);
   };
 
-  function openEdit(food: FoodOut) {
+  function openEdit(food: FoodOutput) {
     setFormMode("edit");
     setFoodDetails(food);
   }
@@ -32,10 +32,10 @@ export default function CustomFood() {
     setFoodDetails(null);
   }
 
-  const [foodDetails, setFoodDetails] = useState<FoodOut | null>(null);
+  const [foodDetails, setFoodDetails] = useState<FoodOutput | null>(null);
   const [formMode, setFormMode] = useState<"edit" | "add" | null>(null);
 
-  const formattedResults = customFood?.map((food: FoodOut) => (
+  const formattedResults = customFood?.map((food: FoodOutput) => (
     <li key={food.id} className="pb-3 sm:pb-4">
       <div className="flex items-center space-x-4- rlt:space-x-reverse">
         <p className="text-sm font-medium text-heading truncate">
@@ -61,7 +61,7 @@ export default function CustomFood() {
         <ul className="divide-y divide-default a border">{formattedResults}</ul>
       </div>
       <CustomFoodEntryForm
-        foodDetails={foodDetails}
+        foodOut={foodDetails}
         formMode={formMode}
         setFormMode={setFormMode}
         reload={reload}

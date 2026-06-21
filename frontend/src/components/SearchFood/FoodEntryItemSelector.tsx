@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import { useContext } from "react";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
+import { components } from "../../types/api";
 
-type SelectorProps = {
-  reload: () => void;
-};
+type FoodEntryItemOutput = components["schemas"]["FoodEntryItemOutput"];
+type RecipeItemOutput = components["schemas"]["RecipeItemOutput"];
 
-export default function FoodEntryItemSelector(props: SelectorProps) {
+export default function FoodEntryItemSelector() {
   const context = useContext(FoodEntryFormContext);
   if (!context) {
     throw new Error(
@@ -48,7 +48,7 @@ export default function FoodEntryItemSelector(props: SelectorProps) {
   function FormattedResults() {
     if (selectorData) {
       const formattedResults = selectorData?.food_items?.map(
-        (foodEntryItem) => (
+        (foodEntryItem: FoodEntryItemOutput | RecipeItemOutput) => (
           <li key={foodIdOf(foodEntryItem)} className="pb-3 sm:pb-4">
             <div className="flex gap-4 justify-between items-center">
               <button

@@ -4,7 +4,7 @@ import { FoodEntryFormContext } from "./FoodEntryFormContext.tsx";
 import { deleteFoodEntry } from "../../api/utils.ts";
 
 type DailyLogProps = {
-  foodData: components["schemas"]["FoodEntryOut"][];
+  foodData: components["schemas"]["FoodEntryOutput"][];
   fetchFoodData: () => Promise<void>;
 };
 

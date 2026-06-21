@@ -3,14 +3,14 @@ import { components } from "../../types/api";
 import React from "react";
 
 type CustomFoodEntryFormProps = {
-  foodDetails: components["schemas"]["FoodOut"] | null;
+  foodOut: components["schemas"]["FoodOutput"] | null;
   formMode: "edit" | "add" | null;
   setFormMode: (arg: "edit" | "add" | null) => void;
   reload: () => void;
 };
 
 export default function CustomFoodEntryForm({
-  foodDetails,
+  foodOut,
   formMode,
   setFormMode,
   reload,
@@ -19,7 +19,7 @@ export default function CustomFoodEntryForm({
     return null;
   }
 
-  function formatRawFoodData(rawData) {
+  function formatRawFoodData(rawData: Record<string, FormDataEntryValue>) {
     const vitaminsData = {
       vit_a: Number(rawData.vit_a),
       vit_b1: Number(rawData.vit_b1),
@@ -87,7 +87,7 @@ export default function CustomFoodEntryForm({
     if (formMode === "add") {
       await createCustomFood(formattedData);
     } else {
-      await editCustomFood(formattedData, foodDetails.id);
+      await editCustomFood(formattedData, foodOut?.id);
     }
     reload();
     /* TODO: close form */
@@ -100,7 +100,7 @@ export default function CustomFoodEntryForm({
 
       <form
         className="flex flex-col gap-3 max-w-md"
-        key={foodDetails?.id ?? "new"}
+        key={foodOut?.id ?? "new"}
         onSubmit={handleSubmit}
       >
         {/* --- identity (always visible) --- */}
@@ -108,18 +108,14 @@ export default function CustomFoodEntryForm({
           Name{" "}
           <input
             name="name"
-            defaultValue={foodDetails?.name}
+            defaultValue={foodOut?.name}
             type="text"
             required
           />
         </label>
         <label>
           Barcode{" "}
-          <input
-            name="barcode"
-            defaultValue={foodDetails?.barcode}
-            type="text"
-          />
+          <input name="barcode" defaultValue={foodOut?.barcode} type="text" />
         </label>
 
         {/* --- macros --- */}
@@ -130,7 +126,7 @@ export default function CustomFoodEntryForm({
               kcal{" "}
               <input
                 name="kcal"
-                defaultValue={foodDetails?.kcal ?? 0}
+                defaultValue={foodOut?.kcal ?? 0}
                 type="number"
                 step="any"
                 required
@@ -140,7 +136,7 @@ export default function CustomFoodEntryForm({
               Carbs (g){" "}
               <input
                 name="carbs"
-                defaultValue={foodDetails?.carbs ?? 0}
+                defaultValue={foodOut?.carbs ?? 0}
                 type="number"
                 step="any"
                 required
@@ -150,7 +146,7 @@ export default function CustomFoodEntryForm({
               Protein (g)
               <input
                 name="protein"
-                defaultValue={foodDetails?.protein ?? 0}
+                defaultValue={foodOut?.protein ?? 0}
                 type="number"
                 step="any"
                 required
@@ -160,7 +156,7 @@ export default function CustomFoodEntryForm({
               Fat (g){" "}
               <input
                 name="fat"
-                defaultValue={foodDetails?.fat ?? 0}
+                defaultValue={foodOut?.fat ?? 0}
                 type="number"
                 step="any"
                 required
@@ -170,7 +166,7 @@ export default function CustomFoodEntryForm({
               Alcohol{" "}
               <input
                 name="alcohol"
-                defaultValue={foodDetails?.alcohol ?? 0}
+                defaultValue={foodOut?.alcohol ?? 0}
                 type="number"
                 step="any"
               />
@@ -179,7 +175,7 @@ export default function CustomFoodEntryForm({
               Caffeine{" "}
               <input
                 name="caffeine"
-                defaultValue={foodDetails?.caffeine ?? 0}
+                defaultValue={foodOut?.caffeine ?? 0}
                 type="number"
                 step="any"
               />
@@ -195,7 +191,7 @@ export default function CustomFoodEntryForm({
               Saturated{" "}
               <input
                 name="saturated_fat"
-                defaultValue={foodDetails?.fats?.saturated_fat ?? 0}
+                defaultValue={foodOut?.fats?.saturated_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -204,7 +200,7 @@ export default function CustomFoodEntryForm({
               Monounsaturated{" "}
               <input
                 name="monounsaturated_fat"
-                defaultValue={foodDetails?.fats?.monounsaturated_fat ?? 0}
+                defaultValue={foodOut?.fats?.monounsaturated_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -213,7 +209,7 @@ export default function CustomFoodEntryForm({
               Polyunsaturated{" "}
               <input
                 name="polyunsaturated_fat"
-                defaultValue={foodDetails?.fats?.polyunsaturated_fat ?? 0}
+                defaultValue={foodOut?.fats?.polyunsaturated_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -222,7 +218,7 @@ export default function CustomFoodEntryForm({
               Omega-3{" "}
               <input
                 name="omega_3_fat"
-                defaultValue={foodDetails?.fats?.omega_3_fat ?? 0}
+                defaultValue={foodOut?.fats?.omega_3_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -231,7 +227,7 @@ export default function CustomFoodEntryForm({
               Omega-6{" "}
               <input
                 name="omega_6_fat"
-                defaultValue={foodDetails?.fats?.omega_6_fat ?? 0}
+                defaultValue={foodOut?.fats?.omega_6_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -240,7 +236,7 @@ export default function CustomFoodEntryForm({
               Omega-9{" "}
               <input
                 name="omega_9_fat"
-                defaultValue={foodDetails?.fats?.omega_9_fat ?? 0}
+                defaultValue={foodOut?.fats?.omega_9_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -249,7 +245,7 @@ export default function CustomFoodEntryForm({
               Trans{" "}
               <input
                 name="trans_fat"
-                defaultValue={foodDetails?.fats?.trans_fat ?? 0}
+                defaultValue={foodOut?.fats?.trans_fat ?? 0}
                 type="number"
                 step="any"
               />
@@ -265,7 +261,7 @@ export default function CustomFoodEntryForm({
               Vitamin A{" "}
               <input
                 name="vit_a"
-                defaultValue={foodDetails?.vitamins?.vit_a ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_a ?? 0}
                 type="number"
                 step="any"
               />
@@ -274,7 +270,7 @@ export default function CustomFoodEntryForm({
               B1 (Thiamin){" "}
               <input
                 name="vit_b1"
-                defaultValue={foodDetails?.vitamins?.vit_b1 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b1 ?? 0}
                 type="number"
                 step="any"
               />
@@ -283,7 +279,7 @@ export default function CustomFoodEntryForm({
               B2 (Riboflavin){" "}
               <input
                 name="vit_b2"
-                defaultValue={foodDetails?.vitamins?.vit_b2 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b2 ?? 0}
                 type="number"
                 step="any"
               />
@@ -292,7 +288,7 @@ export default function CustomFoodEntryForm({
               B3 (Niacin){" "}
               <input
                 name="vit_b3"
-                defaultValue={foodDetails?.vitamins?.vit_b3 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b3 ?? 0}
                 type="number"
                 step="any"
               />
@@ -301,7 +297,7 @@ export default function CustomFoodEntryForm({
               B5 (Pantothenic){" "}
               <input
                 name="pantothenic_acid"
-                defaultValue={foodDetails?.vitamins?.pantothenic_acid ?? 0}
+                defaultValue={foodOut?.vitamins?.pantothenic_acid ?? 0}
                 type="number"
                 step="any"
               />
@@ -310,7 +306,7 @@ export default function CustomFoodEntryForm({
               B6{" "}
               <input
                 name="vit_b6"
-                defaultValue={foodDetails?.vitamins?.vit_b6 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b6 ?? 0}
                 type="number"
                 step="any"
               />
@@ -319,7 +315,7 @@ export default function CustomFoodEntryForm({
               B7{" "}
               <input
                 name="vit_b7"
-                defaultValue={foodDetails?.vitamins?.vit_b7 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b7 ?? 0}
                 type="number"
                 step="any"
               />
@@ -328,7 +324,7 @@ export default function CustomFoodEntryForm({
               Biotin (B8){" "}
               <input
                 name="biotin"
-                defaultValue={foodDetails?.vitamins?.biotin ?? 0}
+                defaultValue={foodOut?.vitamins?.biotin ?? 0}
                 type="number"
                 step="any"
               />
@@ -337,7 +333,7 @@ export default function CustomFoodEntryForm({
               B9 (Folate){" "}
               <input
                 name="vit_b9"
-                defaultValue={foodDetails?.vitamins?.vit_b9 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b9 ?? 0}
                 type="number"
                 step="any"
               />
@@ -346,7 +342,7 @@ export default function CustomFoodEntryForm({
               B12{" "}
               <input
                 name="vit_b12"
-                defaultValue={foodDetails?.vitamins?.vit_b12 ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_b12 ?? 0}
                 type="number"
                 step="any"
               />
@@ -355,7 +351,7 @@ export default function CustomFoodEntryForm({
               Vitamin C{" "}
               <input
                 name="vit_c"
-                defaultValue={foodDetails?.vitamins?.vit_c ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_c ?? 0}
                 type="number"
                 step="any"
               />
@@ -364,7 +360,7 @@ export default function CustomFoodEntryForm({
               Vitamin D{" "}
               <input
                 name="vit_d"
-                defaultValue={foodDetails?.vitamins?.vit_d ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_d ?? 0}
                 type="number"
                 step="any"
               />
@@ -373,7 +369,7 @@ export default function CustomFoodEntryForm({
               Vitamin E{" "}
               <input
                 name="vit_e"
-                defaultValue={foodDetails?.vitamins?.vit_e ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_e ?? 0}
                 type="number"
                 step="any"
               />
@@ -382,7 +378,7 @@ export default function CustomFoodEntryForm({
               Vitamin K{" "}
               <input
                 name="vit_k"
-                defaultValue={foodDetails?.vitamins?.vit_k ?? 0}
+                defaultValue={foodOut?.vitamins?.vit_k ?? 0}
                 type="number"
                 step="any"
               />
@@ -400,7 +396,7 @@ export default function CustomFoodEntryForm({
                 name="calcium"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.calcium ?? 0}
+                defaultValue={foodOut?.minerals?.calcium ?? 0}
               />
             </label>
             <label>
@@ -409,7 +405,7 @@ export default function CustomFoodEntryForm({
                 name="magnesium"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.magnesium ?? 0}
+                defaultValue={foodOut?.minerals?.magnesium ?? 0}
               />
             </label>
             <label>
@@ -418,7 +414,7 @@ export default function CustomFoodEntryForm({
                 name="phosphorus"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.phosphorus ?? 0}
+                defaultValue={foodOut?.minerals?.phosphorus ?? 0}
               />
             </label>
             <label>
@@ -427,7 +423,7 @@ export default function CustomFoodEntryForm({
                 name="sodium"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.sodium ?? 0}
+                defaultValue={foodOut?.minerals?.sodium ?? 0}
               />
             </label>
             <label>
@@ -436,7 +432,7 @@ export default function CustomFoodEntryForm({
                 name="sulfur"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.sulfur ?? 0}
+                defaultValue={foodOut?.minerals?.sulfur ?? 0}
               />
             </label>
             <label>
@@ -445,7 +441,7 @@ export default function CustomFoodEntryForm({
                 name="iron"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.iron ?? 0}
+                defaultValue={foodOut?.minerals?.iron ?? 0}
               />
             </label>
             <label>
@@ -454,7 +450,7 @@ export default function CustomFoodEntryForm({
                 name="zinc"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.zinc ?? 0}
+                defaultValue={foodOut?.minerals?.zinc ?? 0}
               />
             </label>
             <label>
@@ -463,7 +459,7 @@ export default function CustomFoodEntryForm({
                 name="copper"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.copper ?? 0}
+                defaultValue={foodOut?.minerals?.copper ?? 0}
               />
             </label>
             <label>
@@ -472,7 +468,7 @@ export default function CustomFoodEntryForm({
                 name="manganese"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.manganese ?? 0}
+                defaultValue={foodOut?.minerals?.manganese ?? 0}
               />
             </label>
             <label>
@@ -481,7 +477,7 @@ export default function CustomFoodEntryForm({
                 name="molybdenum"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.molybdenum ?? 0}
+                defaultValue={foodOut?.minerals?.molybdenum ?? 0}
               />
             </label>
             <label>
@@ -490,7 +486,7 @@ export default function CustomFoodEntryForm({
                 name="selenium"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.selenium ?? 0}
+                defaultValue={foodOut?.minerals?.selenium ?? 0}
               />
             </label>
             <label>
@@ -499,7 +495,7 @@ export default function CustomFoodEntryForm({
                 name="iodine"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.iodine ?? 0}
+                defaultValue={foodOut?.minerals?.iodine ?? 0}
               />
             </label>
             <label>
@@ -508,7 +504,7 @@ export default function CustomFoodEntryForm({
                 name="fluoride"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.fluoride ?? 0}
+                defaultValue={foodOut?.minerals?.fluoride ?? 0}
               />
             </label>
             <label>
@@ -517,7 +513,7 @@ export default function CustomFoodEntryForm({
                 name="chromium"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.chromium ?? 0}
+                defaultValue={foodOut?.minerals?.chromium ?? 0}
               />
             </label>
             <label>
@@ -526,7 +522,7 @@ export default function CustomFoodEntryForm({
                 name="potassium"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.potassium ?? 0}
+                defaultValue={foodOut?.minerals?.potassium ?? 0}
               />
             </label>
             <label>
@@ -535,7 +531,7 @@ export default function CustomFoodEntryForm({
                 name="taurine"
                 type="number"
                 step="any"
-                defaultValue={foodDetails?.minerals?.taurine ?? 0}
+                defaultValue={foodOut?.minerals?.taurine ?? 0}
               />
             </label>
           </div>

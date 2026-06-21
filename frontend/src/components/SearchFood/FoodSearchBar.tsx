@@ -21,9 +21,7 @@ export default function FoodSearchBar({ setSearchText }: FoodSearchBarProps) {
   }
 
   const Heading = () => {
-    if (formTarget === "daily-log") {
-      return <h2>Add Food to Daily Log</h2>;
-    } else if (formTarget === "food-entry") {
+    if (formTarget === "food-entry") {
       return <h2>Add Food to Food Entry</h2>;
     } else if (formTarget === "recipe") {
       return <h2>Add Food to Recipe</h2>;

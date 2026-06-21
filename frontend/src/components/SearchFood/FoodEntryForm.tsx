@@ -2,8 +2,7 @@ import type { components } from "../../types/api.ts";
 import { useState, useContext } from "react";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
-type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
-type FoodOut = components["schemas"]["FoodOut"];
+type FoodOutput = components["schemas"]["FoodOutput"];
 
 /*
 revised version:
@@ -35,7 +34,7 @@ export default function FoodEntryForm() {
   const closeForm = context.closeForm;
   const submitForm = context.submitForm;
 
-  function ProcessData(FoodOutData: FoodOut) {
+  function ProcessData(FoodOutData: FoodOutput) {
     if (!FoodOutData) {
       return <p>No data</p>;
     }
