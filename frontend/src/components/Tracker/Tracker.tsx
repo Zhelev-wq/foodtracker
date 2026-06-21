@@ -80,7 +80,7 @@ export default function Tracker() {
         <DailyLog foodData={foodData} fetchFoodData={fetchFoodData} />
         <div className="flex justify-evenly">
           <div>
-            <FoodEntryItemSelector reload={reload} />
+            <FoodEntryItemSelector />
             <FoodEntryForm />
           </div>
           <div>

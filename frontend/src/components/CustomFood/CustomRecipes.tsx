@@ -15,9 +15,9 @@ import {
 } from "../../api/utils";
 import { components } from "../../types/api";
 
-type RecipeOut = components["schemas"]["RecipeOut-Output"];
+type RecipeOutput = components["schemas"]["RecipeOutput"];
 type RecipeListProps = {
-  recipes: RecipeOut[];
+  recipes: RecipeOutput[];
 };
 
 function RecipesList({ recipes }: RecipeListProps) {
@@ -31,7 +31,7 @@ function RecipesList({ recipes }: RecipeListProps) {
   const openNewEmptyRecipe = context.openNewEmptyRecipe;
   const openEditRecipe = context.openEditRecipe;
 
-  const recipeList = recipes?.map((recipe: RecipeOut) => (
+  const recipeList = recipes?.map((recipe: RecipeOutput) => (
     <tr key={recipe.id} className="border">
       <td>
         <button
@@ -130,7 +130,7 @@ export default function CustomRecipes() {
     <div className="flex">
       <FoodEntryFormContextProvider reload={reload}>
         <RecipesList recipes={recipes} />
-        <FoodEntryItemSelector reload={reload} />
+        <FoodEntryItemSelector />
         <div>
           <FoodEntryForm />
           <FoodSearchBar setSearchText={setSearchText} />

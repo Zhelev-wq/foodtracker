@@ -1,11 +1,13 @@
-import React, { useContext, useState } from "react";
+import { useContext } from "react";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext";
+import { DraftItem } from "../../types/draft";
 
-type SelectorProps = {
-  reload: () => void;
-};
+// saved items store grams as food_grams; new (unsaved) items store it as grams
+function itemGrams(item: DraftItem): number {
+  return "food_grams" in item ? item.food_grams : item.grams;
+}
 
-export default function FoodEntryItemSelector(props: SelectorProps) {
+export default function FoodEntryItemSelector() {
   const context = useContext(FoodEntryFormContext);
   if (!context) {
     throw new Error(
@@ -48,12 +50,15 @@ export default function FoodEntryItemSelector(props: SelectorProps) {
   function FormattedResults() {
     if (selectorData) {
       const formattedResults = selectorData?.food_items?.map(
-        (foodEntryItem) => (
+        (foodEntryItem: DraftItem) => (
           <li key={foodIdOf(foodEntryItem)} className="pb-3 sm:pb-4">
             <div className="flex gap-4 justify-between items-center">
               <button
                 onClick={() => {
-                  openEdit(foodEntryItem); /* -> opens FoodEntryForm */
+                  // new items aren't saved yet, so they can't be edited this way
+                  if ("food_id" in foodEntryItem) {
+                    openEdit(foodEntryItem); /* -> opens FoodEntryForm */
+                  }
                 }}
               >
                 Edit
@@ -62,11 +67,10 @@ export default function FoodEntryItemSelector(props: SelectorProps) {
                 <strong>
                   {foodEntryItem.food.name} |
                   {(
-                    (foodEntryItem.food.kcal *
-                      (foodEntryItem.food_grams || foodEntryItem.grams)) /
+                    (foodEntryItem.food.kcal * itemGrams(foodEntryItem)) /
                     100
                   ).toFixed(1)}{" "}
-                  kcal |{foodEntryItem.food_grams || foodEntryItem.grams} g
+                  kcal |{itemGrams(foodEntryItem)} g
                 </strong>
               </p>
               <button

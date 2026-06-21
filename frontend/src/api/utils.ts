@@ -1,4 +1,8 @@
 import { api } from "./client";
+import { components } from "../types/api";
+import { DraftEntry } from "../types/draft";
+
+type CustomFoodInput = components["schemas"]["CustomFoodInput"];
 
 export async function editFoodEntryItem(
   foodEntryItemID: string,
@@ -33,7 +37,7 @@ export async function deleteFoodEntry(foodEntryID: string) {
   return data;
 }
 
-export async function getFoodEntriesForDate(date) {
+export async function getFoodEntriesForDate(date: string) {
   const response = await api.get(`/api/food_get/search/date/${date}`);
   const data = response.data;
   return data;
@@ -57,13 +61,16 @@ export async function getRecipes() {
   return data;
 }
 
-export async function createCustomFood(foodData) {
+export async function createCustomFood(foodData: CustomFoodInput) {
   const response = await api.post(`/api/food_create/custom_food`, foodData);
   const data = response.data;
   return data;
 }
 
-export async function editCustomFood(foodData, food_uuid) {
+export async function editCustomFood(
+  foodData: CustomFoodInput,
+  food_uuid: string,
+) {
   const response = await api.put(
     `/api/food_edit/custom_food/${food_uuid}`,
     foodData,
@@ -72,7 +79,7 @@ export async function editCustomFood(foodData, food_uuid) {
   return data;
 }
 
-export async function saveFoodEntryEdit(foodEntry) {
+export async function saveFoodEntryEdit(foodEntry: DraftEntry) {
   const response = await api.put(
     `/api/food_edit/food_entry/${foodEntry.id}`,
     foodEntry.food_items,
@@ -81,7 +88,7 @@ export async function saveFoodEntryEdit(foodEntry) {
   return data;
 }
 
-export async function createRecipe(selectorData) {
+export async function createRecipe(selectorData: DraftEntry) {
   const payload = {
     food_items: selectorData.food_items,
     recipe_name: selectorData.recipe_name,
@@ -91,7 +98,7 @@ export async function createRecipe(selectorData) {
   return response.data;
 }
 
-export async function editRecipe(selectorData) {
+export async function editRecipe(selectorData: DraftEntry) {
   const payload = {
     food_items: selectorData.food_items,
     recipe_name: selectorData.recipe_name,
@@ -104,7 +111,7 @@ export async function editRecipe(selectorData) {
   return response.data;
 }
 
-export async function addRecipeToLog(recipe_id) {
+export async function addRecipeToLog(recipe_id: string) {
   const response = await api.post(
     `/api/food_create/entry_from_recipe/${recipe_id}`,
   );
@@ -113,7 +120,7 @@ export async function addRecipeToLog(recipe_id) {
   return data;
 }
 
-export async function deleteRecipe(recipe_id) {
+export async function deleteRecipe(recipe_id: string) {
   const response = await api.delete(`/api/food_delete/recipe/${recipe_id}`);
   const data = response.data;
   return data;

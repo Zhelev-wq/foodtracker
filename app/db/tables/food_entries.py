@@ -46,6 +46,7 @@ class FoodEntry(EntryBase):
 
 
 class Recipe(EntryBase):
+    #TODO: rename recipe_name to name, then have both inherit from entrybase. redo validators after
     __tablename__ = "recipe"
     owned_item_class_name = "RecipeEntryItem"
     recipe_name: Mapped[str] = mapped_column(String, nullable=False)

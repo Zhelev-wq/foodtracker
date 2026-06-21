@@ -355,23 +355,6 @@ export interface components {
        */
       client_secret?: string | null;
     };
-    /** CreateFoodEntryPayload */
-    CreateFoodEntryPayload: {
-      /**
-       * Food Uuid
-       * Format: uuid
-       */
-      food_uuid: string;
-      /** Grams */
-      grams: number;
-    };
-    /** CreateRecipePayload */
-    CreateRecipePayload: {
-      /** Food Items */
-      food_items: components["schemas"]["CreateFoodEntryPayload"][];
-      /** Recipe Name */
-      recipe_name: string;
-    };
     /** CreateUser */
     CreateUser: {
       /** Name */
@@ -384,8 +367,8 @@ export interface components {
       /** Password */
       password: string;
     };
-    /** CustomFood */
-    CustomFood: {
+    /** CustomFoodEdit */
+    CustomFoodEdit: {
       /** Name */
       name: string;
       /** Carbs */
@@ -406,21 +389,75 @@ export interface components {
        * @default 0
        */
       caffeine: number | null;
-      /** Barcode */
-      barcode?: string | null;
+      vitamins: components["schemas"]["Vitamins"] | null;
+      minerals: components["schemas"]["Minerals"] | null;
+      fats: components["schemas"]["Fats"] | null;
+      /**
+       * User Id
+       * Format: uuid
+       */
+      user_id: string;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+    };
+    /** CustomFoodInput */
+    CustomFoodInput: {
+      /** Name */
+      name: string;
+      /** Carbs */
+      carbs: number;
+      /** Protein */
+      protein: number;
+      /** Fat */
+      fat: number;
+      /** Kcal */
+      kcal: number;
+      /**
+       * Alcohol
+       * @default 0
+       */
+      alcohol: number | null;
+      /**
+       * Caffeine
+       * @default 0
+       */
+      caffeine: number | null;
       vitamins: components["schemas"]["Vitamins"] | null;
       minerals: components["schemas"]["Minerals"] | null;
       fats: components["schemas"]["Fats"] | null;
     };
-    /** EditRecipePayload */
-    EditRecipePayload: {
-      /** Food Items */
-      food_items: (
-        | components["schemas"]["RecipeItemOut-Input"]
-        | components["schemas"]["CreateFoodEntryPayload"]
-      )[];
-      /** Recipe Name */
-      recipe_name: string;
+    /** EntryItemInput */
+    EntryItemInput: {
+      /**
+       * Food Uuid
+       * Format: uuid
+       */
+      food_uuid: string;
+      /** Grams */
+      grams: number;
+    };
+    /** ExistingEntryItemInput */
+    ExistingEntryItemInput: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Food Grams */
+      food_grams: number;
+    };
+    /** ExistingRecipeItemInput */
+    ExistingRecipeItemInput: {
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** Food Grams */
+      food_grams: number;
     };
     /** Fats */
     Fats: {
@@ -465,8 +502,8 @@ export interface components {
       /** Grams */
       grams: number;
     };
-    /** FoodEntryItemOut */
-    "FoodEntryItemOut-Input": {
+    /** FoodEntryItemOutput */
+    FoodEntryItemOutput: {
       /**
        * Id
        * Format: uuid
@@ -479,7 +516,7 @@ export interface components {
       food_id: string;
       /** Food Grams */
       food_grams: number;
-      food: components["schemas"]["FoodOut"];
+      food: components["schemas"]["FoodOutput"];
       /**
        * User Id
        * Format: uuid
@@ -491,70 +528,65 @@ export interface components {
        */
       food_entry_id: string;
     };
-    /** FoodEntryItemOut */
-    "FoodEntryItemOut-Output": {
+    /** FoodEntryOutput */
+    FoodEntryOutput: {
       /**
        * Id
        * Format: uuid
        */
       id: string;
-      /**
-       * Food Id
-       * Format: uuid
-       */
-      food_id: string;
-      /** Food Grams */
-      food_grams: number;
-      food: components["schemas"]["FoodOut"];
       /**
        * User Id
        * Format: uuid
        */
       user_id: string;
-      /**
-       * Food Entry Id
-       * Format: uuid
-       */
-      food_entry_id: string;
-    };
-    /** FoodEntryOut */
-    FoodEntryOut: {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
       /**
        * Time
        * Format: date-time
        */
       time: string;
-      /** Food Items */
-      food_items: components["schemas"]["FoodEntryItemOut-Output"][];
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
       /** Name */
       name?: string | null;
-      /** Protein */
-      readonly protein: number;
-      /** Carbs */
-      readonly carbs: number;
-      /** Fat */
-      readonly fat: number;
-      /** Kcal */
-      readonly kcal: number;
-      /** Alcohol */
-      readonly alcohol: number;
-      /** Caffeine */
-      readonly caffeine: number;
-      /** Food Grams */
-      readonly food_grams: number;
+      /** Food Items */
+      food_items: components["schemas"]["FoodEntryItemOutput"][];
+      /**
+       * Kcal
+       * @default 0
+       */
+      kcal: number;
+      /**
+       * Protein
+       * @default 0
+       */
+      protein: number;
+      /**
+       * Fat
+       * @default 0
+       */
+      fat: number;
+      /**
+       * Carbs
+       * @default 0
+       */
+      carbs: number;
+      /**
+       * Alcohol
+       * @default 0
+       */
+      alcohol: number;
+      /**
+       * Caffeine
+       * @default 0
+       */
+      caffeine: number;
+      /**
+       * Food Grams
+       * @default 0
+       */
+      food_grams: number;
     };
-    /** FoodOut */
-    FoodOut: {
+    /** FoodOutput */
+    FoodOutput: {
       /** Name */
       name: string;
       /** Carbs */
@@ -566,13 +598,6 @@ export interface components {
       /** Kcal */
       kcal: number;
       /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** User Id */
-      user_id?: string | null;
-      /**
        * Alcohol
        * @default 0
        */
@@ -582,11 +607,18 @@ export interface components {
        * @default 0
        */
       caffeine: number | null;
-      /** Barcode */
-      barcode?: string | null;
       vitamins: components["schemas"]["Vitamins"] | null;
       minerals: components["schemas"]["Minerals"] | null;
       fats: components["schemas"]["Fats"] | null;
+      /**
+       * Id
+       * Format: uuid
+       */
+      id: string;
+      /** User Id */
+      user_id?: string | null;
+      /** Barcode */
+      barcode: string;
     };
     /** HTTPValidationError */
     HTTPValidationError: {
@@ -676,8 +708,25 @@ export interface components {
        */
       taurine: number | null;
     };
-    /** RecipeItemOut */
-    "RecipeItemOut-Input": {
+    /** RecipeEdit */
+    RecipeEdit: {
+      /** Food Items */
+      food_items: (
+        | components["schemas"]["ExistingRecipeItemInput"]
+        | components["schemas"]["EntryItemInput"]
+      )[];
+      /** Recipe Name */
+      recipe_name: string;
+    };
+    /** RecipeInput */
+    RecipeInput: {
+      /** Recipe Name */
+      recipe_name: string;
+      /** Food Items */
+      food_items: components["schemas"]["EntryItemInput"][];
+    };
+    /** RecipeItemOutput */
+    RecipeItemOutput: {
       /**
        * Id
        * Format: uuid
@@ -690,7 +739,7 @@ export interface components {
       food_id: string;
       /** Food Grams */
       food_grams: number;
-      food: components["schemas"]["FoodOut"];
+      food: components["schemas"]["FoodOutput"];
       /**
        * User Id
        * Format: uuid
@@ -702,93 +751,64 @@ export interface components {
        */
       food_entry_id: string;
     };
-    /** RecipeItemOut */
-    "RecipeItemOut-Output": {
+    /** RecipeOutput */
+    RecipeOutput: {
       /**
        * Id
        * Format: uuid
        */
       id: string;
       /**
-       * Food Id
+       * User Id
        * Format: uuid
        */
-      food_id: string;
-      /** Food Grams */
+      user_id: string;
+      /**
+       * Time
+       * Format: date-time
+       */
+      time: string;
+      /** Name */
+      name?: string | null;
+      /** Food Items */
+      food_items: components["schemas"]["RecipeItemOutput"][];
+      /**
+       * Kcal
+       * @default 0
+       */
+      kcal: number;
+      /**
+       * Protein
+       * @default 0
+       */
+      protein: number;
+      /**
+       * Fat
+       * @default 0
+       */
+      fat: number;
+      /**
+       * Carbs
+       * @default 0
+       */
+      carbs: number;
+      /**
+       * Alcohol
+       * @default 0
+       */
+      alcohol: number;
+      /**
+       * Caffeine
+       * @default 0
+       */
+      caffeine: number;
+      /**
+       * Food Grams
+       * @default 0
+       */
       food_grams: number;
-      food: components["schemas"]["FoodOut"];
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-      /**
-       * Food Entry Id
-       * Format: uuid
-       */
-      food_entry_id: string;
-    };
-    /** RecipeOut */
-    "RecipeOut-Input": {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /**
-       * Time
-       * Format: date-time
-       */
-      time: string;
-      /** Food Items */
-      food_items: components["schemas"]["RecipeItemOut-Input"][];
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-      /** Name */
-      name?: string | null;
       /** Recipe Name */
       recipe_name: string;
-    };
-    /** RecipeOut */
-    "RecipeOut-Output": {
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /**
-       * Time
-       * Format: date-time
-       */
-      time: string;
-      /** Food Items */
-      food_items: components["schemas"]["RecipeItemOut-Output"][];
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-      /** Name */
-      name?: string | null;
-      /** Recipe Name */
-      recipe_name: string;
-      /** Protein */
-      readonly protein: number;
-      /** Carbs */
-      readonly carbs: number;
-      /** Fat */
-      readonly fat: number;
-      /** Kcal */
-      readonly kcal: number;
-      /** Alcohol */
-      readonly alcohol: number;
-      /** Caffeine */
-      readonly caffeine: number;
-      /** Food Grams */
-      readonly food_grams: number;
     };
     /** Token */
     Token: {
@@ -927,7 +947,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateFoodEntryPayload"][];
+        "application/json": components["schemas"]["EntryItemInput"][];
       };
     };
     responses: {
@@ -937,7 +957,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodEntryOut"];
+          "application/json": components["schemas"]["FoodEntryOutput"];
         };
       };
       /** @description Validation Error */
@@ -960,7 +980,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CustomFood"];
+        "application/json": components["schemas"]["CustomFoodInput"];
       };
     };
     responses: {
@@ -970,7 +990,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["FoodOutput"];
         };
       };
       /** @description Validation Error */
@@ -993,7 +1013,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CreateRecipePayload"];
+        "application/json": components["schemas"]["RecipeInput"];
       };
     };
     responses: {
@@ -1003,7 +1023,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["RecipeOutput"];
         };
       };
       /** @description Validation Error */
@@ -1034,7 +1054,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["FoodEntryOutput"];
         };
       };
       /** @description Validation Error */
@@ -1069,7 +1089,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodEntryItemOut-Output"];
+          "application/json": components["schemas"]["FoodEntryItemOutput"];
         };
       };
       /** @description Validation Error */
@@ -1094,7 +1114,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CustomFood"];
+        "application/json": components["schemas"]["CustomFoodEdit"];
       };
     };
     responses: {
@@ -1104,7 +1124,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodOut"];
+          "application/json": components["schemas"]["FoodOutput"];
         };
       };
       /** @description Validation Error */
@@ -1130,8 +1150,8 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": (
-          | components["schemas"]["FoodEntryItemOut-Input"]
-          | components["schemas"]["CreateFoodEntryPayload"]
+          | components["schemas"]["ExistingEntryItemInput"]
+          | components["schemas"]["EntryItemInput"]
         )[];
       };
     };
@@ -1142,7 +1162,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["FoodEntryOutput"];
         };
       };
       /** @description Validation Error */
@@ -1167,7 +1187,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["EditRecipePayload"];
+        "application/json": components["schemas"]["RecipeEdit"];
       };
     };
     responses: {
@@ -1177,7 +1197,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": unknown;
+          "application/json": components["schemas"]["RecipeOutput"];
         };
       };
       /** @description Validation Error */
@@ -1273,7 +1293,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodOut"][];
+          "application/json": components["schemas"]["FoodOutput"][];
         };
       };
       /** @description Validation Error */
@@ -1305,7 +1325,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodOut"];
+          "application/json": components["schemas"]["FoodOutput"];
         };
       };
       /** @description Validation Error */
@@ -1336,7 +1356,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodEntryOut"][];
+          "application/json": components["schemas"]["FoodEntryOutput"][];
         };
       };
       /** @description Validation Error */
@@ -1365,7 +1385,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["RecipeOut-Output"][];
+          "application/json": components["schemas"]["RecipeOutput"][];
         };
       };
     };
@@ -1385,7 +1405,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["FoodOut"][];
+          "application/json": components["schemas"]["FoodOutput"][];
         };
       };
     };

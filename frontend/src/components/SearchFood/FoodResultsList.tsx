@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { components } from "../../types/api.ts";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
 
@@ -8,9 +8,9 @@ display each search result in its own list item with add button for each
 on click bring up form to enter food grams and submit
 
 */
-type FoodOut = components["schemas"]["FoodOut"];
+type FoodOutput = components["schemas"]["FoodOutput"];
 type FoodResultsListProps = {
-  foodSearchResults: FoodOut[] | null;
+  foodSearchResults: FoodOutput[] | null;
 };
 
 export default function FoodResultList({
@@ -30,7 +30,7 @@ export default function FoodResultList({
 
   const openAdd = context.openAdd;
 
-  const formattedSearchResults = foodSearchResults.map((result: FoodOut) => (
+  const formattedSearchResults = foodSearchResults.map((result: FoodOutput) => (
     <li key={result.id} className="pb-3 sm:pb-4">
       <div className="flex items-center space-x-4 rtl:space-x-reverse">
         <div className="flex-1 min-w-0">

@@ -12,7 +12,7 @@ export default function Login({}: LoginProps) {
     return false;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new URLSearchParams();

@@ -1,9 +1,8 @@
-import { components } from "../types/api";
 import { useState } from "react";
 import { api } from "../../api/client.ts";
 
 export default function Register() {
-  const handleSubmit = async (e) => {
+  const handleSubmit = async () => {
     if (password !== confirmPassword) {
       throw Error("passwords don't match");
     }

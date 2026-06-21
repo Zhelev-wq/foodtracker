@@ -1,9 +1,5 @@
-import type { components } from "../../types/api.ts";
 import { useState, useContext } from "react";
 import { FoodEntryFormContext } from "../Tracker/FoodEntryFormContext.tsx";
-
-type FoodEntryItemOut = components["schemas"]["FoodEntryItemOut"];
-type FoodOut = components["schemas"]["FoodOut"];
 
 /*
 revised version:
@@ -35,20 +31,20 @@ export default function FoodEntryForm() {
   const closeForm = context.closeForm;
   const submitForm = context.submitForm;
 
-  function ProcessData(FoodOutData: FoodOut) {
-    if (!FoodOutData) {
+  function ProcessData(data: Record<string, number | null> | null) {
+    if (!data) {
       return <p>No data</p>;
     }
 
-    const details = Object.entries(FoodOutData).map((pair) => (
+    const details = Object.entries(data).map((pair) => (
       <li>
-        {pair[0]}: {(pair[1] * ratio).toFixed(1) || 0}
+        {pair[0]}: {((pair[1] ?? 0) * ratio).toFixed(1)}
       </li>
     ));
     return details;
   }
 
-  const { name, vitamins, minerals, fats, id, barcode, ...macros } =
+  const { name, vitamins, minerals, fats, id, barcode, user_id, ...macros } =
     foodOutData;
 
   const ratio = grams / 100;

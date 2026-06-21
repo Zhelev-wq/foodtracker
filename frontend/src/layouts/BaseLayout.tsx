@@ -1,5 +1,4 @@
-import { ReactNode, useState } from "react";
-import { api } from "../api/client";
+import { ReactNode } from "react";
 
 type BaseLayoutProps = {
   children: ReactNode;
