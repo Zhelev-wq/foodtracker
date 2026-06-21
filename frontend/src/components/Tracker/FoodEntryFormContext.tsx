@@ -7,21 +7,17 @@ import {
   saveFoodEntryEdit,
   editRecipe,
 } from "../../api/utils.ts";
+import { DraftEntry } from "../../types/draft.ts";
 
 type FoodOutput = components["schemas"]["FoodOutput"];
 type FoodEntryOutput = components["schemas"]["FoodEntryOutput"];
 type RecipeOutput = components["schemas"]["RecipeOutput"];
 type FoodEntryItemOutput = components["schemas"]["FoodEntryItemOutput"];
-type RecipeEntryItemOutput = components["schemas"]["RecipeItemOutput"];
+type RecipeItemOutput = components["schemas"]["RecipeItemOutput"];
 type NewItem = {
   food_uuid: string;
   grams: number;
   food: FoodOutput;
-};
-
-type EmptyRecipe = {
-  food_items: [];
-  recipe_name: string;
 };
 
 function getContextValue(reload: () => void) {
@@ -31,9 +27,7 @@ function getContextValue(reload: () => void) {
     null,
   ); /* only set by Add Food / Edit Buttons / Close buttons. used for calling correct api method on submit */
   const [existingGrams, setExistingGrams] = useState<number>(100);
-  const [selectorData, setSelectorData] = useState<
-    FoodEntryOutput | RecipeOutput | EmptyRecipe | null
-  >(
+  const [selectorData, setSelectorData] = useState<DraftEntry | null>(
     null,
   ); /* editing for foodEntries/Recipes happens to this element. once editied, its sent via api call*/
   const [formTarget, setFormTarget] = useState<"food-entry" | "recipe" | null>(
@@ -76,9 +70,7 @@ function getContextValue(reload: () => void) {
     }
   };
 
-  const foodIdOf = (
-    item: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem,
-  ) => {
+  const foodIdOf = (item: FoodEntryItemOutput | RecipeItemOutput | NewItem) => {
     if ("food_id" in item) {
       return item.food_id;
     }
@@ -88,9 +80,13 @@ function getContextValue(reload: () => void) {
   function updateItemInSelector(targetFoodID: string, grams: number) {
     /* changes target item's grams, appends all items to new array, 
     writes new array to selectorData*/
-
+    if (!selectorData) {
+      throw new Error(
+        "selectorData is null when accessed by updateItemInSelector",
+      );
+    }
     const withGrams = (
-      item: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem,
+      item: FoodEntryItemOutput | RecipeItemOutput | NewItem,
       grams: number,
     ) => {
       const copy = Object.assign({}, item);
@@ -102,8 +98,8 @@ function getContextValue(reload: () => void) {
       return copy;
     };
 
-    const updatedItems = selectorData?.food_items.map(
-      (item: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem) => {
+    const updatedItems = selectorData.food_items.map(
+      (item: FoodEntryItemOutput | RecipeItemOutput | NewItem) => {
         if (foodIdOf(item) === targetFoodID) {
           return withGrams(item, grams);
         }
@@ -117,7 +113,7 @@ function getContextValue(reload: () => void) {
   }
 
   const removeItemFromEntry = (
-    foodEntryItem: FoodEntryItemOutput | RecipeEntryItemOutput | NewItem,
+    foodEntryItem: FoodEntryItemOutput | RecipeItemOutput | NewItem,
   ) => {
     /* returns new array minus target item, writes new array to selectorData */
     if (!selectorData) {
@@ -147,7 +143,7 @@ function getContextValue(reload: () => void) {
     reload();
   };
 
-  function pushNewEntryToSelectorData(grams: Number) {
+  function pushNewEntryToSelectorData(grams: number) {
     /* appends new entry to selectorData array 
     newItem fields mismatch RecipeEntryItem model fields. this is intentional
     edit recipe/food_entry has two types of validators - existing items/incoming items
@@ -190,7 +186,7 @@ function getContextValue(reload: () => void) {
     }
   }
 
-  const submitForm = (e: React.ChangeEvent<HTMLFormElement>, grams: number) => {
+  const submitForm = (e: React.SyntheticEvent, grams: number) => {
     e.preventDefault();
     if (forDailyLog) {
       saveEntryToLog(grams);
@@ -213,9 +209,7 @@ function getContextValue(reload: () => void) {
     }
   };
 
-  async function updateOrCreateRecipe(
-    selectorData: FoodEntryOutput | RecipeOutput,
-  ) {
+  async function updateOrCreateRecipe(selectorData: DraftEntry) {
     if (formMode === "edit") {
       await editRecipe(selectorData);
     } else if (formMode === "add") {
@@ -224,6 +218,11 @@ function getContextValue(reload: () => void) {
   }
 
   const commitFoodComposition = async () => {
+    if (!selectorData) {
+      throw new Error(
+        "selectorData is null when accessed by commitFoodComposition",
+      );
+    }
     if (formTarget === "food-entry") {
       await saveFoodEntryEdit(selectorData); /* this never triggers*/
     } else if (formTarget === "recipe") {
@@ -244,6 +243,9 @@ function getContextValue(reload: () => void) {
   }
 
   async function saveRecipe() {
+    if (!selectorData) {
+      throw new Error("selectorData is null when accessed by saveRecipe");
+    }
     if (formTarget === "recipe") {
       await commitFoodComposition();
     } else if (formTarget === "food-entry") {

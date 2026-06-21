@@ -18,7 +18,7 @@ from app.validators.entries.entries_input import (EntryItemInput,
 from app.validators.entries.entries_output import (FoodEntryItemOutput,
                                                    FoodEntryOutput,
                                                    RecipeOutput)
-from app.validators.food.food_input import CustomFoodEdit
+from app.validators.food.food_input import CustomFoodInput
 from app.validators.food.food_output import FoodOutput
 
 router = APIRouter(tags=["food/update"])
@@ -53,7 +53,7 @@ async def edit_food_entry_item(
 @router.put("/custom_food/{food_id}")
 async def edit_custom_food(
     food_id: uuid.UUID,
-    payload: CustomFoodEdit,
+    payload: CustomFoodInput,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ) -> FoodOutput:

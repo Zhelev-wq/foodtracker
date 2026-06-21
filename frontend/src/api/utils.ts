@@ -1,14 +1,8 @@
 import { api } from "./client";
 import { components } from "../types/api";
+import { DraftEntry } from "../types/draft";
 
 type CustomFoodInput = components["schemas"]["CustomFoodInput"];
-type CustomFoodEdit = components["schemas"]["CustomFoodEdit"];
-type RecipeOutput = components["schemas"]["RecipeOutput"];
-type FoodEntryOutput = components["schemas"]["FoodEntryOutput"];
-type EmptyRecipe = {
-  food_items: [];
-  recipe_name: string;
-};
 
 export async function editFoodEntryItem(
   foodEntryItemID: string,
@@ -74,7 +68,7 @@ export async function createCustomFood(foodData: CustomFoodInput) {
 }
 
 export async function editCustomFood(
-  foodData: CustomFoodEdit,
+  foodData: CustomFoodInput,
   food_uuid: string,
 ) {
   const response = await api.put(
@@ -85,9 +79,7 @@ export async function editCustomFood(
   return data;
 }
 
-export async function saveFoodEntryEdit(
-  foodEntry: FoodEntryOutput | RecipeOutput,
-) {
+export async function saveFoodEntryEdit(foodEntry: DraftEntry) {
   const response = await api.put(
     `/api/food_edit/food_entry/${foodEntry.id}`,
     foodEntry.food_items,
@@ -96,7 +88,7 @@ export async function saveFoodEntryEdit(
   return data;
 }
 
-export async function createRecipe(selectorData: EmptyRecipe) {
+export async function createRecipe(selectorData: DraftEntry) {
   const payload = {
     food_items: selectorData.food_items,
     recipe_name: selectorData.recipe_name,
@@ -106,7 +98,7 @@ export async function createRecipe(selectorData: EmptyRecipe) {
   return response.data;
 }
 
-export async function editRecipe(selectorData: RecipeOutput) {
+export async function editRecipe(selectorData: DraftEntry) {
   const payload = {
     food_items: selectorData.food_items,
     recipe_name: selectorData.recipe_name,

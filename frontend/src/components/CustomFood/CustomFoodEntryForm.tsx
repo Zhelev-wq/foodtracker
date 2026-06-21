@@ -65,8 +65,8 @@ export default function CustomFoodEntryForm({
     };
 
     const formattedData = {
-      name: rawData.name,
-      barcode: rawData.barcode,
+      name: String(rawData.name),
+      barcode: String(rawData.barcode),
       kcal: Number(rawData.kcal),
       carbs: Number(rawData.carbs),
       protein: Number(rawData.protein),
@@ -81,13 +81,18 @@ export default function CustomFoodEntryForm({
   }
 
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    if (!foodOut) {
+      throw new Error(
+        "foodOut is null when accessed from handleSubmit in CustomFoodEntryForm",
+      );
+    }
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const formattedData = formatRawFoodData(Object.fromEntries(fd));
     if (formMode === "add") {
       await createCustomFood(formattedData);
     } else {
-      await editCustomFood(formattedData, foodOut?.id);
+      await editCustomFood(formattedData, foodOut.id);
     }
     reload();
     /* TODO: close form */
