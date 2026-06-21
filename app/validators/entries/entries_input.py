@@ -18,11 +18,6 @@ class FoodEntryItemEdit(BaseModel):
     grams: int
 
 
-class RecipeEdit(BaseModel):
-    food_items: List[ExistingRecipeItemInput | EntryItemInput]
-    recipe_name: str
-
-
 class ExistingEntryItemInput(BaseModel):
     # used opposite EntryItemInput to distinguish exisitng items vs incoming items
     id: uuid.UUID
@@ -31,3 +26,8 @@ class ExistingEntryItemInput(BaseModel):
 
 class ExistingRecipeItemInput(ExistingEntryItemInput):
     pass
+
+
+class RecipeEdit(BaseModel):
+    food_items: List[ExistingRecipeItemInput | EntryItemInput]
+    recipe_name: str

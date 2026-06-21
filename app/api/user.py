@@ -7,6 +7,7 @@ from fastapi.exceptions import HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import func, select
 
+from app.auth import CurrentUser
 from app.auth import (create_access_token, hash_password, oauth2_scheme,
                       verify_access_token, verify_password)
 from app.config import settings
@@ -104,8 +105,13 @@ async def get_current_user(
 
 @router.patch("/{user_id}")
 async def update_user(
-    user_id: uuid.UUID, user_update: UserUpdate, db: AsyncSession = Depends(get_db)
+    user_id: uuid.UUID, user_update: UserUpdate, current_user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> UserPrivate:
+    if user_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="User can only edit own profile"
+        )
+    
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalars().first()
 

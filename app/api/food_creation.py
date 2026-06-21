@@ -71,15 +71,27 @@ async def create_custom_food(
         alcohol=payload.alcohol,
         caffeine=payload.caffeine,
         barcode=payload.barcode,
-        vitamins=Vitamins(
-            **payload.vitamins.model_dump() if payload.vitamins else None
-        ),
-        fats=Fats(**payload.fats.model_dump() if payload.fats else None),
-        minerals=Minerals(
-            **payload.minerals.model_dump() if payload.minerals else None
-        ),
         user_id=user.id,
     )
+
+    if payload.vitamins:
+        custom_food.vitamins=Vitamins(
+            **payload.vitamins.model_dump()
+        )
+    else:
+        custom_food.vitamins=None
+    
+    if payload.fats:        
+        custom_food.fats=Fats(**payload.fats.model_dump())
+    else:
+        custom_food.fats=None
+        
+    if payload.minerals:
+        custom_food.minerals=Minerals(
+            **payload.minerals.model_dump()
+        )
+    else:
+        custom_food.minerals = None
 
     db.add(custom_food)
     await db.commit()
