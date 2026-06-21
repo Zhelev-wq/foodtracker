@@ -45,7 +45,7 @@ async def create_user(
 
 
 @router.post("/token")
-async def login_for_access_tokan(
+async def login_for_access_token(
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     db: AsyncSession = Depends(get_db),
 ) -> Token:

@@ -2,7 +2,6 @@ import uuid
 
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
-from pydantic import BaseModel
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -41,7 +40,7 @@ async def create_food_entry(
     if len(food) != len(food_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Food not fount. Cannot create entry",
+            detail="Food not found. Cannot create entry",
         )
 
     food_entry = FoodEntry(
@@ -121,7 +120,7 @@ async def create_recipe(
     if len(food) != len(food_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Food not fount. Cannot create entry",
+            detail="Food not found. Cannot create entry",
         )
 
     recipe = Recipe(
@@ -151,7 +150,7 @@ async def create_entry_from_recipe(
     recipe = result.scalars().first()
 
     if not recipe:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not found")
 
     food_entry = FoodEntry(
         food_items=[

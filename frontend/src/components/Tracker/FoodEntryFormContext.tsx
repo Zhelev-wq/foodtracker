@@ -40,25 +40,23 @@ function getContextValue(reload: () => void) {
     setFoodOutData(FoodOut);
     setExistingGrams(100);
   };
-  const openEdit = (foodEntryItem: FoodEntryItemOutput) => {
-    /* TODO: create type for this new struct with localId */
+  const openEdit = (foodEntryItemOutput: FoodEntryItemOutput) => {
     setFormMode("edit");
     if (forDailyLog) {
       setForDailyLog(false);
     }
-    setFoodOutData(foodEntryItem.food);
-    setExistingGrams(foodEntryItem.food_grams);
-    setFoodEntryItemID(foodEntryItem.food_id);
+    setFoodOutData(foodEntryItemOutput.food);
+    setExistingGrams(foodEntryItemOutput.food_grams);
   };
-  const openDirectToForm = (foodEntryItemOut: FoodEntryItemOutput) => {
+  const openDirectToForm = (foodEntryItemOutput: FoodEntryItemOutput) => {
     /* for single-item foodEntry, pass item directly to foodEntryForm, 
       skip FoodEntryItemSelector step,
       used to pass DailyLog entries  */
     setForDailyLog(true);
     setFormMode("edit");
-    setFoodOutData(foodEntryItemOut.food);
-    setExistingGrams(foodEntryItemOut.food_grams);
-    setFoodEntryItemID(foodEntryItemOut.id);
+    setFoodOutData(foodEntryItemOutput.food);
+    setExistingGrams(foodEntryItemOutput.food_grams);
+    setFoodEntryItemID(foodEntryItemOutput.id); // sent to editFoodEntryItem api call
   };
   const closeForm = () => {
     setFoodOutData(null);
@@ -130,15 +128,15 @@ function getContextValue(reload: () => void) {
   };
 
   const saveEntryToLog = async (grams: number) => {
-    if (!foodEntryItemID || !foodOutData) {
+    
+    if (formMode === "edit" && foodEntryItemID) {
+      await editFoodEntryItem(foodEntryItemID, grams);
+    } else if (formMode === "add" && foodOutData) {
+      await createFoodEntry(foodOutData.id, grams);
+    } else {
       throw new Error(
         "foodEntryItemID or foodOutData empty when accessed by saveEntryToLog",
       );
-    }
-    if (formMode === "edit") {
-      await editFoodEntryItem(foodEntryItemID, grams);
-    } else if (formMode === "add") {
-      await createFoodEntry(foodOutData.id, grams);
     }
     reload();
   };

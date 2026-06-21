@@ -73,7 +73,7 @@ async def search_food_by_uuid(
                 )  # custom food belonging to user, or common food
             )
         )
-    if barcode and int(barcode):  # TODO: this may be broken, rework later
+    if barcode and barcode.isigit():
         result = await db.execute(
             select(Food)
             .where(Food.barcode == barcode)

@@ -64,7 +64,7 @@ async def edit_custom_food(
     existing_food = result.scalars().first()
     if not existing_food:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Custom food doesnt exist"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Custom food doesn't exist"
         )
 
     def apply(existing, data):
