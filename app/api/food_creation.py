@@ -2,7 +2,6 @@ import uuid
 
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
-from pydantic import BaseModel
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -41,7 +40,7 @@ async def create_food_entry(
     if len(food) != len(food_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Food not fount. Cannot create entry",
+            detail="Food not found. Cannot create entry",
         )
 
     food_entry = FoodEntry(
@@ -71,15 +70,23 @@ async def create_custom_food(
         alcohol=payload.alcohol,
         caffeine=payload.caffeine,
         barcode=payload.barcode,
-        vitamins=Vitamins(
-            **payload.vitamins.model_dump() if payload.vitamins else None
-        ),
-        fats=Fats(**payload.fats.model_dump() if payload.fats else None),
-        minerals=Minerals(
-            **payload.minerals.model_dump() if payload.minerals else None
-        ),
         user_id=user.id,
     )
+
+    if payload.vitamins:
+        custom_food.vitamins = Vitamins(**payload.vitamins.model_dump())
+    else:
+        custom_food.vitamins = None
+
+    if payload.fats:
+        custom_food.fats = Fats(**payload.fats.model_dump())
+    else:
+        custom_food.fats = None
+
+    if payload.minerals:
+        custom_food.minerals = Minerals(**payload.minerals.model_dump())
+    else:
+        custom_food.minerals = None
 
     db.add(custom_food)
     await db.commit()
@@ -92,7 +99,6 @@ async def create_custom_food(
 async def create_recipe(
     payload: RecipeInput, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> RecipeOutput:
-    # TODO: solve duplicate naming
 
     food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
     result = await db.execute(
@@ -109,11 +115,11 @@ async def create_recipe(
     if len(food) != len(food_ids):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Food not fount. Cannot create entry",
+            detail="Food not found. Cannot create entry",
         )
 
     recipe = Recipe(
-        recipe_name=payload.recipe_name,
+        name=payload.name,
         food_items=[
             RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams)
             for item in payload.food_items
@@ -139,7 +145,9 @@ async def create_entry_from_recipe(
     recipe = result.scalars().first()
 
     if not recipe:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not found"
+        )
 
     food_entry = FoodEntry(
         food_items=[
@@ -147,7 +155,7 @@ async def create_entry_from_recipe(
             for item in recipe.food_items
         ],
         user_id=user.id,
-        name=recipe.recipe_name,
+        name=recipe.name,
     )
 
     db.add(food_entry)

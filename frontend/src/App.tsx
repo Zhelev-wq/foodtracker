@@ -10,8 +10,8 @@ import CustomBase from "./components/CustomFood/CustomBase.tsx";
 
 function App() {
   return (
-    <BaseLayout>
-      <BrowserRouter>
+    <BrowserRouter>
+      <BaseLayout>
         <Routes>
           <Route path={ROUTES.TRACKER} element={<Tracker />} />
           <Route path={ROUTES.CUSTOM_FOODS} element={<CustomBase />} />
@@ -22,8 +22,8 @@ function App() {
           <Route path={ROUTES.LOGIN} element={<Login />} />
           <Route path={ROUTES.REGISTER} element={<Register />} />
         </Routes>
-      </BrowserRouter>
-    </BaseLayout>
+      </BaseLayout>
+    </BrowserRouter>
   );
 }
 

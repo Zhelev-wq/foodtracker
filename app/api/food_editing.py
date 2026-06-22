@@ -64,7 +64,7 @@ async def edit_custom_food(
     existing_food = result.scalars().first()
     if not existing_food:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Custom food doesnt exist"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Custom food doesn't exist"
         )
 
     def apply(existing, data):
@@ -196,9 +196,9 @@ async def edit_recipe(
     for item in incoming_new:
         new_items.append(RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams))
 
-    recipe_name = payload.recipe_name
-    if recipe.recipe_name != recipe_name:
-        recipe.recipe_name = recipe_name
+    name = payload.name
+    if recipe.name != name:
+        recipe.name = name
 
     recipe.food_items = kept_items + new_items
     await db.commit()

@@ -1,9 +1,12 @@
 import { api } from "../../api/client.ts";
 import { useState } from "react";
+import { useNavigate, Link } from "react-router";
+import { ROUTES } from "../../routes.ts";
 
 type LoginProps = {};
 
 export default function Login({}: LoginProps) {
+  const navigate = useNavigate();
   const loggedIn = () => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -21,7 +24,7 @@ export default function Login({}: LoginProps) {
 
     const res = await api.post("/api/users/token", formData);
     localStorage.setItem("token", res.data.access_token);
-    window.location.href = "/";
+    navigate(ROUTES.TRACKER);
   };
 
   const [username, setUsername] = useState("");
@@ -52,7 +55,7 @@ export default function Login({}: LoginProps) {
           </div>
           <button type="submit">Log In</button>
         </form>
-        <a href="/register">Register here</a>
+        <Link to={ROUTES.REGISTER}>Register here</Link>
       </div>
     );
   }

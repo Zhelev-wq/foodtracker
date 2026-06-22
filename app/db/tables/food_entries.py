@@ -1,7 +1,8 @@
 import datetime
 import uuid
 
-from sqlalchemy import UUID, DateTime, ForeignKey, Integer, String
+from sqlalchemy import (UUID, DateTime, ForeignKey, Integer, String,
+                        UniqueConstraint)
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
@@ -23,10 +24,10 @@ class EntryBase(Base):
         DateTime, default=datetime.datetime.now
     )
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID, primary_key=True, as_uuid=True, default=uuid.uuid4
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     user_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("user.id"), nullable=False, as_uuid=True
+        UUID(as_uuid=True), ForeignKey("user.id"), nullable=False
     )
 
     @declared_attr
@@ -46,10 +47,10 @@ class FoodEntry(EntryBase):
 
 
 class Recipe(EntryBase):
-    #TODO: rename recipe_name to name, then have both inherit from entrybase. redo validators after
     __tablename__ = "recipe"
+    __table_args__ = (UniqueConstraint("user_id", "name", name="uq_recipe_user_name"),)
     owned_item_class_name = "RecipeEntryItem"
-    recipe_name: Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
 
 class ItemBase(Base):
@@ -59,10 +60,11 @@ class ItemBase(Base):
     owner_table_class_name = ""
 
     id: Mapped[uuid.UUID] = mapped_column(
-        UUID, primary_key=True, as_uuid=True, default=uuid.uuid4
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     food_id: Mapped[uuid.UUID] = mapped_column(
-        UUID, ForeignKey("food.id"), as_uuid=True
+        UUID(as_uuid=True),
+        ForeignKey("food.id"),
     )
     food_grams: Mapped[int] = mapped_column(Integer)
 
@@ -76,7 +78,7 @@ class ItemBase(Base):
 
     @declared_attr
     def food_entry_id(cls):
-        return mapped_column(UUID, ForeignKey(f"{cls.owner_table}.id"), as_uuid=True)
+        return mapped_column(UUID(as_uuid=True), ForeignKey(f"{cls.owner_table}.id"))
 
     @declared_attr
     def food_entry(cls):

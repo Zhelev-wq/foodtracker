@@ -43,7 +43,6 @@ export default function Tracker() {
   const [reloadTracker, setReloadTracker] = useState(0);
   useEffect(() => {
     fetchFoodData();
-    console.log(reloadTracker);
   }, [date, reloadTracker]);
 
   const reload = () => {

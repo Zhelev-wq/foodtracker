@@ -105,7 +105,7 @@ export default function FoodEntryItemSelector() {
 
       <input /* TODO: disappear during dailyLog editing */
         name="recipe-name"
-        value={selectorData?.recipe_name ?? ""}
+        value={selectorData?.name ?? ""}
         onChange={(e) => setRecipeName(e.target.value)}
       />
 

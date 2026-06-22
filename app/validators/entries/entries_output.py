@@ -56,5 +56,5 @@ class RecipeItemOutput(FoodEntryItemOutput):
 
 
 class RecipeOutput(FoodEntryOutput):
-    recipe_name: str
+    name: str
     food_items: List[RecipeItemOutput]

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import UUID4, BaseModel, ConfigDict, EmailStr, Field
 
 
@@ -15,7 +17,7 @@ class CreateUser(UserBase):
 class UserPublic(BaseModel):
     model_config = {"from_attributes": True}
 
-    name: str
+    name: Optional[str] = None
 
 
 class UserPrivate(UserPublic):

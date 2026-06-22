@@ -1,16 +1,19 @@
 import { ReactNode } from "react";
+import { ROUTES } from "../routes";
+import { useNavigate, Link } from "react-router";
 
 type BaseLayoutProps = {
   children: ReactNode;
 };
 
 function handleLogOut() {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   if (!token) {
     return null;
   }
   localStorage.removeItem("token");
-  window.location.href = "/";
+  navigate(ROUTES.LOGIN);
 }
 
 export default function BaseLayout({ children }: BaseLayoutProps) {
@@ -18,15 +21,15 @@ export default function BaseLayout({ children }: BaseLayoutProps) {
     <div>
       <header>
         <div>
-          <a href="/">
+          <Link to={ROUTES.TRACKER}>
             <button>Home</button>
-          </a>
-          <a href="/custom">
+          </Link>
+          <Link to={ROUTES.CUSTOM_FOODS}>
             <button>Custom Foods</button>
-          </a>
-          <a href="/statistics">
+          </Link>
+          <Link to={ROUTES.STATISTICS}>
             <button>Statistics</button>
-          </a>
+          </Link>
           <button onClick={handleLogOut}>Log Out</button>
         </div>
       </header>

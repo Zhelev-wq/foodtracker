@@ -13,6 +13,5 @@ export type DraftItem = FoodEntryItemOutput | RecipeItemOutput | NewItem;
 export type DraftEntry = {
   id?: string;
   name?: string | null;
-  recipe_name?: string;
   food_items: DraftItem[];
 };

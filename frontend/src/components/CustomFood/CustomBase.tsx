@@ -9,7 +9,6 @@ export default function CustomBase() {
   const inactive = "bg-gray-200 text-gray-700 hover:bg-gray-300";
   const active = "bg-blue-600 text-white hover:bg-blue-700";
 
-  /* TODO: on tab change, reset data*/
   return (
     <div>
       <div role="tablist" className="flex gap-2">

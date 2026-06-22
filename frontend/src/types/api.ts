@@ -285,8 +285,8 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** Login For Access Tokan */
-    post: operations["login_for_access_tokan_api_users_token_post"];
+    /** Login For Access Token */
+    post: operations["login_for_access_token_api_users_token_post"];
     delete?: never;
     options?: never;
     head?: never;
@@ -331,8 +331,8 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    /** Body_login_for_access_tokan_api_users_token_post */
-    Body_login_for_access_tokan_api_users_token_post: {
+    /** Body_login_for_access_token_api_users_token_post */
+    Body_login_for_access_token_api_users_token_post: {
       /** Grant Type */
       grant_type?: string | null;
       /** Username */
@@ -366,42 +366,6 @@ export interface components {
       email: string;
       /** Password */
       password: string;
-    };
-    /** CustomFoodEdit */
-    CustomFoodEdit: {
-      /** Name */
-      name: string;
-      /** Carbs */
-      carbs: number;
-      /** Protein */
-      protein: number;
-      /** Fat */
-      fat: number;
-      /** Kcal */
-      kcal: number;
-      /**
-       * Alcohol
-       * @default 0
-       */
-      alcohol: number | null;
-      /**
-       * Caffeine
-       * @default 0
-       */
-      caffeine: number | null;
-      vitamins: components["schemas"]["Vitamins"] | null;
-      minerals: components["schemas"]["Minerals"] | null;
-      fats: components["schemas"]["Fats"] | null;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
     };
     /** CustomFoodInput */
     CustomFoodInput: {
@@ -715,13 +679,13 @@ export interface components {
         | components["schemas"]["ExistingRecipeItemInput"]
         | components["schemas"]["EntryItemInput"]
       )[];
-      /** Recipe Name */
-      recipe_name: string;
+      /** Name */
+      name: string;
     };
     /** RecipeInput */
     RecipeInput: {
-      /** Recipe Name */
-      recipe_name: string;
+      /** Name */
+      name: string;
       /** Food Items */
       food_items: components["schemas"]["EntryItemInput"][];
     };
@@ -769,7 +733,7 @@ export interface components {
        */
       time: string;
       /** Name */
-      name?: string | null;
+      name: string;
       /** Food Items */
       food_items: components["schemas"]["RecipeItemOutput"][];
       /**
@@ -807,8 +771,6 @@ export interface components {
        * @default 0
        */
       food_grams: number;
-      /** Recipe Name */
-      recipe_name: string;
     };
     /** Token */
     Token: {
@@ -820,7 +782,7 @@ export interface components {
     /** UserPrivate */
     UserPrivate: {
       /** Name */
-      name: string;
+      name?: string | null;
       /**
        * Id
        * Format: uuid4
@@ -835,7 +797,7 @@ export interface components {
     /** UserPublic */
     UserPublic: {
       /** Name */
-      name: string;
+      name?: string | null;
     };
     /** UserUpdate */
     UserUpdate: {
@@ -1114,7 +1076,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["CustomFoodEdit"];
+        "application/json": components["schemas"]["CustomFoodInput"];
       };
     };
     responses: {
@@ -1443,7 +1405,7 @@ export interface operations {
       };
     };
   };
-  login_for_access_tokan_api_users_token_post: {
+  login_for_access_token_api_users_token_post: {
     parameters: {
       query?: never;
       header?: never;
@@ -1452,7 +1414,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/x-www-form-urlencoded": components["schemas"]["Body_login_for_access_tokan_api_users_token_post"];
+        "application/x-www-form-urlencoded": components["schemas"]["Body_login_for_access_token_api_users_token_post"];
       };
     };
     responses: {

@@ -1,5 +1,6 @@
-from pydantic import SecretStr, IPvAnyAddress
+from pydantic import IPvAnyAddress, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -16,5 +17,7 @@ class Settings(BaseSettings):
     password: SecretStr
     host_address: IPvAnyAddress
     port: int
+    db_name: str
+
 
 settings = Settings()

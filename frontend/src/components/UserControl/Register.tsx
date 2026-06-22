@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { api } from "../../api/client.ts";
+import { useNavigate } from "react-router";
+import { ROUTES } from "../../routes.ts";
 
 export default function Register() {
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     if (password !== confirmPassword) {
       throw Error("passwords don't match");
@@ -12,7 +15,7 @@ export default function Register() {
       password: password,
     });
     if (response.status == 201) {
-      window.location.href = "/login";
+      navigate(ROUTES.LOGIN);
     }
 
     if (response.status == 422) {
