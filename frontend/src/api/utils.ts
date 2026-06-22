@@ -91,7 +91,7 @@ export async function saveFoodEntryEdit(foodEntry: DraftEntry) {
 export async function createRecipe(selectorData: DraftEntry) {
   const payload = {
     food_items: selectorData.food_items,
-    recipe_name: selectorData.recipe_name,
+    name: selectorData.name,
   };
 
   const response = await api.post(`/api/food_create/recipe`, payload);
@@ -101,7 +101,7 @@ export async function createRecipe(selectorData: DraftEntry) {
 export async function editRecipe(selectorData: DraftEntry) {
   const payload = {
     food_items: selectorData.food_items,
-    recipe_name: selectorData.recipe_name,
+    name: selectorData.name,
   };
 
   const response = await api.put(

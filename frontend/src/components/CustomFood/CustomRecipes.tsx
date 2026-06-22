@@ -45,7 +45,7 @@ function RecipesList({ recipes }: RecipeListProps) {
 
       <td>
         <p className="text-sm font-medium text-heading truncate">
-          <strong>{recipe.recipe_name}</strong>
+          <strong>{recipe.name}</strong>
         </p>
       </td>
       <td>{recipe.kcal.toFixed(1)} kcal</td>

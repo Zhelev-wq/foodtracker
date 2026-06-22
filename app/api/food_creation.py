@@ -124,7 +124,7 @@ async def create_recipe(
         )
 
     recipe = Recipe(
-        recipe_name=payload.recipe_name,
+        name=payload.name,
         food_items=[
             RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams)
             for item in payload.food_items
@@ -158,7 +158,7 @@ async def create_entry_from_recipe(
             for item in recipe.food_items
         ],
         user_id=user.id,
-        name=recipe.recipe_name,
+        name=recipe.name,
     )
 
     db.add(food_entry)

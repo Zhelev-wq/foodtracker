@@ -676,13 +676,13 @@ export interface components {
         RecipeEdit: {
             /** Food Items */
             food_items: (components["schemas"]["ExistingRecipeItemInput"] | components["schemas"]["EntryItemInput"])[];
-            /** Recipe Name */
-            recipe_name: string;
+            /** Name */
+            name: string;
         };
         /** RecipeInput */
         RecipeInput: {
-            /** Recipe Name */
-            recipe_name: string;
+            /** Name */
+            name: string;
             /** Food Items */
             food_items: components["schemas"]["EntryItemInput"][];
         };
@@ -730,7 +730,7 @@ export interface components {
              */
             time: string;
             /** Name */
-            name?: string | null;
+            name: string;
             /** Food Items */
             food_items: components["schemas"]["RecipeItemOutput"][];
             /**
@@ -768,8 +768,6 @@ export interface components {
              * @default 0
              */
             food_grams: number;
-            /** Recipe Name */
-            recipe_name: string;
         };
         /** Token */
         Token: {
@@ -781,7 +779,7 @@ export interface components {
         /** UserPrivate */
         UserPrivate: {
             /** Name */
-            name: string;
+            name?: string | null;
             /**
              * Id
              * Format: uuid4
@@ -796,7 +794,7 @@ export interface components {
         /** UserPublic */
         UserPublic: {
             /** Name */
-            name: string;
+            name?: string | null;
         };
         /** UserUpdate */
         UserUpdate: {

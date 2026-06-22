@@ -10,7 +10,7 @@ class EntryItemInput(BaseModel):
 
 
 class RecipeInput(BaseModel):
-    recipe_name: str
+    name: str
     food_items: List[EntryItemInput]
 
 
@@ -30,4 +30,4 @@ class ExistingRecipeItemInput(ExistingEntryItemInput):
 
 class RecipeEdit(BaseModel):
     food_items: List[ExistingRecipeItemInput | EntryItemInput]
-    recipe_name: str
+    name: str

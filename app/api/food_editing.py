@@ -196,9 +196,9 @@ async def edit_recipe(
     for item in incoming_new:
         new_items.append(RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams))
 
-    recipe_name = payload.recipe_name
-    if recipe.recipe_name != recipe_name:
-        recipe.recipe_name = recipe_name
+    name = payload.name
+    if recipe.name != name:
+        recipe.name = name
 
     recipe.food_items = kept_items + new_items
     await db.commit()

@@ -1,7 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import UUID, DateTime, ForeignKey, Integer, String
+from sqlalchemy import UUID, DateTime, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
@@ -48,8 +48,11 @@ class FoodEntry(EntryBase):
 class Recipe(EntryBase):
     #TODO: rename recipe_name to name, then have both inherit from entrybase. redo validators after
     __tablename__ = "recipe"
+    __table_args__ = (
+        UniqueConstraint("user_id", "name", name="uq_recipe_user_name"),
+    )
     owned_item_class_name = "RecipeEntryItem"
-    recipe_name: Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
 
 class ItemBase(Base):

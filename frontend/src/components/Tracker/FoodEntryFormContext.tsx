@@ -231,7 +231,7 @@ function getContextValue(reload: () => void) {
   const setRecipeName = (name: string) => {
     /* TODO: I have no idea what this does or why its here */
     const updatedSelectorData = Object.assign({}, selectorData);
-    updatedSelectorData.recipe_name = name;
+    updatedSelectorData.name = name;
     setSelectorData(updatedSelectorData);
   };
 
@@ -256,7 +256,7 @@ function getContextValue(reload: () => void) {
   }
 
   function openNewEmptyRecipe() {
-    setSelectorData({ food_items: [], recipe_name: "" });
+    setSelectorData({ food_items: [], name: "" });
     setFormTarget("recipe");
     setFormMode("add");
   }
