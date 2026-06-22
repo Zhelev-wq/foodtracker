@@ -1,6 +1,6 @@
 import { api } from "../../api/client.ts";
 import { useState } from "react";
-import { useNavigate, Link } from "react-router"
+import { useNavigate, Link } from "react-router";
 import { ROUTES } from "../../routes.ts";
 
 type LoginProps = {};

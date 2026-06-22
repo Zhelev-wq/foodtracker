@@ -74,21 +74,17 @@ async def create_custom_food(
     )
 
     if payload.vitamins:
-        custom_food.vitamins=Vitamins(
-            **payload.vitamins.model_dump()
-        )
+        custom_food.vitamins = Vitamins(**payload.vitamins.model_dump())
     else:
-        custom_food.vitamins=None
-    
-    if payload.fats:        
-        custom_food.fats=Fats(**payload.fats.model_dump())
+        custom_food.vitamins = None
+
+    if payload.fats:
+        custom_food.fats = Fats(**payload.fats.model_dump())
     else:
-        custom_food.fats=None
-        
+        custom_food.fats = None
+
     if payload.minerals:
-        custom_food.minerals=Minerals(
-            **payload.minerals.model_dump()
-        )
+        custom_food.minerals = Minerals(**payload.minerals.model_dump())
     else:
         custom_food.minerals = None
 
@@ -103,7 +99,6 @@ async def create_custom_food(
 async def create_recipe(
     payload: RecipeInput, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> RecipeOutput:
-    # TODO: solve duplicate naming
 
     food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
     result = await db.execute(
@@ -150,7 +145,9 @@ async def create_entry_from_recipe(
     recipe = result.scalars().first()
 
     if not recipe:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Recipe not found"
+        )
 
     food_entry = FoodEntry(
         food_items=[

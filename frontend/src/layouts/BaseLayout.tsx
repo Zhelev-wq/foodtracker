@@ -13,7 +13,7 @@ function handleLogOut() {
     return null;
   }
   localStorage.removeItem("token");
-  navigate(ROUTES.LOGIN)
+  navigate(ROUTES.LOGIN);
 }
 
 export default function BaseLayout({ children }: BaseLayoutProps) {

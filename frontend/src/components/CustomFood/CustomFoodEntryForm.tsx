@@ -95,7 +95,6 @@ export default function CustomFoodEntryForm({
       await editCustomFood(formattedData, foodOut.id);
     }
     reload();
-    /* TODO: close form */
   };
 
   return (

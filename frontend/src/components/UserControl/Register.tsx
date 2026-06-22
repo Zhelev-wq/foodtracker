@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { api } from "../../api/client.ts";
 import { useNavigate } from "react-router";
-import { ROUTES } from "../../routes.ts"
+import { ROUTES } from "../../routes.ts";
 
 export default function Register() {
   const navigate = useNavigate();

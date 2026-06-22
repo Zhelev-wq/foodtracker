@@ -128,7 +128,6 @@ function getContextValue(reload: () => void) {
   };
 
   const saveEntryToLog = async (grams: number) => {
-    
     if (formMode === "edit" && foodEntryItemID) {
       await editFoodEntryItem(foodEntryItemID, grams);
     } else if (formMode === "add" && foodOutData) {
@@ -229,7 +228,6 @@ function getContextValue(reload: () => void) {
   };
 
   const setRecipeName = (name: string) => {
-    /* TODO: I have no idea what this does or why its here */
     const updatedSelectorData = Object.assign({}, selectorData);
     updatedSelectorData.name = name;
     setSelectorData(updatedSelectorData);
