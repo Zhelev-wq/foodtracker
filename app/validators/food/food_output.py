@@ -8,4 +8,3 @@ class FoodOutput(FoodBase):
 
     id: uuid.UUID
     user_id: uuid.UUID | None = None
-    barcode: str

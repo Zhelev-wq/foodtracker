@@ -1,0 +1,40 @@
+import uuid
+
+from fastapi import APIRouter, Depends, status
+from fastapi.exceptions import HTTPException
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.auth import CurrentUser
+from app.db.database import get_db
+from app.db.tables.food_entries import FoodEntryItem
+from app.validators.entries.entries_input import FoodEntryItemEdit
+from app.validators.entries.entries_output import FoodEntryItemOutput
+
+router = APIRouter(tags=["food_entry_items"])
+
+
+@router.patch("/{item_id}")
+async def edit_food_entry_item(
+    item_id: uuid.UUID,
+    payload: FoodEntryItemEdit,
+    user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+) -> FoodEntryItemOutput:
+    result = await db.execute(
+        select(FoodEntryItem)
+        .where(FoodEntryItem.id == item_id)
+        .where(FoodEntryItem.user_id == user.id)
+    )
+    food_entry_item = result.scalars().first()
+    if not food_entry_item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Food entry item not found"
+        )
+
+    food_entry_item.food_grams = payload.grams
+
+    await db.commit()
+    await db.refresh(food_entry_item)
+
+    return food_entry_item

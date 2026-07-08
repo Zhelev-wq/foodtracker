@@ -6,17 +6,19 @@ type BaseLayoutProps = {
   children: ReactNode;
 };
 
-function handleLogOut() {
-  const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return null;
-  }
-  localStorage.removeItem("token");
-  navigate(ROUTES.LOGIN);
-}
 
 export default function BaseLayout({ children }: BaseLayoutProps) {
+  const navigate = useNavigate();
+    
+  function handleLogOut() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return null;
+    }
+    localStorage.removeItem("token");
+    navigate(ROUTES.LOGIN);
+  }
+    
   return (
     <div>
       <header>

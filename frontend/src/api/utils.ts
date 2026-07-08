@@ -9,7 +9,7 @@ export async function editFoodEntryItem(
   grams: number,
 ) {
   const response = await api.patch(
-    `/api/food_edit/food_entry_item/${foodEntryItemID}`,
+    `/api/food-entry-items/${foodEntryItemID}`,
     {
       grams: grams,
     },
@@ -19,7 +19,7 @@ export async function editFoodEntryItem(
 }
 
 export async function createFoodEntry(food_uuid: string, grams: number) {
-  const response = await api.post("/api/food_create/food_entry", [
+  const response = await api.post("/api/food-entries", [
     {
       food_uuid: food_uuid,
       grams: grams,
@@ -31,38 +31,38 @@ export async function createFoodEntry(food_uuid: string, grams: number) {
 
 export async function deleteFoodEntry(foodEntryID: string) {
   const response = await api.delete(
-    `/api/food_delete/food_entry/${foodEntryID}`,
+    `/api/food-entries/${foodEntryID}`,
   );
   const data = response.data;
   return data;
 }
 
 export async function getFoodEntriesForDate(date: string) {
-  const response = await api.get(`/api/food_get/search/date/${date}`);
+  const response = await api.get(`/api/food-entries/${date}`);
   const data = response.data;
   return data;
 }
 
 export async function searchFoodByName(searchText: string) {
-  const response = await api.get(`/api/food_get/search/name/${searchText}`);
+  const response = await api.get(`/api/foods/${searchText}`);
   const data = response.data;
   return data;
 }
 
 export async function getCustomFoods() {
-  const response = await api.get(`/api/food_get/search/custom_food`);
+  const response = await api.get(`/api/foods/custom-foods`);
   const data = response.data;
   return data;
 }
 
 export async function getRecipes() {
-  const response = await api.get(`/api/food_get/search/recipes`);
+  const response = await api.get(`/api/recipes`);
   const data = response.data;
   return data;
 }
 
 export async function createCustomFood(foodData: CustomFoodInput) {
-  const response = await api.post(`/api/food_create/custom_food`, foodData);
+  const response = await api.post(`/api/foods/custom-foods`, foodData);
   const data = response.data;
   return data;
 }
@@ -72,7 +72,7 @@ export async function editCustomFood(
   food_uuid: string,
 ) {
   const response = await api.put(
-    `/api/food_edit/custom_food/${food_uuid}`,
+    `/api/foods/custom-foods/${food_uuid}`,
     foodData,
   );
   const data = response.data;
@@ -81,7 +81,7 @@ export async function editCustomFood(
 
 export async function saveFoodEntryEdit(foodEntry: DraftEntry) {
   const response = await api.put(
-    `/api/food_edit/food_entry/${foodEntry.id}`,
+    `/api/food-entries/${foodEntry.id}`,
     foodEntry.food_items,
   );
   const data = response.data;
@@ -94,7 +94,7 @@ export async function createRecipe(selectorData: DraftEntry) {
     name: selectorData.name,
   };
 
-  const response = await api.post(`/api/food_create/recipe`, payload);
+  const response = await api.post(`/api/recipes`, payload);
   return response.data;
 }
 
@@ -105,7 +105,7 @@ export async function editRecipe(selectorData: DraftEntry) {
   };
 
   const response = await api.put(
-    `/api/food_edit/recipe/${selectorData.id}`,
+    `/api/recipes/${selectorData.id}`,
     payload,
   );
   return response.data;
@@ -113,7 +113,7 @@ export async function editRecipe(selectorData: DraftEntry) {
 
 export async function addRecipeToLog(recipe_id: string) {
   const response = await api.post(
-    `/api/food_create/entry_from_recipe/${recipe_id}`,
+    `/api/recipes/${recipe_id}/food-entries`,
   );
   const data = response.data;
 
@@ -121,7 +121,7 @@ export async function addRecipeToLog(recipe_id: string) {
 }
 
 export async function deleteRecipe(recipe_id: string) {
-  const response = await api.delete(`/api/food_delete/recipe/${recipe_id}`);
+  const response = await api.delete(`/api/recipes/${recipe_id}`);
   const data = response.data;
   return data;
 }
