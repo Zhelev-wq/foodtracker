@@ -1,10 +1,10 @@
-from pydantic import IPvAnyAddress, SecretStr
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file="app/.env",
+        env_file=".env",
         env_file_encoding="utf-8",
     )
 
@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     db: str
     username: SecretStr
     password: SecretStr
-    host_address: IPvAnyAddress
+    host_address: str
     port: int
     db_name: str
 
