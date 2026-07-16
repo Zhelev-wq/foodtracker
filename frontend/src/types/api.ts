@@ -315,7 +315,7 @@ export interface components {
             /** Kcal */
             kcal: number;
             /** Barcode */
-            barcode?: string | null;
+            barcode: string | null;
             /**
              * Alcohol
              * @default 0
@@ -499,7 +499,7 @@ export interface components {
             /** Kcal */
             kcal: number;
             /** Barcode */
-            barcode?: string | null;
+            barcode: string | null;
             /**
              * Alcohol
              * @default 0
