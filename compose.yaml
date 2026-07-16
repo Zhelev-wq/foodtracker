@@ -13,14 +13,26 @@ services:
       db:
         condition: service_healthy
 
+  app_frontend:
+    image: foodtracker_react_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    networks:
+      - private
+    depends_on:
+      db:
+        condition: service_healthy
+      app_backend:
+        condition: service_healthy
 
-  app:
-    image: fastapi_backend
+  app_backend:
+    image: foodtracker_fastapi_backend
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 7070:8000
     env_file:
       - path: .env
         required: true
@@ -48,7 +60,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
 
 volumes:
   postgres-data:
