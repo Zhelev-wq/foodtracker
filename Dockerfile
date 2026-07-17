@@ -6,10 +6,10 @@ WORKDIR /code
 COPY pyproject.toml .
 COPY uv.lock .
 
-RUN uv sync --frozen
+RUN uv sync --no-dev --frozen --no-cache
 COPY app ./app
 COPY alembic ./alembic
 COPY alembic.ini .
 
-CMD ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "fastapi", "run", "--host", "0.0.0.0", "--port", "8000"]
 HEALTHCHECK --interval=5m --timeout=30s --start-period=30s --retries=3 CMD [ "curl", "-f", "http://localhost:8000/health" ]
