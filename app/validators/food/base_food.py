@@ -55,6 +55,7 @@ class FoodBase(BaseModel):
     protein: float
     fat: float
     kcal: float
+    barcode: Optional[str]
 
     alcohol: Optional[float] = 0
     caffeine: Optional[float] = 0

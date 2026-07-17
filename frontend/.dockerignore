@@ -1,0 +1,12 @@
+.git
+.gitignore
+.prettier
+.prettierignore
+eslint.config.js
+.vscode
+**/node_modules/
+**/dist
+**/*.env
+**/.env.sample
+*.md
+*.tsbuildinfo
