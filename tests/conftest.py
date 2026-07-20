@@ -1,8 +1,8 @@
 import pytest
+from fastapi.security import OAuth2PasswordRequestForm
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
-                                    create_async_engine)
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from testcontainers.postgres import PostgresContainer
 
 from app.db.database import Base, get_db
@@ -98,3 +98,32 @@ async def test_health(client: AsyncClient):
 @pytest.mark.anyio
 async def test_db_query(db_session):
     await db_session.execute(text("SELECT 1"))
+
+
+@pytest.mark.anyio
+async def create_valid_test_user(
+    client: AsyncClient,
+    email: str = "test_email@nonexistent.com",
+    password: str = "test_password",
+    name: str = "test_name",
+):
+    response = await client.post(
+        "/api/users", json={"email": email, "password": password, "name": name}
+    )
+    assert response.status_code == 201
+    return response
+
+
+@pytest.mark.anyio
+async def login_user(
+    client: AsyncClient,
+    email: str = "test_email@nonexistent.com",
+    password: str = "test_password",
+):
+
+    response = await client.post(
+        "/api/users/token", data={"username": email, "password": password}
+    )
+
+    assert response.status_code == 200
+    return response
