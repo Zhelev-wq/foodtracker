@@ -2,7 +2,8 @@ import pytest
 from fastapi.security import OAuth2PasswordRequestForm
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
+                                    create_async_engine)
 from testcontainers.postgres import PostgresContainer
 
 from app.db.database import Base, get_db
@@ -100,7 +101,6 @@ async def test_db_query(db_session):
     await db_session.execute(text("SELECT 1"))
 
 
-@pytest.mark.anyio
 async def create_valid_test_user(
     client: AsyncClient,
     email: str = "test_email@nonexistent.com",
@@ -114,7 +114,6 @@ async def create_valid_test_user(
     return response
 
 
-@pytest.mark.anyio
 async def login_user(
     client: AsyncClient,
     email: str = "test_email@nonexistent.com",
