@@ -1,13 +1,16 @@
 import pytest
-from fastapi.security import OAuth2PasswordRequestForm
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
 from testcontainers.postgres import PostgresContainer
 
 from app.db.database import Base, get_db
+from app.db.tables.food import Food
 from app.main import app
+from tests.constants import (DEFAULT_NAME, DEFAULT_WORKING_EMAIL,
+                             DEFAULT_WORKING_PASSWORD,
+                             EXAMPLE_CUSTOM_FOOD_INPUT)
 
 pytest_plugins = ["anyio"]
 
@@ -90,17 +93,6 @@ async def client(db_session):
     app.dependency_overrides.clear()
 
 
-@pytest.mark.anyio
-async def test_health(client: AsyncClient):
-    response = await client.get("/health")
-    assert response.status_code == 200, "Status code should be 200"
-
-
-@pytest.mark.anyio
-async def test_db_query(db_session):
-    await db_session.execute(text("SELECT 1"))
-
-
 async def create_valid_test_user(
     client: AsyncClient,
     email: str = "test_email@nonexistent.com",
@@ -126,3 +118,61 @@ async def login_user(
 
     assert response.status_code == 200
     return response
+
+
+@pytest.fixture
+async def valid_user(client: AsyncClient):
+    response = await create_valid_test_user(
+        client=client,
+        email=DEFAULT_WORKING_EMAIL,
+        password=DEFAULT_WORKING_PASSWORD,
+        name=DEFAULT_NAME,
+    )
+    assert response.status_code == 201
+    return response.json()
+
+
+@pytest.fixture
+async def valid_log_in(client: AsyncClient, valid_user):
+    response = await login_user(
+        client=client, email=DEFAULT_WORKING_EMAIL, password=DEFAULT_WORKING_PASSWORD
+    )
+    assert response.status_code == 200
+    return response.json()
+
+
+@pytest.fixture
+async def logged_in_user_details(client: AsyncClient, valid_user, valid_log_in):
+
+    token = valid_log_in.get("access_token")
+    response = await client.post(
+        "/api/users/me",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 200
+    return response.json()
+
+
+@pytest.fixture
+async def new_custom_food(
+    client: AsyncClient, valid_user, valid_log_in, logged_in_user_details, db_session
+):
+    token = valid_log_in.get("access_token")
+    response = await client.post(
+        "/api/foods/custom-foods",
+        json=EXAMPLE_CUSTOM_FOOD_INPUT,
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 201
+
+    user_id = logged_in_user_details.get("id")
+    food_id = response.json().get("id")
+
+    result = await db_session.execute(select(Food).where(Food.id == food_id))
+    result = result.scalars().all()
+
+    assert len(result) > 0
+    assert len(result) < 2
+    assert str(result[0].user_id) == user_id
+
+    return response.json()

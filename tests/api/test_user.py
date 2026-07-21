@@ -6,44 +6,10 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql import delete
 
 from app.db.tables.user import User
-from tests.conftest import create_valid_test_user, login_user
-
-DEFAULT_WORKING_EMAIL = "working_email1@email.com"
-DEFAULT_WORKING_PASSWORD = "working_password"
-DEFAULT_NAME = "user_first_name"
-
-
-@pytest.fixture
-async def valid_user(client: AsyncClient):
-    response = await create_valid_test_user(
-        client=client,
-        email=DEFAULT_WORKING_EMAIL,
-        password=DEFAULT_WORKING_PASSWORD,
-        name=DEFAULT_NAME,
-    )
-    assert response.status_code == 201
-    return response
-
-
-@pytest.fixture
-async def valid_log_in(client: AsyncClient, valid_user):
-    response = await login_user(
-        client=client, email=DEFAULT_WORKING_EMAIL, password=DEFAULT_WORKING_PASSWORD
-    )
-    assert response.status_code == 200
-    return response.json()
-
-
-@pytest.fixture
-async def logged_in_user_details(client: AsyncClient, valid_user, valid_log_in):
-
-    token = valid_log_in.get("access_token")
-    response = await client.post(
-        "/api/users/me",
-        headers={"Authorization": f"Bearer {token}"},
-    )
-    assert response.status_code == 200
-    return response.json()
+from tests.conftest import (create_valid_test_user, logged_in_user_details,
+                            login_user, valid_log_in, valid_user)
+from tests.constants import (DEFAULT_NAME, DEFAULT_WORKING_EMAIL,
+                             DEFAULT_WORKING_PASSWORD)
 
 
 @pytest.mark.anyio
@@ -122,7 +88,7 @@ async def test_login_wrong_email_and_password(client: AsyncClient, valid_user):
 
 @pytest.mark.anyio
 async def test_user_login_no_email(
-    client: AsyncClient, db_session: AsyncSession, valid_user, valid_log_in
+    client: AsyncClient, db_session: AsyncSession, valid_log_in
 ):
     response = await client.post(
         "/api/users/token",
@@ -133,7 +99,7 @@ async def test_user_login_no_email(
 
 @pytest.mark.anyio
 async def test_user_login_no_password(
-    client: AsyncClient, db_session: AsyncSession, valid_user, valid_log_in
+    client: AsyncClient, db_session: AsyncSession, valid_log_in
 ):
     response = await client.post(
         "/api/users/token",
@@ -143,9 +109,7 @@ async def test_user_login_no_password(
 
 
 @pytest.mark.anyio
-async def test_logged_in_user_correct_data(
-    client: AsyncClient, valid_user, valid_log_in
-):
+async def test_logged_in_user_correct_data(client: AsyncClient, valid_log_in):
 
     token = valid_log_in.get("access_token")
 
@@ -160,7 +124,7 @@ async def test_logged_in_user_correct_data(
 
 
 @pytest.mark.anyio
-async def test_user_login_corrupted_data(client: AsyncClient, valid_user, valid_log_in):
+async def test_user_login_corrupted_data(client: AsyncClient, valid_log_in):
 
     correct_token = valid_log_in.get("access_token")
     wrong_token = correct_token[1:]
@@ -174,7 +138,7 @@ async def test_user_login_corrupted_data(client: AsyncClient, valid_user, valid_
 
 @pytest.mark.anyio
 async def test_user_login_email_doesnt_exist(
-    client: AsyncClient, db_session: AsyncSession, valid_user, valid_log_in
+    client: AsyncClient, db_session: AsyncSession, valid_log_in
 ):
     token = valid_log_in.get("access_token")
     await db_session.execute(delete(User).where(User.email == DEFAULT_WORKING_EMAIL))
@@ -188,7 +152,6 @@ async def test_user_login_email_doesnt_exist(
 @pytest.mark.anyio
 async def test_update_user_correct_name(
     client: AsyncClient,
-    valid_user,
     valid_log_in,
     logged_in_user_details,
 ):
@@ -215,7 +178,6 @@ async def test_update_user_correct_name(
 @pytest.mark.anyio
 async def test_update_user_correct_email(
     client: AsyncClient,
-    valid_user,
     valid_log_in,
     logged_in_user_details,
 ):
@@ -239,7 +201,7 @@ async def test_update_user_correct_email(
 
 @pytest.mark.anyio
 async def test_update_user_mismatched_id(
-    client: AsyncClient, valid_user, valid_log_in, logged_in_user_details
+    client: AsyncClient, valid_log_in, logged_in_user_details
 ):
 
     token = valid_log_in.get("access_token")
@@ -259,9 +221,7 @@ async def test_update_user_mismatched_id(
 
 
 @pytest.mark.anyio
-async def test_update_user_wrong_user_id(
-    client: AsyncClient, valid_user, valid_log_in, logged_in_user_details
-):
+async def test_update_user_wrong_user_id(client: AsyncClient, logged_in_user_details):
     user_id_one = logged_in_user_details.get("id")
 
     await create_valid_test_user(
@@ -296,7 +256,7 @@ async def test_update_user_wrong_user_id(
 
 @pytest.mark.anyio
 async def test_update_user_using_existing_user_email(
-    client: AsyncClient, valid_user, valid_log_in, logged_in_user_details
+    client: AsyncClient, valid_log_in, logged_in_user_details
 ):
     ### changing user_1's email to user_2's
     token = valid_log_in.get("access_token")
@@ -323,9 +283,7 @@ async def test_update_user_using_existing_user_email(
 
 
 @pytest.mark.anyio
-async def test_update_user_no_auth_header(
-    client: AsyncClient, valid_user, valid_log_in, logged_in_user_details
-):
+async def test_update_user_no_auth_header(client: AsyncClient, logged_in_user_details):
     new_email = "new_email@email.com"
     user_id = logged_in_user_details.get("id")
     initial_user_name = logged_in_user_details.get("name")
