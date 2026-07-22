@@ -37,6 +37,7 @@ class EntryBase(Base):
             back_populates="food_entry",
             cascade="all, delete-orphan",
             lazy="selectin",
+            order_by=cls.owned_item_class_name + ".id"
         )  # this will pull all FoodEntryItems where FoodEntryItem.food_id == FoodEntry.id
 
 
