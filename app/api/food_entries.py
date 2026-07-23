@@ -5,13 +5,13 @@ from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Food
-from app.db.tables.food_entries import FoodEntry, FoodEntryItem, Recipe
-from app.validators.entries.entries_input import (EntryItemInput,
-                                                  ExistingEntryItemInput)
+from app.db.tables.food_entries import FoodEntry, FoodEntryItem
+from app.validators.entries.entries_input import EntryItemInput, ExistingEntryItemInput
 from app.validators.entries.entries_output import FoodEntryOutput
 
 router = APIRouter(tags=["food_entries"])
@@ -104,6 +104,18 @@ async def edit_food_entry_food_items(
     incoming_new = [
         item for item in food_items if isinstance(item, EntryItemInput)
     ]  # completely new
+    db_query = (
+        select(Food)
+        .where(Food.id.in_([item.food_uuid for item in incoming_new]))
+        .where(or_(Food.user_id == user.id, Food.user_id.is_(None)))
+    )
+    result = await db.execute(db_query)
+    result = result.scalars().all()
+    if len(result) != len(incoming_new):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="New food entry items not found or don't belong to user",
+        )
     incoming_by_id = {(item.id): item for item in incoming_existing}
 
     kept_items = []
@@ -119,7 +131,13 @@ async def edit_food_entry_food_items(
 
     food_entry.food_items = kept_items + new_items
     await db.commit()
-    await db.refresh(food_entry)
+
+    result = await db.execute(
+        select(FoodEntry)
+        .where(FoodEntry.id == food_entry.id)
+        .options(selectinload(FoodEntry.food_items).selectinload(FoodEntryItem.food))
+    )
+    food_entry = result.scalars().first()
     return food_entry
 
 

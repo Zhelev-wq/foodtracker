@@ -1,7 +1,7 @@
 import uuid
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class EntryItemInput(BaseModel):
@@ -10,7 +10,7 @@ class EntryItemInput(BaseModel):
 
 
 class RecipeInput(BaseModel):
-    name: str
+    name: str = Field(min_length=4)
     food_items: List[EntryItemInput]
 
 
@@ -30,4 +30,4 @@ class ExistingRecipeItemInput(ExistingEntryItemInput):
 
 class RecipeEdit(BaseModel):
     food_items: List[ExistingRecipeItemInput | EntryItemInput]
-    name: str
+    name: str = Field(min_length=4)

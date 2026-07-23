@@ -4,15 +4,18 @@ from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
 from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.auth import CurrentUser
 from app.db.database import get_db
 from app.db.tables.food import Food
-from app.db.tables.food_entries import (FoodEntry, FoodEntryItem, Recipe,
-                                        RecipeEntryItem)
-from app.validators.entries.entries_input import (EntryItemInput,
-                                                  ExistingRecipeItemInput,
-                                                  RecipeEdit, RecipeInput)
+from app.db.tables.food_entries import FoodEntry, FoodEntryItem, Recipe, RecipeEntryItem
+from app.validators.entries.entries_input import (
+    EntryItemInput,
+    ExistingRecipeItemInput,
+    RecipeEdit,
+    RecipeInput,
+)
 from app.validators.entries.entries_output import FoodEntryOutput, RecipeOutput
 
 router = APIRouter(tags=["recipes"])
@@ -34,8 +37,21 @@ async def get_user_recipes(
 async def create_recipe(
     payload: RecipeInput, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> RecipeOutput:
-
-    food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
+    name = payload.name
+    result = await db.execute(
+        select(Recipe).where(Recipe.name == name).where(Recipe.user_id == user.id)
+    )
+    if result.scalars().all():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Recipe name should be unique"
+        )
+    food_items = payload.food_items
+    if not food_items:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Recipe item list cannot be empty",
+        )
+    food_ids = [food_entry.food_uuid for food_entry in food_items]
     result = await db.execute(
         select(Food)
         .where(Food.id.in_(food_ids))
@@ -54,7 +70,7 @@ async def create_recipe(
         )
 
     recipe = Recipe(
-        name=payload.name,
+        name=name,
         food_items=[
             RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams)
             for item in payload.food_items
@@ -92,12 +108,40 @@ async def edit_recipe(
             detail=f"Recipe with ID: {recipe_id} not found.",
         )
 
+    name = payload.name
+    if recipe.name != name:
+        result = await db.execute(
+            select(Recipe)
+            .where(Recipe.name == name)
+            .where(Recipe.user_id == user.id)
+            .where(Recipe.id != recipe_id)
+        )
+        if result.scalars().all():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Recipe name should be unique",
+            )
+        recipe.name = name
+
     incoming_existing = [
         item for item in food_items if isinstance(item, ExistingRecipeItemInput)
     ]  # maybe original, maybe edited
     incoming_new = [
         item for item in food_items if isinstance(item, EntryItemInput)
     ]  # completely new
+    db_query = (
+        select(Food)
+        .where(Food.id.in_([item.food_uuid for item in incoming_new]))
+        .where(or_(Food.user_id == user.id, Food.user_id.is_(None)))
+    )
+    result = await db.execute(db_query)
+    result = result.scalars().all()
+    if len(result) != len(incoming_new):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="New food entry items not found or don't belong to user",
+        )
+
     incoming_by_id = {(item.id): item for item in incoming_existing}
 
     kept_items = []
@@ -111,13 +155,14 @@ async def edit_recipe(
     for item in incoming_new:
         new_items.append(RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams))
 
-    name = payload.name
-    if recipe.name != name:
-        recipe.name = name
-
     recipe.food_items = kept_items + new_items
     await db.commit()
-    await db.refresh(recipe)
+    result = await db.execute(
+        select(Recipe)
+        .where(Recipe.id == recipe.id)
+        .options(selectinload(Recipe.food_items).selectinload(RecipeEntryItem.food))
+    )
+    recipe = result.scalars().first()
     return recipe
 
 
