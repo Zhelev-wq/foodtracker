@@ -6,10 +6,12 @@ from sqlalchemy.ext.asyncio.session import AsyncSession
 from sqlalchemy.sql import delete
 
 from app.db.tables.user import User
-from tests.conftest import (create_valid_test_user, logged_in_user_details,
-                            login_user, valid_log_in, valid_user)
-from tests.constants import (DEFAULT_NAME, DEFAULT_WORKING_EMAIL,
-                             DEFAULT_WORKING_PASSWORD)
+from tests.conftest import create_valid_test_user, login_user
+from tests.constants import (
+    DEFAULT_NAME,
+    DEFAULT_WORKING_EMAIL,
+    DEFAULT_WORKING_PASSWORD,
+)
 
 
 @pytest.mark.anyio

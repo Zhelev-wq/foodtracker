@@ -4,10 +4,7 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
-from app.db.tables.food import Food
-from tests.conftest import (create_valid_test_user, db_session,
-                            logged_in_user_details, login_user,
-                            new_custom_food, valid_log_in)
+from tests.conftest import common_food, create_valid_test_user, login_user
 from tests.constants import EXAMPLE_CUSTOM_FOOD_INPUT
 
 
@@ -288,21 +285,8 @@ async def test_edit_custom_food_belonging_to_other_user(
 async def test_food_common_food_seen_by_all_users(
     client: AsyncClient, valid_log_in, logged_in_user_details, db_session
 ):
-    food = Food(
-        name=EXAMPLE_CUSTOM_FOOD_INPUT.get("name"),
-        carbs=EXAMPLE_CUSTOM_FOOD_INPUT.get("carbs"),
-        protein=EXAMPLE_CUSTOM_FOOD_INPUT.get("protein"),
-        fat=EXAMPLE_CUSTOM_FOOD_INPUT.get("fat"),
-        kcal=EXAMPLE_CUSTOM_FOOD_INPUT.get("kcal"),
-        alcohol=EXAMPLE_CUSTOM_FOOD_INPUT.get("alcohol"),
-        caffeine=EXAMPLE_CUSTOM_FOOD_INPUT.get("caffeine"),
-        barcode=EXAMPLE_CUSTOM_FOOD_INPUT.get("barcode"),
-        vitamins=None,
-        minerals=None,
-        fats=None,
-    )
 
-    db_session.add(food)
+    await common_food(db_session)
 
     token_one = valid_log_in.get("access_token")
     user_one_id = logged_in_user_details.get("id")
