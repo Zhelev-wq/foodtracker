@@ -1,19 +1,24 @@
-import pytest
-import datetime
 import copy
+import datetime
+
+import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select, text
-from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
-                                    create_async_engine)
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from testcontainers.postgres import PostgresContainer
 
 from app.db.database import Base, get_db
 from app.db.tables.food import Food
 from app.main import app
-from tests.constants import (DEFAULT_NAME, DEFAULT_WORKING_EMAIL,
-                             DEFAULT_WORKING_PASSWORD,
-                             EXAMPLE_CUSTOM_FOOD_INPUT)
 from app.validators.food.food_input import CustomFoodInput
+from tests.constants import (
+    DEFAULT_NAME,
+    DEFAULT_RECIPE_NAME,
+    DEFAULT_WORKING_EMAIL,
+    DEFAULT_WORKING_PASSWORD,
+    EXAMPLE_CUSTOM_FOOD_INPUT,
+)
+
 pytest_plugins = ["anyio"]
 
 
@@ -121,14 +126,19 @@ async def login_user(
     assert response.status_code == 200
     return response
 
+
 async def common_food(
     db_session: AsyncSession,
     food_details_schema: dict = EXAMPLE_CUSTOM_FOOD_INPUT,
 ):
     food_details_schema = copy.deepcopy(food_details_schema)
     CustomFoodInput(**food_details_schema)
-    food_details_schema["name"] = food_details_schema["name"] + str(datetime.datetime.now())
-    food_details_schema["barcode"] = food_details_schema["barcode"] + str(datetime.datetime.now())
+    food_details_schema["name"] = food_details_schema["name"] + str(
+        datetime.datetime.now()
+    )
+    food_details_schema["barcode"] = food_details_schema["barcode"] + str(
+        datetime.datetime.now()
+    )
     food = Food(
         name=food_details_schema.get("name"),
         carbs=food_details_schema.get("carbs"),
@@ -211,22 +221,24 @@ async def new_custom_food(
 
     return response.json()
 
+
 @pytest.fixture
 async def new_food_entry_single_item(
-    client: AsyncClient, valid_log_in, logged_in_user_details, new_custom_food,
+    client: AsyncClient,
+    valid_log_in,
+    logged_in_user_details,
+    new_custom_food,
 ):
     token = valid_log_in.get("access_token")
     food_id = new_custom_food.get("id")
     response = await client.post(
         "/api/food-entries",
-        json=[{
-            "food_uuid": food_id,
-            "grams": 100
-        }],
+        json=[{"food_uuid": food_id, "grams": 100}],
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 201
     return response.json()
+
 
 @pytest.fixture
 async def new_food_entry_multi_item(
@@ -247,9 +259,72 @@ async def new_food_entry_multi_item(
 
     response = await client.post(
         "/api/food-entries",
-        json=[
-            {"food_uuid": k, "grams": v} for k,v in food_entry_items_input.items()
-        ],
+        json=[{"food_uuid": k, "grams": v} for k, v in food_entry_items_input.items()],
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 201
+    return response.json()
+
+
+@pytest.fixture
+async def new_recipe_single_item(
+    client: AsyncClient,
+    valid_log_in,
+    new_custom_food,
+):
+    token = valid_log_in.get("access_token")
+    food_id = new_custom_food.get("id")
+    response = await client.post(
+        "/api/recipes",
+        json={
+            "name": DEFAULT_RECIPE_NAME,
+            "food_items": [{"food_uuid": food_id, "grams": 100}],
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 201
+    return response.json()
+
+
+@pytest.fixture
+async def new_recipe_multi_item(
+    client: AsyncClient, new_custom_food, valid_log_in, db_session
+):
+    token = valid_log_in.get("access_token")
+    new_custom_food_id = new_custom_food.get("id")
+    new_custom_food_grams = 100
+
+    new_common_food = await common_food(db_session, EXAMPLE_CUSTOM_FOOD_INPUT)
+    new_common_food_id = str(new_common_food.id)
+    new_common_food_grams = 100
+
+    recipe_items_input = {
+        new_custom_food_id: new_custom_food_grams,
+        new_common_food_id: new_common_food_grams,
+    }
+
+    response = await client.post(
+        "/api/recipes",
+        json={
+            "name": DEFAULT_RECIPE_NAME,
+            "food_items": [
+                {"food_uuid": k, "grams": v} for k, v in recipe_items_input.items()
+            ],
+        },
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert response.status_code == 201
+    return response.json()
+
+
+@pytest.fixture
+async def food_entry_from_recipe(
+    client: AsyncClient, valid_log_in, new_recipe_single_item
+):
+    token = valid_log_in.get("access_token")
+    recipe_id = new_recipe_single_item.get("id")
+    response = await client.post(
+        f"/api/recipes/{recipe_id}/food-entries",
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 201

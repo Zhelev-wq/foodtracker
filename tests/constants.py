@@ -1,7 +1,7 @@
 DEFAULT_WORKING_EMAIL = "working_email1@email.com"
 DEFAULT_WORKING_PASSWORD = "working_password"
 DEFAULT_NAME = "user_first_name"
-
+DEFAULT_RECIPE_NAME = "recipe_name"
 EXAMPLE_CUSTOM_FOOD_INPUT = {
     "name": "test_custom_food",
     "carbs": 0.0,

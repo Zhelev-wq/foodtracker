@@ -37,8 +37,21 @@ async def get_user_recipes(
 async def create_recipe(
     payload: RecipeInput, user: CurrentUser, db: AsyncSession = Depends(get_db)
 ) -> RecipeOutput:
-
-    food_ids = [food_entry.food_uuid for food_entry in payload.food_items]
+    name = payload.name
+    result = await db.execute(
+        select(Recipe).where(Recipe.name == name).where(Recipe.user_id == user.id)
+    )
+    if result.scalars().all():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="Recipe name should be unique"
+        )
+    food_items = payload.food_items
+    if not food_items:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Recipe item list cannot be empty",
+        )
+    food_ids = [food_entry.food_uuid for food_entry in food_items]
     result = await db.execute(
         select(Food)
         .where(Food.id.in_(food_ids))
@@ -57,7 +70,7 @@ async def create_recipe(
         )
 
     recipe = Recipe(
-        name=payload.name,
+        name=name,
         food_items=[
             RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams)
             for item in payload.food_items
@@ -95,6 +108,21 @@ async def edit_recipe(
             detail=f"Recipe with ID: {recipe_id} not found.",
         )
 
+    name = payload.name
+    if recipe.name != name:
+        result = await db.execute(
+            select(Recipe)
+            .where(Recipe.name == name)
+            .where(Recipe.user_id == user.id)
+            .where(Recipe.id != recipe_id)
+        )
+        if result.scalars().all():
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Recipe name should be unique",
+            )
+        recipe.name = name
+
     incoming_existing = [
         item for item in food_items if isinstance(item, ExistingRecipeItemInput)
     ]  # maybe original, maybe edited
@@ -126,10 +154,6 @@ async def edit_recipe(
     new_items = []
     for item in incoming_new:
         new_items.append(RecipeEntryItem(food_id=item.food_uuid, food_grams=item.grams))
-
-    name = payload.name
-    if recipe.name != name:
-        recipe.name = name
 
     recipe.food_items = kept_items + new_items
     await db.commit()

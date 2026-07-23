@@ -1,8 +1,7 @@
 import datetime
 import uuid
 
-from sqlalchemy import (UUID, DateTime, ForeignKey, Integer, String,
-                        UniqueConstraint)
+from sqlalchemy import UUID, DateTime, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import Mapped, declared_attr, mapped_column, relationship
 
@@ -37,7 +36,7 @@ class EntryBase(Base):
             back_populates="food_entry",
             cascade="all, delete-orphan",
             lazy="selectin",
-            order_by=cls.owned_item_class_name + ".id"
+            order_by=cls.owned_item_class_name + ".id",
         )  # this will pull all FoodEntryItems where FoodEntryItem.food_id == FoodEntry.id
 
 
@@ -51,7 +50,7 @@ class Recipe(EntryBase):
     __tablename__ = "recipe"
     __table_args__ = (UniqueConstraint("user_id", "name", name="uq_recipe_user_name"),)
     owned_item_class_name = "RecipeEntryItem"
-    name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
 
 
 class ItemBase(Base):
